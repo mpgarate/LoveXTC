@@ -18,7 +18,23 @@ public class ASTBuilder{
 
 	public GNode classNodes(){
 		GNode classDec = GNode.create("ClassDeclaration");
-		// classDec.addNode(xyz);
+		GNode classBody = GNode.create("ClassBody");
+		GNode classModifier = GNode.create("ClassModifier");
+		GNode classExtension = GNode.create("ClassExtension");
+
+		classDec.addNode(classBody);
+		classDec.addNode(classModifier);
+		classDec.addNode(classExtension);
+
+		GNode constructorDeclaration = GNode.create("ConstructorDeclaration");
+		GNode functionDeclaration = GNode.create("FunctionDeclaration");
+		GNode fieldDeclaration = GNode.create("FieldDeclaration");
+		GNode block = GNode.create("Block");
+
+		classBody.addNode(constructorDeclaration);
+		classBody.addNode(functionDeclaration);
+		classBody.addNode(fieldDeclaration);
+		classBody.addNode(block);
 
 		return classDec;
 	}
