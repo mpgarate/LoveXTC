@@ -23,6 +23,9 @@ import xtc.util.Tool;
 
 /* End Translator.java imports */
 
+/* Make assertions for debugging */
+import static org.junit.Assert.*;
+
 public class ASTBuilder{
 	public GNode root, packageDeclaration, includeDeclaration, classDeclaration, classBody;
 
@@ -40,6 +43,7 @@ public class ASTBuilder{
 		classDeclaration.add(0, class_name);
 		/* 1 modifiers */
 		String modifier = n.getNode(0).getNode(0).getString(0);
+		classDeclaration.add(1, modifier);
 		/* 2 extension 
 		   creating it as a node so that in the future we can add a pointer to it.
 		   NEED : a separate method for this

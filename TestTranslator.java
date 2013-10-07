@@ -86,13 +86,13 @@ public class TestTranslator extends Tool {
         }
 
         public void visitClassDeclaration(GNode n) {
-          visit(n);
           t.createClassDeclaration(n);
+          visit(n);
         }
 
         public void visitMethodDeclaration(GNode n) {
-          visit(n);
           t.createMethodDeclaration(n);
+          visit(n);
         }
 
         public void visit(Node n) {
