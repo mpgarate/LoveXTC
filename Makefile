@@ -48,7 +48,8 @@ PACKAGE_LOC = xtc/oop
 SOURCE = \
        Translator.java \
        CTranslator.java \
-       ASTBuilder.java
+       ASTBuilder.java \
+       TestTranslator.java 
 
 JNI_SOURCE =
 
