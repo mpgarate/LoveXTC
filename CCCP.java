@@ -29,8 +29,23 @@ public class CCCP extends Visitor {
 
 	*/
 
-	/* */
-	public CCCP(){
+	/** The printer for this C printer. */
+  protected final Printer printer;
 
+  public GNode root;
+
+	public CCCP(Printer printer){
+		this.printer = printer;
+		printer.register(this);
+		printer.p("got here");
 	}
+
+	public void visitTranslationUnit(GNode n) {
+    System.out.println("Visiting translation unit");
+    visit(n);
+  }
+
+  public void visit(Node n) {
+    for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+  }
 }

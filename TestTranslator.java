@@ -13,6 +13,7 @@ import xtc.parser.Result;
 import xtc.tree.GNode;
 import xtc.tree.Node;
 import xtc.tree.Visitor;
+import xtc.tree.Printer;
 
 import xtc.util.Tool;
 
@@ -44,7 +45,8 @@ public class TestTranslator extends Tool {
     runtime.
       bool("printJavaAST", "printJavaAST", false, "Print Java AST.").
       bool("printJavaCode", "printJavaCode", false, "Print Java code.").
-      bool("makeCppTree", "makeCppTree", false, "Count all Java methods.");
+      bool("makeCppTree", "makeCppTree", false, "Count all Java methods.").
+      bool("printCPP", "printCPP", false, "Print the AST as a CPP file.");
   }
 
   public void prepare() {
@@ -100,6 +102,11 @@ public class TestTranslator extends Tool {
         }
       }.dispatch(node);
       runtime.console().format(t.root).pln().flush();
+    }
+
+    if (runtime.test("printCPP")) {
+      Printer p = new Printer(System.out);
+      new CCCP(p).dispatch(t.root);
     }
   }
 

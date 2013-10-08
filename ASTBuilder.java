@@ -21,7 +21,7 @@ import xtc.tree.Visitor;
 
 import xtc.util.Tool;
 
-/* End Translator.java imports */
+/* End Translator.java imports *
 
 /* Make assertions for debugging */
 import static org.junit.Assert.*;
