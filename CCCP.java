@@ -37,11 +37,10 @@ public class CCCP extends Visitor {
 	public CCCP(Printer printer){
 		this.printer = printer;
 		printer.register(this);
-		printer.p("got here");
 	}
 
 	public void visitTranslationUnit(GNode n) {
-    System.out.println("Visiting translation unit");
+    printer.p("Visiting translation unit");
     visit(n);
   }
 

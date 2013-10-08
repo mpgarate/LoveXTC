@@ -3,6 +3,10 @@ package xtc.oop;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
 
 import xtc.lang.JavaFiveParser;
 import xtc.lang.JavaPrinter;
@@ -105,8 +109,18 @@ public class TestTranslator extends Tool {
     }
 
     if (runtime.test("printCPP")) {
-      Printer p = new Printer(System.out);
-      new CCCP(p).dispatch(t.root);
+      Writer writer = null;
+
+      try {
+          writer = new BufferedWriter(new OutputStreamWriter(
+                  new FileOutputStream("output.cpp"), "utf-8"));
+          Printer p = new Printer(writer);
+          new CCCP(p).dispatch(t.root);
+      } catch (IOException ex){
+        // report
+      } finally {
+         try {writer.close();} catch (Exception ex) {}
+      }
     }
   }
 
