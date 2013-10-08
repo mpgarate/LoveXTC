@@ -49,7 +49,7 @@ public class TestTranslator extends Tool {
     runtime.
       bool("printJavaAST", "printJavaAST", false, "Print Java AST.").
       bool("printJavaCode", "printJavaCode", false, "Print Java code.").
-      bool("makeCppTree", "makeCppTree", false, "Count all Java methods.").
+      bool("printCPPTree", "printCPPTree", false, "Print the CPP AST Tree.").
       bool("printCPP", "printCPP", false, "Print the AST as a CPP file.");
   }
 
@@ -84,31 +84,13 @@ public class TestTranslator extends Tool {
       runtime.console().flush();
     }
 
-    if (runtime.test("makeCppTree")) {
-
-      new Visitor() {
-        public void visitCompilationUnit(GNode n) {
-          visit(n);
-        }
-
-        public void visitClassDeclaration(GNode n) {
-          t.createClassDeclaration(n);
-          visit(n);
-        }
-
-        public void visitMethodDeclaration(GNode n) {
-          t.createMethodDeclaration(n);
-          visit(n);
-        }
-
-        public void visit(Node n) {
-          for (Object o : n) if (o instanceof Node) dispatch((Node) o);
-        }
-      }.dispatch(node);
+    if (runtime.test("printCPPTree")) {
+      makeCPPTree(node);
       runtime.console().format(t.root).pln().flush();
     }
 
     if (runtime.test("printCPP")) {
+      makeCPPTree(node);
       Writer writer = null;
 
       try {
@@ -122,6 +104,28 @@ public class TestTranslator extends Tool {
          try {writer.close();} catch (Exception ex) {}
       }
     }
+  }
+
+  public void makeCPPTree(Node node){
+    new Visitor() {
+      public void visitCompilationUnit(GNode n) {
+        visit(n);
+      }
+
+      public void visitClassDeclaration(GNode n) {
+        t.createClassDeclaration(n);
+        visit(n);
+      }
+
+      public void visitMethodDeclaration(GNode n) {
+        t.createMethodDeclaration(n);
+        visit(n);
+      }
+
+      public void visit(Node n) {
+        for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+      }
+    }.dispatch(node);
   }
 
   /**

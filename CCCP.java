@@ -40,7 +40,22 @@ public class CCCP extends Visitor {
 	}
 
 	public void visitTranslationUnit(GNode n) {
-    printer.p("Visiting translation unit");
+    printer.pln("Visiting translation unit");
+    visit(n);
+  }
+
+	public void visitClassDeclaration(GNode n) {
+    printer.pln("visiting class declaration");
+    visit(n);
+  }
+
+	public void visitClassBody(GNode n) {
+    printer.pln("visiting class body");
+    visit(n);
+  }
+
+  public void visitMethodDeclaration(GNode n){
+    printer.pln("visiting method declaration");
     visit(n);
   }
 
