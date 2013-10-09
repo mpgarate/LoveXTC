@@ -9,15 +9,19 @@ source setup.sh
 
 Convert a java file to C++ with:
 ```sh
-java xtc.oop.TestTranslator -printCPP examples/XEqualsFive.java
+java xtc.oop.Translator -printCPP examples/XEqualsFive.java
 ```
-This will write a C++ file to ```output.ast```
+This will write a C++ file to ```output.cpp```
 
 Print a java file's C++ AST with:
 ```sh
-java xtc.oop.TestTranslator -printCPPTree examples/XEqualsFive.java
+java xtc.oop.Translator -printCPPTree examples/XEqualsFive.java
 ```
 
 TODO:
 * Write some JUnit tests
 * Use a logging framework
+* use JavaDoc conventions when commenting
+* enhance CPPAST and CCCP Printer
+* work on dependencies and then vtables for each class = inheritance
+* Output file to same name as input file
