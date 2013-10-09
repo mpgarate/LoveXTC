@@ -11,7 +11,7 @@ Convert a java file to C++ with:
 ```sh
 java xtc.oop.Translator -printCPP examples/XEqualsFive.java
 ```
-This will write a C++ file to ```output.ast```
+This will write a C++ file to ```output.cpp```
 
 Print a java file's C++ AST with:
 ```sh
