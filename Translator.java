@@ -32,7 +32,7 @@ public class Translator extends Tool {
     // Nothing to do.
   }
 
-  public ASTBuilder t = new ASTBuilder();
+  public ASTBuilder CppT = new ASTBuilder();
 
   public String getName() {
     return "Java to C++ Translator";
@@ -86,7 +86,7 @@ public class Translator extends Tool {
 
     if (runtime.test("printCPPTree")) {
       makeCPPTree(node);
-      runtime.console().format(t.root).pln().flush();
+      runtime.console().format(CppT.root).pln().flush();
     }
 
     if (runtime.test("printCPP")) {
@@ -97,7 +97,7 @@ public class Translator extends Tool {
           writer = new BufferedWriter(new OutputStreamWriter(
                   new FileOutputStream("output.cpp"), "utf-8"));
           Printer p = new Printer(writer);
-          new CCCP(p).dispatch(t.root);
+          new CCCP(p).dispatch(CppT.root);
       } catch (IOException ex){
         // report
       } finally {
@@ -113,12 +113,12 @@ public class Translator extends Tool {
       }
 
       public void visitClassDeclaration(GNode n) {
-        t.createClassDeclaration(n);
+        CppT.createClassDeclaration(n);
         visit(n);
       }
 
       public void visitMethodDeclaration(GNode n) {
-        t.createMethodDeclaration(n);
+        CppT.createMethodDeclaration(n);
         visit(n);
       }
 
