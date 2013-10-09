@@ -40,23 +40,50 @@ public class CCCP extends Visitor {
 	}
 
 	public void visitTranslationUnit(GNode n) {
-    printer.pln("Visiting translation unit");
+    printer.pln("/* Visiting translation unit */ ");
     visit(n);
   }
 
 	public void visitClassDeclaration(GNode n) {
-    printer.pln("visiting class declaration");
+    printer.pln("/* visiting class declaration */");
     visit(n);
   }
 
 	public void visitClassBody(GNode n) {
-    printer.pln("visiting class body");
+    printer.pln("/* visiting class body */");
     visit(n);
   }
 
   public void visitMethodDeclaration(GNode n){
-    printer.pln("visiting method declaration");
+    printer.pln("/* visiting method declaration */");
+    printer.p(n.getString(0)).p(' ');
+    printer.p(n.getString(1)).p(" (");
+    /* The following line prints "String" but we want "char* " */
+    	//printer.p(n.getNode(2).getString(0)).p(' ');
+    /* Here we fake it. Automate this later: */
+    printer.p("char* ");
+    printer.p(n.getNode(2).getString(1)).p(")");
+    if (n.get(3) == null) printer.pln(";");
     visit(n);
+  }
+
+  public void visitBlock(GNode n){
+    printer.pln().pln("/* visiting block */");
+    printer.pln("{");
+	    visit(n);
+    printer.pln("}");
+  }
+
+  public void visitFieldDeclaration(GNode n){
+    printer.pln("/* visiting Field Declaration */");
+    printer.p(n.getString(1)).p(' ');
+	  visit(n);
+  }
+
+  public void visitDeclarator(GNode n){
+  	printer.p(n.getString(0)).p(" = ");
+  	printer.p(n.getString(1)).pln(";");
+	  visit(n);
   }
 
   public void visit(Node n) {

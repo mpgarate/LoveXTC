@@ -92,7 +92,7 @@ public class ASTBuilder{
 	}
 
 	private void addFieldDeclaration(Node n, GNode parent){
-		GNode fieldDeclaration = GNode.create("Field Declaration");
+		GNode fieldDeclaration = GNode.create("FieldDeclaration");
 		/* 0 Modifiers */
 		String modifier = null;
 		fieldDeclaration.add(0, null);
