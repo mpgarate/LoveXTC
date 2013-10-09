@@ -9,13 +9,13 @@ source setup.sh
 
 Convert a java file to C++ with:
 ```sh
-java xtc.oop.TestTranslator -printCPP examples/XEqualsFive.java
+java xtc.oop.Translator -printCPP examples/XEqualsFive.java
 ```
 This will write a C++ file to ```output.ast```
 
 Print a java file's C++ AST with:
 ```sh
-java xtc.oop.TestTranslator -printCPPTree examples/XEqualsFive.java
+java xtc.oop.Translator -printCPPTree examples/XEqualsFive.java
 ```
 
 TODO:
