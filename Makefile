@@ -49,7 +49,6 @@ SOURCE = \
        Translator.java \
        CTranslator.java \
        ASTBuilder.java \
-       TestTranslator.java \
        CCCP.java
 
 JNI_SOURCE =

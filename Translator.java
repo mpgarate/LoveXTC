@@ -3,6 +3,10 @@ package xtc.oop;
 import java.io.File;
 import java.io.IOException;
 import java.io.Reader;
+import java.io.Writer;
+import java.io.BufferedWriter;
+import java.io.OutputStreamWriter;
+import java.io.FileOutputStream;
 
 import xtc.lang.JavaFiveParser;
 import xtc.lang.JavaPrinter;
@@ -13,8 +17,10 @@ import xtc.parser.Result;
 import xtc.tree.GNode;
 import xtc.tree.Node;
 import xtc.tree.Visitor;
+import xtc.tree.Printer;
 
 import xtc.util.Tool;
+
 
 /**
  * A translator from (a subset of) Java to (a subset of) C++.
@@ -25,6 +31,8 @@ public class Translator extends Tool {
   public Translator() {
     // Nothing to do.
   }
+
+  public ASTBuilder t = new ASTBuilder();
 
   public String getName() {
     return "Java to C++ Translator";
@@ -41,7 +49,8 @@ public class Translator extends Tool {
     runtime.
       bool("printJavaAST", "printJavaAST", false, "Print Java AST.").
       bool("printJavaCode", "printJavaCode", false, "Print Java code.").
-      bool("countMethods", "countMethods", false, "Count all Java methods.");
+      bool("printCPPTree", "printCPPTree", false, "Print the CPP AST Tree.").
+      bool("printCPP", "printCPP", false, "Print the AST as a CPP file.");
   }
 
   public void prepare() {
@@ -75,28 +84,48 @@ public class Translator extends Tool {
       runtime.console().flush();
     }
 
-    if (runtime.test("countMethods")) {
-      new Visitor() {
-        private int count = 0;
-
-        public void visitCompilationUnit(GNode n) {
-          visit(n);
-          runtime.console().p("Number of methods: ").p(count).pln().flush();
-        }
-
-        public void visitMethodDeclaration(GNode n) {
-          runtime.console().p("Name of node: ").p(n.getName()).pln();
-          runtime.console().p("Name of method: ").p(n.getString(3)).pln();
-          visit(n);
-          count++;
-        }
-
-        public void visit(Node n) {
-          for (Object o : n) if (o instanceof Node) dispatch((Node) o);
-        }
-
-      }.dispatch(node);
+    if (runtime.test("printCPPTree")) {
+      makeCPPTree(node);
+      runtime.console().format(t.root).pln().flush();
     }
+
+    if (runtime.test("printCPP")) {
+      makeCPPTree(node);
+      Writer writer = null;
+
+      try {
+          writer = new BufferedWriter(new OutputStreamWriter(
+                  new FileOutputStream("output.cpp"), "utf-8"));
+          Printer p = new Printer(writer);
+          new CCCP(p).dispatch(t.root);
+      } catch (IOException ex){
+        // report
+      } finally {
+         try {writer.close();} catch (Exception ex) {}
+      }
+    }
+  }
+
+  public void makeCPPTree(Node node){
+    new Visitor() {
+      public void visitCompilationUnit(GNode n) {
+        visit(n);
+      }
+
+      public void visitClassDeclaration(GNode n) {
+        t.createClassDeclaration(n);
+        visit(n);
+      }
+
+      public void visitMethodDeclaration(GNode n) {
+        t.createMethodDeclaration(n);
+        visit(n);
+      }
+
+      public void visit(Node n) {
+        for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+      }
+    }.dispatch(node);
   }
 
   /**
@@ -105,10 +134,10 @@ public class Translator extends Tool {
    * @param args The command line arguments.
    */
   public static void main(String[] args) {
-    //Translator t = new Translator();
-    //t.run(args);
+    Translator t = new Translator();
+    
+    t.run(args);
 
-    new Translator().run(args);
   }
 
 }
