@@ -30,6 +30,9 @@ import static org.junit.Assert.*;
 public class ASTBuilder{
 	public GNode root, packageDeclaration, includeDeclaration, classDeclaration, classBody;
 
+	/* constructor
+	 * @param n The JavaAST Node.
+	 */
 	public ASTBuilder(Node n){
 		root = GNode.create("TranslationUnit");
 		makeCPPTree(n);
@@ -43,6 +46,14 @@ public class ASTBuilder{
     new Visitor() {
       public void visitCompilationUnit(GNode n) {
         visit(n);
+      }
+      public void visitPackageDeclaration(GNode n) {
+      	createPackageDeclaration(n);
+      	visit(n);
+      }
+      public void visitImportDeclaration(GNode n) {
+      	createIncludeDeclaration(n);
+      	visit(n);
       }
 
       public void visitClassDeclaration(GNode n) {
@@ -59,6 +70,29 @@ public class ASTBuilder{
         for (Object o : n) if (o instanceof Node) dispatch((Node) o);
       }
     }.dispatch(node);
+  	}
+  	/* creating the packageDeclaration Node */
+  	public void createPackageDeclaration(GNode n) {
+  		packageDeclaration = GNode.create("PackageDeclaration");
+  		int num = n.getNode(1).size();
+  		// looping over the number of children
+  		for (int i = 0; i < num; i++) {
+  			String a = n.getNode(1).getString(i);
+  			packageDeclaration.add(i,a);
+  		}
+  		root.addNode(packageDeclaration);
+  	}
+
+  	/* creating the includeDeclaration Node */
+  	public void createIncludeDeclaration(GNode n) {
+  		includeDeclaration = GNode.create("IncludeDeclaration");
+  		int num = n.getNode(1).size();
+  		// looping over the number of children
+  		for (int i = 0; i < num; i++) {
+  			String a = n.getNode(1).getString(i);
+  			includeDeclaration.add(i,a);
+  		}
+  		root.addNode(includeDeclaration);
   	}
 
 
