@@ -37,7 +37,11 @@ public class Translator extends Tool {
   }
 
   public String getCopy() {
-    return "(C) 2013 <Group Name>";
+    return "(C) 2013 <LoveXTC>";
+  }
+
+  public String getVersion() {
+    return "0.1";
   }
 
   public void init() {
@@ -84,16 +88,15 @@ public class Translator extends Tool {
 
     if (runtime.test("printCPPTree")) {
       ASTBuilder CppT = new ASTBuilder(node);
-      runtime.console().format(CppT.root).pln().flush();
+      runtime.console().format(CppT.getRoot()).pln().flush();
     }
 
     if (runtime.test("printCPP")) {
       ASTBuilder CppT = new ASTBuilder(node);
       Writer writer = null;
-
       try {
           writer = new BufferedWriter(new OutputStreamWriter(
-                  new FileOutputStream("output.cpp"), "utf-8"));
+                  new FileOutputStream(CppT.getName() + ".cpp"), "utf-8"));
           Printer p = new Printer(writer);
           new CCCP(p).dispatch(CppT.getRoot());
       } catch (IOException ex){
