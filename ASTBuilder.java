@@ -28,8 +28,8 @@ import xtc.util.Tool;
 import static org.junit.Assert.*;
 
 public class ASTBuilder{
-	public GNode root, packageDeclaration, includeDeclaration, classDeclaration, classBody;
-
+	public GNode root, packageDeclaration, importDeclaration, classDeclaration, classBody;
+	public String class_name;
 	/* constructor
 	 * @param n The JavaAST Node.
 	 */
@@ -42,28 +42,26 @@ public class ASTBuilder{
 		return root;
 	}
 
+	public String getName() {
+		return class_name;
+	}
+
 	public void makeCPPTree(Node node){
     new Visitor() {
       public void visitCompilationUnit(GNode n) {
-        visit(n);
+      	visit(n);
       }
+
       public void visitPackageDeclaration(GNode n) {
       	createPackageDeclaration(n);
-      	visit(n);
       }
+
       public void visitImportDeclaration(GNode n) {
-      	createIncludeDeclaration(n);
-      	visit(n);
+      	createImportDeclaration(n);
       }
 
       public void visitClassDeclaration(GNode n) {
         createClassDeclaration(n);
-        visit(n);
-      }
-
-      public void visitMethodDeclaration(GNode n) {
-        createMethodDeclaration(n);
-        visit(n);
       }
 
       public void visit(Node n) {
@@ -84,22 +82,22 @@ public class ASTBuilder{
   	}
 
   	/* creating the includeDeclaration Node */
-  	public void createIncludeDeclaration(GNode n) {
-  		includeDeclaration = GNode.create("IncludeDeclaration");
+  	public void createImportDeclaration(GNode n) {
+  		importDeclaration = GNode.create("ImportDeclaration");
   		int num = n.getNode(1).size();
   		// looping over the number of children
   		for (int i = 0; i < num; i++) {
   			String a = n.getNode(1).getString(i);
-  			includeDeclaration.add(i,a);
+  			importDeclaration.add(i,a);
   		}
-  		root.addNode(includeDeclaration);
+  		root.addNode(importDeclaration);
   	}
 
 
 	public void createClassDeclaration(GNode n){
 		GNode classDeclaration = GNode.create("ClassDeclaration");
 		/* 0 get the name of the class */
-		String class_name = n.getString(1);
+		class_name = n.getString(1);
 		classDeclaration.add(0, class_name);
 		/* 1 modifiers */
 		String modifier = n.getNode(0).getNode(0).getString(0);
@@ -115,11 +113,23 @@ public class ASTBuilder{
 		/* 3 classBody */
 		classBody = GNode.create("ClassBody");
 		classDeclaration.add(3, classBody);
+		createClassBody(n.getNode(5));
 
 		root.addNode(classDeclaration);
 	}
+	public void createClassBody(Node n) {
+		int num = n.size();
+		for (int i = 0; i < num; i++){
+			if (n.getNode(i).hasName("FieldDeclaration")){
+				addFieldDeclaration(n.getNode(i), classBody);
+			}
+			if (n.getNode(i).hasName("MethodDeclaration")){
+				addMethodDeclaration((GNode)n.getNode(i));
+			}
+		}
+	}
 
-	public void createMethodDeclaration(GNode n){
+	public void addMethodDeclaration(GNode n){
 		GNode methodDeclaration = GNode.create("MethodDeclaration");
 
 		/* 0 Return type */
@@ -147,27 +157,75 @@ public class ASTBuilder{
 		/* 0 unordered */
 		GNode block = GNode.create("Block");
 		parent.add(3, block);
-		addFieldDeclaration(n.getNode(0), block);
+		int num = n.size();
+		for (int i = 0; i < num; i++){
+			if (n.getNode(i).hasName("FieldDeclaration")){
+				addFieldDeclaration(n.getNode(i), block);
+			}
+			if (n.getNode(i).hasName("ExpressionStatement")){
+				addExpressionStatement(n.getNode(i),block);
+			}
+			if (n.getNode(i).hasName("ReturnStatement")){
+				addReturnStatement(n.getNode(i), block);
+			}
+		}
 
 	}
 
 	private void addFieldDeclaration(Node n, GNode parent){
 		GNode fieldDeclaration = GNode.create("FieldDeclaration");
 		/* 0 Modifiers */
-		String modifier = null;
-		fieldDeclaration.add(0, null);
+		String modifier = "";
+		int num = n.getNode(0).size();
+		for(int i = 0; i < num; i++){
+			modifier = modifier + n.getNode(0).getNode(i).getString(0) + " ";
+		}
+		fieldDeclaration.add(0, modifier);
 		/* 1 Type */
 		String type = n.getNode(1).getNode(0).getString(0);
 		fieldDeclaration.add(1, type);
 
 		/* 2 Declarators */
-		addDeclarator(n.getNode(2), fieldDeclaration);
+		if (n.getNode(1).getNode(0).hasName("PrimitiveType")){
+			addPrimitiveDeclarator(n.getNode(2), fieldDeclaration);
+		}
+		/*if (n.getNode(1).getNode(0).hasName("QualifiedIdentifier")){
+			addObjectDeclarator(n.getNode(2), fieldDeclaration);
+		}*/
 
 		parent.addNode(fieldDeclaration);
 	}
+	private void addExpressionStatement(Node n, GNode parent) {
+		GNode expressionStatement = GNode.create("ExpressionStatement");
+		String left_side = n.getNode(0).getNode(0).getString(0);
+		expressionStatement.add(0, left_side);
+		String op = n.getNode(0).getString(1);
+		expressionStatement.add(1,op);
+		String right_side = n.getNode(0).getNode(2).getString(0);
+		expressionStatement.add(2, right_side);
+		parent.addNode(expressionStatement);
+	}
+	private void addReturnStatement(Node n, GNode parent) {
+		GNode returnStatement = GNode.create("ReturnStatement");
+		String ret = n.getNode(0).getString(0);
+		returnStatement.add(0,ret);
+		parent.addNode(returnStatement);
+	}
 
-	private void addDeclarator(Node n, GNode parent){
-		GNode declarator = GNode.create("Declarator");
+	private void addPrimitiveDeclarator(Node n, GNode parent){
+		GNode declarator = GNode.create("PrimitiveDeclarator");
+
+		String left_side = n.getNode(0).getString(0);
+		declarator.add(0,left_side);
+		/*if (n.getNode(0).getNode(2).getString(0) != null) {
+			String right_side = n.getNode(0).getNode(2).getString(0);
+			declarator.add(1,right_side);
+		}*/
+
+		parent.add(2, declarator);
+	}
+	/*private void addObjectDeclarator(Node n, GNode parent){
+		GNode declarator = GNode.create("ObjectDeclarator");
 
 		String left_side = n.getNode(0).getString(0);
 		declarator.add(0,left_side);
@@ -176,5 +234,5 @@ public class ASTBuilder{
 		declarator.add(1,right_side);
 
 		parent.add(2, declarator);
-	}
+	}*/
 }
