@@ -46,12 +46,21 @@ public class CCCP extends Visitor {
 
 	public void visitClassDeclaration(GNode n) {
     printer.pln("/* visiting class declaration */");
+    printer.p("Class ").p(n.getString(0)).p(' ');
+    visit(n);
+  }
+
+  /* TRICKY need to have the namespace scope */
+  public void visitPackageDeclaration(GNode n) {
+    printer.pln("/* visiting package declaration */");
     visit(n);
   }
 
 	public void visitClassBody(GNode n) {
     printer.pln("/* visiting class body */");
-    visit(n);
+    printer.pln("{");
+      visit(n);
+    printer.pln("}");
   }
 
   public void visitMethodDeclaration(GNode n){
