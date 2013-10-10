@@ -24,17 +24,43 @@ import xtc.util.Tool;
 /* End Translator.java imports */
 
 /* Make assertions for debugging */
+/* WE BUILD CPP AST AS WE VIST JAVA AST*/
 import static org.junit.Assert.*;
 
 public class ASTBuilder{
 	public GNode root, packageDeclaration, includeDeclaration, classDeclaration, classBody;
 
-	public ASTBuilder(){
+	public ASTBuilder(Node n){
 		root = GNode.create("TranslationUnit");
+		makeCPPTree(n);
 	}
+
 	public GNode getRoot() {
 		return root;
 	}
+
+	public void makeCPPTree(Node node){
+    new Visitor() {
+      public void visitCompilationUnit(GNode n) {
+        visit(n);
+      }
+
+      public void visitClassDeclaration(GNode n) {
+        createClassDeclaration(n);
+        visit(n);
+      }
+
+      public void visitMethodDeclaration(GNode n) {
+        createMethodDeclaration(n);
+        visit(n);
+      }
+
+      public void visit(Node n) {
+        for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+      }
+    }.dispatch(node);
+  	}
+
 
 	public void createClassDeclaration(GNode n){
 		GNode classDeclaration = GNode.create("ClassDeclaration");
