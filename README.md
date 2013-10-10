@@ -25,7 +25,6 @@ TODO:
 * use JavaDoc conventions when commenting
 * enhance CPPAST and CCCP Printer
 * work on dependencies and then vtables for each class = inheritance
-* Output file to same name as input file
 
 WHAT ARE WE DOING RIGHT NOW?
 * Adam:
