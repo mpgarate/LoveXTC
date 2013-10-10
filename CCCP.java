@@ -46,7 +46,7 @@ public class CCCP extends Visitor {
 
 	public void visitClassDeclaration(GNode n) {
     printer.pln("/* visiting class declaration */");
-    printer.p("Class ").p(n.getString(0)).p(' ');
+    printer.p("Class ").p(n.getString(0)).pln(" {");
     visit(n);
   }
 
@@ -55,10 +55,22 @@ public class CCCP extends Visitor {
     printer.pln("/* visiting package declaration */");
     visit(n);
   }
+  public void visitIncludeDeclaration(GNode n) {
+    printer.pln("/* visiting Include declaration */");
+    printer.p("using ");
+    int num = n.size();
+    for (int i = 0; i < num; i++) {
+      printer.p(n.getString(i));
+      if (i < num-1) {
+        printer.p("::");
+      }
+    }
+    printer.pln(";");
+    visit(n);
+  }
 
 	public void visitClassBody(GNode n) {
     printer.pln("/* visiting class body */");
-    printer.pln("{");
       visit(n);
     printer.pln("}");
   }
