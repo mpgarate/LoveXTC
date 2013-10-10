@@ -20,7 +20,7 @@ java xtc.oop.Translator -printCPPTree examples/XEqualsFive.java
 
 TODO:
 * Write some JUnit tests
-* Write class to scan a directory of java files, translate to c++, compile, and compare results.
+  * Write class to scan a directory of java files, translate to c++, compile, and compare results.
 * Use a logging framework
 * use JavaDoc conventions when commenting
 * enhance CPPAST and CCCP Printer
