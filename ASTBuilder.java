@@ -123,10 +123,30 @@ public class ASTBuilder{
 			if (n.getNode(i).hasName("FieldDeclaration")){
 				addFieldDeclaration(n.getNode(i), classBody);
 			}
-			if (n.getNode(i).hasName("MethodDeclaration")){
+			else if (n.getNode(i).hasName("MethodDeclaration")){
 				addMethodDeclaration((GNode)n.getNode(i));
 			}
+			else if (n.getNode(i).hasName("ConstructorDeclaration")){
+				addConstructorDeclaration(n.getNode(i));
+			}
 		}
+	}
+	private void addConstructorDeclaration(Node n) {
+		GNode constructorDeclaration = GNode.create("ConstructorDeclaration");
+		String name = class_name;
+		constructorDeclaration.add(0, name);
+		GNode arguments = GNode.create("Arguments");
+		constructorDeclaration.add(1, arguments);
+		int num = n.getNode(3).size();
+		for (int i = 0; i < num; i++){
+			String type = n.getNode(3).getNode(i).getNode(1).getNode(0).getString(0);
+			arguments.add(0,type);
+			String parameter = n.getNode(3).getNode(i).getString(3);
+			arguments.add(1,parameter);
+		}
+		addBlock(n.getNode(5), constructorDeclaration);
+		classBody.addNode(constructorDeclaration);
+
 	}
 
 	public void addMethodDeclaration(GNode n){
@@ -140,14 +160,16 @@ public class ASTBuilder{
 		methodDeclaration.add(1, method_name);
 		/* 2 Arguments 
 		   creating it as a separate node.
-		   NEED: a separate method for this (multiple parameters).
 		*/
 		GNode arguments = GNode.create("Arguments");
 		methodDeclaration.add(2, arguments);
-		String modifier = n.getNode(4).getNode(0).getNode(1).getNode(0).getString(0);
-		arguments.add(0,modifier);
-		String parameter = n.getNode(4).getNode(0).getString(3);
-		arguments.add(1,parameter);
+		int num = n.getNode(4).size();
+		for (int i = 0; i < num; i++){
+			String type = n.getNode(4).getNode(i).getNode(1).getNode(0).getString(0);
+			arguments.add(0,type);
+			String parameter = n.getNode(4).getNode(i).getString(3);
+			arguments.add(1,parameter);
+		}
 		/* 3 Block */
 		addBlock(n.getNode(7), methodDeclaration);
 		classBody.addNode(methodDeclaration);
@@ -156,7 +178,7 @@ public class ASTBuilder{
 	private void addBlock(Node n, GNode parent){
 		/* 0 unordered */
 		GNode block = GNode.create("Block");
-		parent.add(3, block);
+		parent.addNode(block);
 		int num = n.size();
 		for (int i = 0; i < num; i++){
 			if (n.getNode(i).hasName("FieldDeclaration")){
@@ -197,12 +219,22 @@ public class ASTBuilder{
 	}
 	private void addExpressionStatement(Node n, GNode parent) {
 		GNode expressionStatement = GNode.create("ExpressionStatement");
-		String left_side = n.getNode(0).getNode(0).getString(0);
-		expressionStatement.add(0, left_side);
-		String op = n.getNode(0).getString(1);
-		expressionStatement.add(1,op);
-		String right_side = n.getNode(0).getNode(2).getString(0);
-		expressionStatement.add(2, right_side);
+		if (n.getNode(0).getNode(0).hasName("primaryIdentifier")) {
+			String left_side = n.getNode(0).getNode(0).getString(0);
+			expressionStatement.add(0, left_side);
+			String op = n.getNode(0).getString(1);
+			expressionStatement.add(1,op);
+			String right_side = n.getNode(0).getNode(2).getString(0);
+			expressionStatement.add(2, right_side);
+		}
+		else {
+			String left_side = "this." + n.getNode(0).getNode(0).getString(1);
+			expressionStatement.add(0, left_side);
+			String op = n.getNode(0).getString(1);
+			expressionStatement.add(1,op);
+			String right_side = n.getNode(0).getNode(2).getString(0);
+			expressionStatement.add(2, right_side);
+		}
 		parent.addNode(expressionStatement);
 	}
 	private void addReturnStatement(Node n, GNode parent) {
