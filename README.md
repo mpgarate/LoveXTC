@@ -32,7 +32,7 @@ WHAT ARE WE DOING RIGHT NOW?
 * Ahmad: working on enhancing ASTBuilder.
 * Bruno:
 * Carl:
-* Michael: Expanding CCCP to print our C++ AST
+* Michael: Set up testing framework and write first few tests
 
 FILE STATUS
 * ASTBuilder.java: need to create many many different nodes making NO ASSUMPTIONS.
