@@ -26,3 +26,15 @@ TODO:
 * enhance CPPAST and CCCP Printer
 * work on dependencies and then vtables for each class = inheritance
 * Output file to same name as input file
+
+WHAT ARE WE DOING RIGHT NOW?
+* Adam:
+* Ahmad: working on enhancing ASTBuilder.
+* Bruno:
+* Carl:
+* Michael:
+
+FILE STATUS
+* ASTBuilder.java: need to create many many different nodes making NO ASSUMPTIONS.
+* CCCP.java: waiting for the AST to be finished.
+* Translator.java: ok.
