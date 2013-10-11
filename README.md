@@ -25,14 +25,13 @@ TODO:
 * use JavaDoc conventions when commenting
 * enhance CPPAST and CCCP Printer
 * work on dependencies and then vtables for each class = inheritance
-* Output file to same name as input file
 
 WHAT ARE WE DOING RIGHT NOW?
 * Adam:
 * Ahmad: working on enhancing ASTBuilder.
 * Bruno:
 * Carl:
-* Michael: Set up testing framework and write first few tests
+* Michael: Set up testing framework and write first few tests; will update CCCP to print AST
 
 FILE STATUS
 * ASTBuilder.java: need to create many many different nodes making NO ASSUMPTIONS.
