@@ -32,14 +32,16 @@ public class Translator extends Tool {
     // Nothing to do.
   }
 
-  public ASTBuilder CppT = new ASTBuilder();
-
   public String getName() {
     return "Java to C++ Translator";
   }
 
   public String getCopy() {
-    return "(C) 2013 <Group Name>";
+    return "(C) 2013 <LoveXTC>";
+  }
+
+  public String getVersion() {
+    return "0.1";
   }
 
   public void init() {
@@ -85,19 +87,18 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printCPPTree")) {
-      makeCPPTree(node);
-      runtime.console().format(CppT.root).pln().flush();
+      ASTBuilder CppT = new ASTBuilder(node);
+      runtime.console().format(CppT.getRoot()).pln().flush();
     }
 
     if (runtime.test("printCPP")) {
-      makeCPPTree(node);
+      ASTBuilder CppT = new ASTBuilder(node);
       Writer writer = null;
-
       try {
           writer = new BufferedWriter(new OutputStreamWriter(
-                  new FileOutputStream("output.cpp"), "utf-8"));
+                  new FileOutputStream(CppT.getName() + ".cpp"), "utf-8"));
           Printer p = new Printer(writer);
-          new CCCP(p).dispatch(CppT.root);
+          new CCCP(p).dispatch(CppT.getRoot());
       } catch (IOException ex){
         // report
       } finally {
@@ -105,29 +106,6 @@ public class Translator extends Tool {
       }
     }
   }
-
-  public void makeCPPTree(Node node){
-    new Visitor() {
-      public void visitCompilationUnit(GNode n) {
-        visit(n);
-      }
-
-      public void visitClassDeclaration(GNode n) {
-        CppT.createClassDeclaration(n);
-        visit(n);
-      }
-
-      public void visitMethodDeclaration(GNode n) {
-        CppT.createMethodDeclaration(n);
-        visit(n);
-      }
-
-      public void visit(Node n) {
-        for (Object o : n) if (o instanceof Node) dispatch((Node) o);
-      }
-    }.dispatch(node);
-  }
-
   /**
    * Run the translator with the specified command line arguments.
    *

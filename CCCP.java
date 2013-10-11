@@ -30,7 +30,7 @@ public class CCCP extends Visitor {
 	*/
 
 	/** The printer for this C printer. */
-  protected final Printer printer;
+  protected Printer printer;
 
   public GNode root;
 
@@ -46,22 +46,40 @@ public class CCCP extends Visitor {
 
 	public void visitClassDeclaration(GNode n) {
     printer.pln("/* visiting class declaration */");
+    printer.p("Class ").p(n.getString(0)).pln(" {");
+    visit(n);
+  }
+
+  /* TRICKY need to have the namespace scope */
+  public void visitPackageDeclaration(GNode n) {
+    printer.pln("/* visiting package declaration */");
+    visit(n);
+  }
+  public void visitImportDeclaration(GNode n) {
+    printer.pln("/* visiting Import declaration */");
+    printer.p("using ");
+    int num = n.size();
+    for (int i = 0; i < num; i++) {
+      printer.p(n.getString(i));
+      if (i < num-1) {
+        printer.p("::");
+      }
+    }
+    printer.pln(";");
     visit(n);
   }
 
 	public void visitClassBody(GNode n) {
     printer.pln("/* visiting class body */");
-    visit(n);
+      visit(n);
+    printer.pln("}");
   }
 
   public void visitMethodDeclaration(GNode n){
     printer.pln("/* visiting method declaration */");
     printer.p(n.getString(0)).p(' ');
     printer.p(n.getString(1)).p(" (");
-    /* The following line prints "String" but we want "char* " */
-    	//printer.p(n.getNode(2).getString(0)).p(' ');
-    /* Here we fake it. Automate this later: */
-    printer.p("char* ");
+    printer.p(n.getNode(2).getString(0)).p(' ');
     printer.p(n.getNode(2).getString(1)).p(")");
     if (n.get(3) == null) printer.pln(";");
     visit(n);
