@@ -55,6 +55,9 @@ JNI_SOURCE =
 
 JAR_EXTRAS = 
 
+tests: 
+	javac *Test.java
+	java org.junit.runner.JUnitCore xtc.oop.TranslatorTest
 
 #***************************************************************************
 #
