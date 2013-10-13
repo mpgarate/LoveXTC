@@ -4,6 +4,12 @@ the Soviet Union. */
 package xtc.oop;
 
 import java.lang.*;
+import java.io.IOException;
+import xtc.parser.ParseException;
+import xtc.lang.JavaFiveParser;
+import xtc.parser.Result;
+import java.io.File;
+import java.io.Reader;
 
 /* Imports based on src/xtc/lang/CPrinter.java */
 import java.util.Iterator;
@@ -75,6 +81,14 @@ public class Dependency extends Visitor {
   /* uses the addressList to return the nodeList */
   public LinkedList<GNode> makeNodeList() {
     return depList;
+  }
+
+  /* return a Java AST Gnode */
+  public GNode parse(Reader in, File file) throws IOException, ParseException {
+    JavaFiveParser parser =
+      new JavaFiveParser(in, file.toString(), (int)file.length());
+    Result result = parser.pCompilationUnit(0);
+    return (GNode)parser.value(result);
   }
   
   /*
