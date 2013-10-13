@@ -20,6 +20,7 @@ import xtc.tree.Visitor;
 import xtc.tree.Printer;
 
 import xtc.util.Tool;
+import java.util.LinkedList;
 
 
 /**
@@ -52,6 +53,7 @@ public class Translator extends Tool {
       bool("printJavaAST", "printJavaAST", false, "Print Java AST.").
       bool("printJavaCode", "printJavaCode", false, "Print Java code.").
       bool("printCPPTree", "printCPPTree", false, "Print the CPP AST Tree.").
+      bool("translate", "translate", false, "translate java to cpp").
       bool("printCPP", "printCPP", false, "Print the AST as a CPP file.");
   }
 
@@ -89,6 +91,20 @@ public class Translator extends Tool {
     if (runtime.test("printCPPTree")) {
       ASTBuilder CppT = new ASTBuilder(node);
       runtime.console().format(CppT.getRoot()).pln().flush();
+    }
+
+    if (runtime.test("translate")) {
+      /* a list of Java AST nodes */
+      LinkedList<GNode> nodeList = new LinkedList<GNode>();
+      /* the main file's AST is at index 0 */
+      nodeList.add((GNode)node);
+      /* calling the dependency to perform its duties */
+      Dependency dep = new Dependency(nodeList);
+      dep.makeAddressList();
+      nodeList = dep.makeNodeList();
+      /* now nodeList contain all the java files AST's */
+
+
     }
 
     if (runtime.test("printCPP")) {
