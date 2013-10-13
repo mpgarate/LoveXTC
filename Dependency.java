@@ -7,7 +7,6 @@ import java.lang.*;
 
 /* Imports based on src/xtc/lang/CPrinter.java */
 import java.util.Iterator;
-import java.util.LinkedList;
 
 import xtc.tree.LineMarker;
 import xtc.tree.Node;
@@ -18,6 +17,8 @@ import xtc.tree.SourceIdentity;
 import xtc.tree.Token;
 import xtc.tree.Visitor;
 /* End imports based on src/xtc/lang/CPrinter.java */
+
+import java.util.LinkedList;
 
 public class Dependency extends Visitor {
 
@@ -44,18 +45,36 @@ public class Dependency extends Visitor {
 
   public void visitImportDeclaration(GNode n) {
 
-    /* These files have to each pass through Dependency.java
-    before adding themselves to the list. */
+    /*
+      These files have to each pass through Dependency.java
+      before adding themselves to the list.
+    */
 
     visit(n);
   }
 
   public void visitExtension(GNode n) {
-    depList.add(n.getNode(0).getNode(0).getString(0));
+    addDependency(n.getNode(0).getNode(0).getString(0));
     visit(n);
   }
 
   public void visit(Node n) {
     for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+  }
+  
+  /*
+    Use this method for adding dependencies in case we need to 
+    perform some sanitization
+  */
+  public void addDependency(String dep){
+    depList.add(dep);
+  }
+
+  /* Remove any dependencies that are not actually used */
+  public void trimDependencies(){
+    /*
+      We can check if a class is actually used with
+      visitCallExpression(Gnode n)
+    */
   }
 }
