@@ -28,12 +28,14 @@ TODO:
 
 WHAT ARE WE DOING RIGHT NOW?
 * Adam:
-* Ahmad: working on enhancing ASTBuilder.
+* Ahmad: Dependency finder
 * Bruno:
 * Carl:
 * Michael: Set up testing framework and write first few tests; will update CCCP to print AST
 
 FILE STATUS
+* Dependency.java : empty
+* Inheritance.java : empty
 * ASTBuilder.java: need to create many many different nodes making NO ASSUMPTIONS.
 * CCCP.java: waiting for the AST to be finished.
-* Translator.java: ok.
+* Translator.java: add the "translate" command line option and the appropriate code.
