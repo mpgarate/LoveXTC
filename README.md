@@ -19,22 +19,22 @@ java xtc.oop.Translator -printCPPTree examples/XEqualsFive.java
 ```
 
 TODO:
-* Write some JUnit tests
-  * Write class to scan a directory of java files, translate to c++, compile, and compare results.
+
+* work on dependencies and then vtables for each class = inheritance
 * Use a logging framework
 * use JavaDoc conventions when commenting
+* Write class to scan a directory of java files, translate to c++, compile, and compare results.
 * enhance CPPAST and CCCP Printer
-* work on dependencies and then vtables for each class = inheritance
 
 WHAT ARE WE DOING RIGHT NOW?
 * Adam:
 * Ahmad: Dependency finder
 * Bruno:
 * Carl:
-* Michael: Set up testing framework and write first few tests; will update CCCP to print AST
+* Michael: Dependency.java
 
 FILE STATUS
-* Dependency.java : empty
+* Dependency.java : skeleton
 * Inheritance.java : empty
 * ASTBuilder.java: need to create many many different nodes making NO ASSUMPTIONS.
 * CCCP.java: waiting for the AST to be finished.
