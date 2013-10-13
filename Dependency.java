@@ -22,13 +22,13 @@ import java.util.LinkedList;
 
 public class Dependency extends Visitor {
 
-  LinkedList<String> depList = new LinkedList<String>();
+  LinkedList<GNode> depList = new LinkedList<GNode>();
 
 	/** The printer for this C printer. */
 
   public GNode root;
 
-	public Dependency(LinkedList<String> ll){
+	public Dependency(LinkedList<GNode> ll){
     depList = ll;
 	}
 
@@ -64,9 +64,11 @@ public class Dependency extends Visitor {
   
   /*
     Use this method for adding dependencies in case we need to 
-    perform some sanitization
+    perform some sanitization. Take a String, use that to locate
+    the file, create a java AST, and add this AST to depList.
   */
   public void addDependency(String dep){
+    /* We must use this string to locate the file and build a java AST */
     depList.add(dep);
   }
 
