@@ -46,18 +46,22 @@ public class Dependency extends Visitor {
       if (depList.get(i) != null) {
         LOGGER.info("Looping through dependencies");
         new Visitor() {
+
+          /* visitExtension(GNode) will be called in the Inheritance Tree */
+
           public void visitPackageDeclaration(GNode n) {
-          /* Here we have to get the package name and scan for files
-          in the same directory with the same package name declared.
+            String inputDir = System.getProperty("user.dir");
 
-          These files then have to each pass through Dependency.java
-          before adding themselves to the list. */
+            /* Here we have to get the package name and scan for files
+            in the same directory with the same package name declared.
 
-          /* Package name: n.getNode(1).getString(0) */
+            These files then have to each pass through Dependency.java
+            before adding themselves to the list. */
 
-          /* Pass an address to processAddress() */
+            /* Package name: n.getNode(1).getString(0) */
 
-          visit(n);
+            /* Pass an address to processAddress() */
+
           }
 
           public void visitImportDeclaration(GNode n) {
@@ -67,17 +71,8 @@ public class Dependency extends Visitor {
             before adding themselves to the list.
           */
 
-          visit(n);
           }
 
-          public void visitExtension(GNode n) {
-            addDependencyPath(n.getNode(0).getNode(0).getString(0));
-            visit(n);
-          }
-
-          public void visit(Node n) {
-            for (Object o : n) if (o instanceof Node) dispatch((Node) o);
-          }
         }.dispatch(depList.get(i));
       }
     }
@@ -97,6 +92,18 @@ public class Dependency extends Visitor {
   }
 
   public void processAddress(String address){
+    /* Check if the path ends in .java */
+    /* If it does not, call process directory */
+    /* If it does, call process file */
+    addDependencyPath(address);
+  }
+
+  public void processDirectory(){
+    /* Scan a directory of files */
+    /* Call processFile() on each */
+  }
+
+  public void processFile(){
     /* Check if the address is in the list */
     /* Store the address in a linked list */
     /* Pass the address into parse() to create a GNode */
