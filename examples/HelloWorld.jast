@@ -15,6 +15,13 @@ CompilationUnit(
     ),
     null
   ),
+  ImportDeclaration(
+    null,
+    QualifiedIdentifier(
+      "examples"
+    ),
+    "*"
+  ),
   ClassDeclaration(
     Modifiers(
       Modifier(

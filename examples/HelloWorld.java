@@ -1,5 +1,6 @@
 package examples;
 import oop.SimpleNumber;
+import examples.*;
 public class HelloWorld {
 
 	public int world;

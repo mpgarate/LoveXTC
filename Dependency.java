@@ -53,20 +53,17 @@ public class Dependency extends Tool {
         LOGGER.info("Looping through dependencies");
         new Visitor() {
 
-
           /* visitExtension(GNode) will be called in the Inheritance Tree */
 
           public void visitPackageDeclaration(GNode n) {
-            Node qualId = n.getNode(1);
-            String path = "", packageName;
-            String currentDir = System.getProperty("user.dir");
 
-            for (int i = 0; i<qualId.size(); i++){
-              path += "/" + qualId.get(i).toString();
-            }
+            /* WISH LIST: Check if we have already handled the package */
+            String currentDir = System.getProperty("user.dir");
+            String packageName;
+            String path = getFolderPath(n);
             packageName = path.substring(1).replace("/",".");
             LOGGER.info("Package name: " + packageName);
-            LOGGER.info("Package path: "+ currentDir + path);
+            LOGGER.info("Package path: " + currentDir + path);
 
             processDirectory(currentDir + path, packageName);
             
@@ -79,11 +76,34 @@ public class Dependency extends Tool {
           }
 
           public void visitImportDeclaration(GNode n) {
+            LOGGER.info("Visiting import declaration");
 
-          /*
-            These files have to each pass through Dependency.java
-            before adding themselves to the list.
-          */
+            /* There is no '*' character */
+            if (n.getString(2) == null){
+            LOGGER.info("Importing a file");
+              try {
+                File file = locate(n.getNode(1).getString(n.lastIndexOf(n.getNode(1))) + ".java");
+                LOGGER.info("got file " + file.getAbsoluteFile());
+                processFile(file);
+
+              }
+              catch(IOException e){
+                LOGGER.warning("IO Exception");
+              }
+            }
+            else {
+              LOGGER.info("Importing an entire folder");
+              /* For now, we assume that the package is in OOP */
+              /* We need to move SimpleNumber out of the OOP package */
+              String path = getFolderPath(n);
+              File folder = new File(path);
+              LOGGER.info("got folder " + folder.getAbsoluteFile());
+            }
+
+            /*
+              These files have to each pass through Dependency.java
+              before adding themselves to the list.
+            */
 
           }
 
@@ -121,13 +141,18 @@ public class Dependency extends Tool {
     return name;
   }
 
-  public void processPath(String address){
-    /* Check if the is a file / directory */
-    /* If it does not, call process directory */
-    /* If it does, call process file */
-    //addDependencyPath(address);
+  public String getFolderPath(GNode n){
+    String path = "";
+    Node qualId = n.getNode(1);
+    for (int i = 0; i<qualId.size(); i++){
+      LOGGER.info("APPENDING: " + "/" + qualId.get(i).toString());
+      path += "/" + qualId.get(i).toString();
+    }
+    LOGGER.info("Got folder path: " + path);
+    return path;
   }
 
+  /* Update this to handle no packagename */
   public void processDirectory(String path, String packageName){
     File folder = new File(path);
     File[] files = folder.listFiles();
@@ -139,7 +164,7 @@ public class Dependency extends Tool {
           GNode node = parse(in, files[i]);
           if (node.getNode(0) != null){
             if (getPackageName((GNode)node.getNode(0)).equals(packageName)){
-              processFile(node);
+              processNode(node);
             }
           }
         }
@@ -155,10 +180,24 @@ public class Dependency extends Tool {
     /* Scan a directory of files */
     /* parse() each to a GNode */
     /* Check if it is in the package packageName */
-    /* Call processFile() on each */
+    /* Call processNode() on each */
   }
 
-  public void processFile(GNode n){
+  public void processFile(File file){
+    try {
+          Reader in = runtime.getReader(file);
+          GNode node = parse(in, file);
+          processNode(node);
+        }
+        catch (IOException e){
+          LOGGER.warning("IO Exception");
+        }
+        catch (ParseException e){
+          LOGGER.warning("Parse Exception");          
+        }
+  }
+
+  public void processNode(GNode n){
 
     if (!depList.contains(n)){
       depList.add(n);
