@@ -55,6 +55,8 @@ public class Dependency extends Visitor {
 
           /* Package name: n.getNode(1).getString(0) */
 
+          /* Pass an address to processAddress() */
+
           visit(n);
           }
 
@@ -92,6 +94,13 @@ public class Dependency extends Visitor {
       new JavaFiveParser(in, file.toString(), (int)file.length());
     Result result = parser.pCompilationUnit(0);
     return (GNode)parser.value(result);
+  }
+
+  public void processAddress(String address){
+    /* Check if the address is in the list */
+    /* Store the address in a linked list */
+    /* Pass the address into parse() to create a GNode */
+    /* Store the GNode in depList */
   }
   
   /*
