@@ -22,11 +22,13 @@ import xtc.tree.Printer;
 import xtc.util.Tool;
 import java.util.LinkedList;
 
+import java.util.logging.Logger;
 
 /**
  * A translator from (a subset of) Java to (a subset of) C++.
  */
 public class Translator extends Tool {
+  private final static Logger LOGGER = Logger.getLogger(Dependency.class .getName()); 
 
   /** Create a new translator. */
   public Translator() {
@@ -99,6 +101,7 @@ public class Translator extends Tool {
       /* the main file's AST is at index 0 */
       nodeList.add((GNode)node);
       /* calling the dependency to perform its duties */
+      LOGGER.info("Calling Dependency.java on " + node.getName());
       Dependency dep = new Dependency(nodeList);
       dep.makeAddressList();
       nodeList = dep.makeNodeList();

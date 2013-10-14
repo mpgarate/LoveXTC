@@ -1,6 +1,3 @@
-/* CCCP is a C++ printer named for the centralized nature of 
-the Soviet Union. */
-
 package xtc.oop;
 
 import java.lang.*;
@@ -26,7 +23,11 @@ import xtc.tree.Visitor;
 
 import java.util.LinkedList;
 
+import java.util.logging.Logger;
+
 public class Dependency extends Visitor {
+
+  private final static Logger LOGGER = Logger.getLogger(Dependency.class .getName()); 
 
   LinkedList<GNode> depList = new LinkedList<GNode>();
   LinkedList<String> addressList = new LinkedList<String>();
@@ -43,6 +44,7 @@ public class Dependency extends Visitor {
   public void makeAddressList() {
     for (int i = 0; i < depList.size(); i++) {
       if (depList.get(i) != null) {
+        LOGGER.info("Looping through dependencies");
         new Visitor() {
           public void visitPackageDeclaration(GNode n) {
           /* Here we have to get the package name and scan for files
@@ -52,6 +54,7 @@ public class Dependency extends Visitor {
           before adding themselves to the list. */
 
           /* Package name: n.getNode(1).getString(0) */
+
           visit(n);
           }
 
@@ -66,7 +69,7 @@ public class Dependency extends Visitor {
           }
 
           public void visitExtension(GNode n) {
-            addDependency(n.getNode(0).getNode(0).getString(0));
+            addDependencyPath(n.getNode(0).getNode(0).getString(0));
             visit(n);
           }
 
@@ -96,7 +99,7 @@ public class Dependency extends Visitor {
     perform some sanitization. Take a String, use that to locate
     the file, create a java AST, and add this AST to depList.
   */
-  public void addDependency(String dep){
+  public void addDependencyPath(String dep){
     /* We must use this string to locate the file and build a java AST */
     addressList.add(dep);
   }
