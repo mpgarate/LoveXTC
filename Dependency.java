@@ -19,26 +19,32 @@ import xtc.tree.Printer;
 import xtc.tree.SourceIdentity;
 import xtc.tree.Token;
 import xtc.tree.Visitor;
+import xtc.util.Tool;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
 import java.util.LinkedList;
 
 import java.util.logging.Logger;
 
-public class Dependency extends Visitor {
+public class Dependency extends Tool {
 
   private final static Logger LOGGER = Logger.getLogger(Dependency.class .getName()); 
 
   LinkedList<GNode> depList = new LinkedList<GNode>();
-  LinkedList<String> addressList = new LinkedList<String>();
 
 	/** The printer for this C printer. */
-
-  public GNode root;
 
 	public Dependency(LinkedList<GNode> ll){
     depList = ll;
 	}
+
+  public String getName(){
+    return "Dependency";
+  }
+
+  public String getCopy(){
+    return "LoveXTC 2013";
+  }
 
   /* fills the addresslist with the addresses of the dependencies */ 
   public void makeAddressList() {
@@ -47,20 +53,28 @@ public class Dependency extends Visitor {
         LOGGER.info("Looping through dependencies");
         new Visitor() {
 
+
           /* visitExtension(GNode) will be called in the Inheritance Tree */
 
           public void visitPackageDeclaration(GNode n) {
-            String inputDir = System.getProperty("user.dir");
+            Node qualId = n.getNode(1);
+            String path = "", packageName;
+            String currentDir = System.getProperty("user.dir");
 
-            /* Here we have to get the package name and scan for files
-            in the same directory with the same package name declared.
+            for (int i = 0; i<qualId.size(); i++){
+              path += "/" + qualId.get(i).toString();
+            }
+            packageName = path.substring(1).replace("/",".");
+            LOGGER.info("Package name: " + packageName);
+            LOGGER.info("Package path: "+ currentDir + path);
 
-            These files then have to each pass through Dependency.java
+            processDirectory(currentDir + path, packageName);
+            
+
+            /* These files then have to each pass through Dependency.java
             before adding themselves to the list. */
 
-            /* Package name: n.getNode(1).getString(0) */
-
-            /* Pass an address to processAddress() */
+            /* Pass a path to processPath() */
 
           }
 
@@ -73,12 +87,16 @@ public class Dependency extends Visitor {
 
           }
 
+          public void visit(Node n) {
+            for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+          }
+
         }.dispatch(depList.get(i));
       }
     }
   }
   
-  /* uses the addressList to return the nodeList */
+  /* return the depList */
   public LinkedList<GNode> makeNodeList() {
     return depList;
   }
@@ -91,34 +109,66 @@ public class Dependency extends Visitor {
     return (GNode)parser.value(result);
   }
 
-  public void processAddress(String address){
-    /* Check if the path ends in .java */
-    /* If it does not, call process directory */
-    /* If it does, call process file */
-    addDependencyPath(address);
+  public String getPackageName(GNode n){
+    GNode qualId = (GNode)n.getNode(1);
+    String name = "";
+    for (int i = 0; i<qualId.size(); i++){
+      if (i > 1){
+        name += ".";
+      }
+      name += qualId.get(i).toString();
+    }
+    return name;
   }
 
-  public void processDirectory(){
+  public void processPath(String address){
+    /* Check if the is a file / directory */
+    /* If it does not, call process directory */
+    /* If it does, call process file */
+    //addDependencyPath(address);
+  }
+
+  public void processDirectory(String path, String packageName){
+    File folder = new File(path);
+    File[] files = folder.listFiles();
+
+    for (int i = 0; i < files.length; i++) {
+      if (files[i].isFile() && files[i].getName().endsWith(".java")) {
+        try {
+          Reader in = runtime.getReader(files[i]);
+          GNode node = parse(in, files[i]);
+          if (node.getNode(0) != null){
+            if (getPackageName((GNode)node.getNode(0)).equals(packageName)){
+              processFile(node);
+            }
+          }
+        }
+        catch (IOException e){
+          LOGGER.warning("IO Exception");
+        }
+        catch (ParseException e){
+          LOGGER.warning("Parse Exception");          
+        }
+      } 
+    }
+
     /* Scan a directory of files */
+    /* parse() each to a GNode */
+    /* Check if it is in the package packageName */
     /* Call processFile() on each */
   }
 
-  public void processFile(){
-    /* Check if the address is in the list */
-    /* Store the address in a linked list */
-    /* Pass the address into parse() to create a GNode */
+  public void processFile(GNode n){
+
+    if (!depList.contains(n)){
+      depList.add(n);
+    }
+    /* Check if the node is in the depList */
+    /* Store the node in a linked list */
+    /* Pass the node into parse() to create a GNode */
     /* Store the GNode in depList */
   }
   
-  /*
-    Use this method for adding dependencies in case we need to 
-    perform some sanitization. Take a String, use that to locate
-    the file, create a java AST, and add this AST to depList.
-  */
-  public void addDependencyPath(String dep){
-    /* We must use this string to locate the file and build a java AST */
-    addressList.add(dep);
-  }
 
   /* Remove any dependencies that are not actually used */
   public void trimDependencies(){
