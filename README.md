@@ -1,4 +1,4 @@
-OOP-Translator
+LoveXTC
 ==============
 Translate a subset of Java to a limited subset of C++ using XTC, linux, and caffeinated beverages.
 
