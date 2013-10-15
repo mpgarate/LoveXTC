@@ -90,18 +90,13 @@ public class Dependency extends Tool {
             }
             else {
               LOGGER.info("Importing an entire folder");
-              /* For now, we assume that the package is in OOP */
-              /* We need to move SimpleNumber out of the OOP package */
               String path = getRelativePath(n);
+              /* We can remove this */
               File folder = new File(path);
               LOGGER.info("got folder " + folder.getAbsoluteFile());
+
+              processDirectory(path.substring(1));
             }
-
-            /*
-              These files have to each pass through Dependency.java
-              before adding themselves to the list.
-            */
-
           }
 
           public void visit(Node n) {
@@ -157,10 +152,13 @@ public class Dependency extends Tool {
   }
 
   /* Update this to handle no packagename */
+  public void processDirectory(String path){
+    processDirectory(path, "");
+  }
   public void processDirectory(String path, String packageName){
     File folder = new File(path);
     File[] files = folder.listFiles();
-
+    if (files == null) {LOGGER.warning("Found no files in directory path");}
     LOGGER.info("Scanning for java files in " + folder.toString());
 
     for (int i = 0; i < files.length; i++) {
@@ -169,7 +167,12 @@ public class Dependency extends Tool {
           Reader in = runtime.getReader(files[i]);
           GNode node = parse(in, files[i]);
           if (node.getNode(0) != null){
-            if (getPackageName((GNode)node.getNode(0)).equals(packageName)){
+            if (packageName.length() > 0) {
+              if (getPackageName((GNode)node.getNode(0)).equals(packageName)){
+                processNode(node);
+              }
+            }
+            else{
               processNode(node);
             }
           }
