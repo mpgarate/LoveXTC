@@ -56,6 +56,7 @@ public class Translator extends Tool {
       bool("printJavaCode", "printJavaCode", false, "Print Java code.").
       bool("printCPPTree", "printCPPTree", false, "Print the CPP AST Tree.").
       bool("translate", "translate", false, "translate java to cpp").
+      bool("printInheritance", "printInheritance", false, "Print Basic Inheritance tree").
       bool("printCPP", "printCPP", false, "Print the AST as a CPP file.");
   }
 
@@ -88,6 +89,11 @@ public class Translator extends Tool {
     if (runtime.test("printJavaCode")) {
       new JavaPrinter(runtime.console()).dispatch(node);
       runtime.console().flush();
+    }
+
+    if (runtime.test("printInheritance")) {
+	Inheritance test = new Inheritance(node);
+	runtime.console().format(test.getRoot()).pln().flush();
     }
 
     if (runtime.test("printCPPTree")) {
