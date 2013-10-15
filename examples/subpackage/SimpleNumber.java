@@ -1,4 +1,4 @@
-package oop;
+package subpackage;
 public class SimpleNumber{
 	public int number;
 	public SimpleNumber(int k){
