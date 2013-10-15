@@ -92,8 +92,8 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printInheritance")) {
-	Inheritance test = new Inheritance(node);
-	runtime.console().format(test.getRoot()).pln().flush();
+    	Inheritance test = new Inheritance(node);
+    	runtime.console().format(test.getRoot()).pln().flush();
     }
 
     if (runtime.test("printCPPTree")) {
@@ -112,7 +112,10 @@ public class Translator extends Tool {
       dep.makeAddressList();
       nodeList = dep.makeNodeList();
       /* now nodeList contain all the java files AST's */
-
+      LOGGER.info("Printing nodeList:");
+      for (int i=0; i<nodeList.size();i++){
+        System.out.println(" -> " + nodeList.get(i).getLocation().toString());
+      }
 
     }
 
