@@ -25,6 +25,7 @@ import xtc.util.Tool;
 import java.util.LinkedList;
 
 import java.util.logging.Logger;
+import java.util.logging.Level;
 
 public class Dependency extends Tool {
 
@@ -48,6 +49,7 @@ public class Dependency extends Tool {
 
   /* fills the addresslist with the addresses of the dependencies */ 
   public void makeAddressList() {
+    LOGGER.setLevel(Level.INFO); 
     for (int i = 0; i < depList.size(); i++) {
       if (depList.get(i) != null) {
         LOGGER.info("Looping through dependencies");
@@ -56,11 +58,10 @@ public class Dependency extends Tool {
           /* visitExtension(GNode) will be called in the Inheritance Tree */
 
           public void visitPackageDeclaration(GNode n) {
-
             /* WISH LIST: Check if we have already handled the package */
             String currentDir = System.getProperty("user.dir");
             String packageName;
-            String path = getFolderPath(n);
+            String path = getRelativePath(n);
             packageName = path.substring(1).replace("/",".");
             LOGGER.info("Package name: " + packageName);
             LOGGER.info("Package path: " + currentDir + path);
@@ -76,26 +77,22 @@ public class Dependency extends Tool {
           }
 
           public void visitImportDeclaration(GNode n) {
+            LOGGER.setLevel(Level.INFO); 
             LOGGER.info("Visiting import declaration");
 
             /* There is no '*' character */
             if (n.getString(2) == null){
             LOGGER.info("Importing a file");
-              try {
-                File file = locate(n.getNode(1).getString(n.lastIndexOf(n.getNode(1))) + ".java");
-                LOGGER.info("got file " + file.getAbsoluteFile());
-                processFile(file);
-
-              }
-              catch(IOException e){
-                LOGGER.warning("IO Exception");
-              }
+              String path = getNodeLoc(n) + getRelativePath(n);
+              File file = new File(path + ".java");
+              LOGGER.info("got file " + file.getAbsoluteFile());
+              processFile(file);
             }
             else {
               LOGGER.info("Importing an entire folder");
               /* For now, we assume that the package is in OOP */
               /* We need to move SimpleNumber out of the OOP package */
-              String path = getFolderPath(n);
+              String path = getRelativePath(n);
               File folder = new File(path);
               LOGGER.info("got folder " + folder.getAbsoluteFile());
             }
@@ -141,21 +138,30 @@ public class Dependency extends Tool {
     return name;
   }
 
-  public String getFolderPath(GNode n){
+  public String getRelativePath(GNode n){
     String path = "";
     Node qualId = n.getNode(1);
     for (int i = 0; i<qualId.size(); i++){
-      LOGGER.info("APPENDING: " + "/" + qualId.get(i).toString());
+      LOGGER.info("Appending: " + "/" + qualId.get(i).toString());
       path += "/" + qualId.get(i).toString();
     }
     LOGGER.info("Got folder path: " + path);
     return path;
   }
 
+  public String getNodeLoc(GNode n){
+    String nodeLoc = n.getLocation().toString();
+    nodeLoc = nodeLoc.substring(0, nodeLoc.lastIndexOf("/"));
+    LOGGER.info("node loc is " + nodeLoc);
+    return nodeLoc;
+  }
+
   /* Update this to handle no packagename */
   public void processDirectory(String path, String packageName){
     File folder = new File(path);
     File[] files = folder.listFiles();
+
+    LOGGER.info("Scanning for java files in " + folder.toString());
 
     for (int i = 0; i < files.length; i++) {
       if (files[i].isFile() && files[i].getName().endsWith(".java")) {
@@ -169,7 +175,7 @@ public class Dependency extends Tool {
           }
         }
         catch (IOException e){
-          LOGGER.warning("IO Exception");
+          LOGGER.warning("IO Exception on " + files[i].getPath());
         }
         catch (ParseException e){
           LOGGER.warning("Parse Exception");          
@@ -190,7 +196,7 @@ public class Dependency extends Tool {
           processNode(node);
         }
         catch (IOException e){
-          LOGGER.warning("IO Exception");
+          LOGGER.warning("IO Exception on " + file.getPath());
         }
         catch (ParseException e){
           LOGGER.warning("Parse Exception");          

@@ -1,4 +1,4 @@
-package subpackage;
+package examples.subpackage;
 public class SimpleNumber{
 	public int number;
 	public SimpleNumber(int k){

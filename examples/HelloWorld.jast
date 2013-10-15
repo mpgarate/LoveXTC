@@ -10,7 +10,7 @@ CompilationUnit(
   ImportDeclaration(
     null,
     QualifiedIdentifier(
-      "oop",
+      "subpackage",
       "SimpleNumber"
     ),
     null
