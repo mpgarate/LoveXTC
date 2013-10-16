@@ -116,6 +116,7 @@ public class Translator extends Tool {
       for (int i=0; i<nodeList.size();i++){
         System.out.println(" -> " + nodeList.get(i).getLocation().toString());
       }
+      LOGGER.info("End print of node List.");
 
     }
 

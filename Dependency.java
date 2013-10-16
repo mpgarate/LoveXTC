@@ -91,9 +91,6 @@ public class Dependency extends Tool {
             else {
               LOGGER.info("Importing an entire folder");
               String path = getRelativePath(n);
-              /* We can remove this */
-              File folder = new File(path);
-              LOGGER.info("got folder " + folder.getAbsoluteFile());
 
               processDirectory(path.substring(1));
             }
@@ -113,7 +110,7 @@ public class Dependency extends Tool {
     return depList;
   }
 
-  /* return a Java AST Gnode */
+  /* return a Java AST GNode */
   public GNode parse(Reader in, File file) throws IOException, ParseException {
     JavaFiveParser parser =
       new JavaFiveParser(in, file.toString(), (int)file.length());
@@ -121,7 +118,7 @@ public class Dependency extends Tool {
     return (GNode)parser.value(result);
   }
 
-  public String getPackageName(GNode n){
+  private String getPackageName(GNode n){
     GNode qualId = (GNode)n.getNode(1);
     String name = "";
     for (int i = 0; i<qualId.size(); i++){
@@ -133,7 +130,7 @@ public class Dependency extends Tool {
     return name;
   }
 
-  public String getRelativePath(GNode n){
+  private String getRelativePath(GNode n){
     String path = "";
     Node qualId = n.getNode(1);
     for (int i = 0; i<qualId.size(); i++){
@@ -144,18 +141,17 @@ public class Dependency extends Tool {
     return path;
   }
 
-  public String getNodeLoc(GNode n){
+  private String getNodeLoc(GNode n){
     String nodeLoc = n.getLocation().toString();
     nodeLoc = nodeLoc.substring(0, nodeLoc.lastIndexOf("/"));
     LOGGER.info("node loc is " + nodeLoc);
     return nodeLoc;
   }
 
-  /* Update this to handle no packagename */
-  public void processDirectory(String path){
+  private void processDirectory(String path){
     processDirectory(path, "");
   }
-  public void processDirectory(String path, String packageName){
+  private void processDirectory(String path, String packageName){
     File folder = new File(path);
     File[] files = folder.listFiles();
     if (files == null) {LOGGER.warning("Found no files in directory path");}
@@ -169,6 +165,7 @@ public class Dependency extends Tool {
           if (node.getNode(0) != null){
             if (packageName.length() > 0) {
               if (getPackageName((GNode)node.getNode(0)).equals(packageName)){
+                LOGGER.info(files[i] + " is in the package.");
                 processNode(node);
               }
             }
@@ -185,14 +182,9 @@ public class Dependency extends Tool {
         }
       } 
     }
-
-    /* Scan a directory of files */
-    /* parse() each to a GNode */
-    /* Check if it is in the package packageName */
-    /* Call processNode() on each */
   }
 
-  public void processFile(File file){
+  private void processFile(File file){
     try {
           Reader in = runtime.getReader(file);
           GNode node = parse(in, file);
@@ -206,15 +198,11 @@ public class Dependency extends Tool {
         }
   }
 
-  public void processNode(GNode n){
-
+  private void processNode(GNode n){
     if (!depList.contains(n)){
       depList.add(n);
+      LOGGER.info("--- Added " + n.getLocation().toString() + " to the list.");
     }
-    /* Check if the node is in the depList */
-    /* Store the node in a linked list */
-    /* Pass the node into parse() to create a GNode */
-    /* Store the GNode in depList */
   }
   
 
