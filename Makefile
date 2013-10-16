@@ -58,9 +58,6 @@ SOURCE = \
 JNI_SOURCE =
 
 JAR_EXTRAS = 
-.PHONY: junitTests test
-test:
-	java org.junit.runner.JUnitCore TestDriver
 
 
 #***************************************************************************
@@ -72,3 +69,7 @@ test:
 ifdef JAVA_DEV_ROOT
 include $(JAVA_DEV_ROOT)/Makerules
 endif
+
+.PHONY: junitTests test
+test:
+	java org.junit.runner.JUnitCore TestDriver
