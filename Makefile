@@ -52,11 +52,16 @@ SOURCE = \
 	   InheritanceTree.java \
 	   Inheritance.java \
        Translator.java \
-       CTranslator.java 
+       CTranslator.java \
+       TestDriver.java
 
 JNI_SOURCE =
 
 JAR_EXTRAS = 
+.PHONY: junitTests test
+test:
+	java org.junit.runner.JUnitCore TestDriver
+
 
 #***************************************************************************
 #
