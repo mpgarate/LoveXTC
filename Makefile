@@ -51,9 +51,9 @@ SOURCE = \
 	   Dependency.java \
 	   InheritanceTree.java \
 	   Inheritance.java \
-       Translator.java \
-       CTranslator.java \
-       TestDriver.java
+     Translator.java \
+     CTranslator.java \
+     TestDriver.java
 
 JNI_SOURCE =
 
@@ -71,5 +71,6 @@ include $(JAVA_DEV_ROOT)/Makerules
 endif
 
 .PHONY: junitTests test
-test:
-	java org.junit.runner.JUnitCore TestDriver
+test: 
+	make
+	java org.junit.runner.JUnitCore xtc.oop.TestDriver

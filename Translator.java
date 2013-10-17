@@ -80,6 +80,11 @@ public class Translator extends Tool {
     Result result = parser.pCompilationUnit(0);
     return (Node)parser.value(result);
   }
+  public Node parse(String path) throws IOException, ParseException {
+    File file = new File(path);
+    Reader in = runtime.getReader(file);
+    return parse(in, file);
+  }
 
   public void process(Node node) {
     if (runtime.test("printJavaAST")) {
@@ -121,18 +126,21 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printCPP")) {
-      ASTBuilder CppT = new ASTBuilder(node);
-      Writer writer = null;
-      try {
-          writer = new BufferedWriter(new OutputStreamWriter(
-                  new FileOutputStream(CppT.getName() + ".cpp"), "utf-8"));
-          Printer p = new Printer(writer);
-          new CCCP(p).dispatch(CppT.getRoot());
-      } catch (IOException ex){
-        // report
-      } finally {
-         try {writer.close();} catch (Exception ex) {}
-      }
+    }
+  }
+
+  public void printCPP(Node node){
+    ASTBuilder CppT = new ASTBuilder(node);
+    Writer writer = null;
+    try {
+        writer = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream("test/output/" + CppT.getName() + ".cpp"), "utf-8"));
+        Printer p = new Printer(writer);
+        new CCCP(p).dispatch(CppT.getRoot());
+    } catch (IOException ex){
+      // report
+    } finally {
+       try {writer.close();} catch (Exception ex) {}
     }
   }
   /**
