@@ -1,6 +1,4 @@
 package examples;
-import subpackage.SimpleNumber;
-import examples.*;
 public class HelloWorld {
 
 	public int world;
@@ -9,11 +7,12 @@ public class HelloWorld {
 		world = 0;
 	}
 
-	public void createWorld(){
+	public int createWorld(){
 		world = 1;
+		return world;
 	}
 
-	public int main(String a){
+	public int returnX(String a){
 		int x = 5;
 		return x;
 	}
