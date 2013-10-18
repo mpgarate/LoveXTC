@@ -23,12 +23,17 @@ import xtc.util.Tool;
 import java.util.LinkedList;
 
 import java.util.logging.Logger;
+import java.util.logging.Handler;
+import java.util.logging.FileHandler;
+import java.util.logging.Level;
+import java.util.logging.SimpleFormatter;
+import java.util.logging.ConsoleHandler;
 
 /**
  * A translator from (a subset of) Java to (a subset of) C++.
  */
 public class Translator extends Tool {
-  private final static Logger LOGGER = Logger.getLogger(Dependency.class .getName()); 
+  private final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
 
   /** Create a new translator. */
   public Translator() {
@@ -144,6 +149,14 @@ public class Translator extends Tool {
    * @param args The command line arguments.
    */
   public static void main(String[] args) {
+  try {
+    LoveXTCLogger.setup();
+    } catch (IOException e){
+      e.printStackTrace();
+    }
+    ConsoleHandler consoleHandler = new ConsoleHandler();
+    consoleHandler.setLevel(Level.WARNING);
+    LOGGER.addHandler(consoleHandler);
     Translator t = new Translator();
     
     t.run(args);
