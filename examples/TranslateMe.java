@@ -1,4 +1,5 @@
-package examples;
+import examples.HelloWorld;
+import examples.HelloUniverse;
 public class TranslateMe {
 	public static void main(String[] args){
 		HelloWorld hw = new HelloWorld();
