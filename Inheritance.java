@@ -20,6 +20,7 @@ import xtc.tree.Node;
 import xtc.tree.Visitor;
 
 import xtc.util.Tool;
+import java.util.LinkedList;
 
 /* End Translator.java imports */
 
@@ -30,8 +31,12 @@ public class Inheritance {
     public String class_name;
 
 
-    public Inheritance(Node n) {
+    public Inheritance(LinkedList<GNode> nodeList) {
 	//Program starts here, we begin by creating Object and String class nodes.
+	for (int i=0; i<nodeList.size();i++){
+	    System.out.println(" -> " + nodeList.get(i).getLocation().toString());
+	}
+
 	root = GNode.create("Object");
 	GNode headerNode = GNode.create("HeaderDeclaration");
 	GNode stringNode = GNode.create("String");
@@ -41,30 +46,28 @@ public class Inheritance {
 	root.add(stringNode);
 	stringNode.add(GNode.create("HeaderDeclaration").add(getStringDataLayoutAndVTable()));
 
-	//buildTree((GNode)n);
+	for (int i=0;i<nodeList.size();i++) {
+	    buildTree(nodeList.get(i));
+	}
+
     }
 
-    public GNode buildTree(GNode n) { //IGNORE THIS FOR NOW, EVENTUALLY THIS METHOD WILL PARSE THROUGH LINKED LIST
+    public GNode buildTree(GNode node) {
 	System.out.println("Building Tree!");
-	Visitor LLVisitor = new Visitor() {
-		String modifier = "";
-		public void visitCompilationUnit(GNode n) {
-		    System.out.println("Visiting Compilation Unit");
-		    visit(n);
-		}
-		public void visitClassDeclaration(GNode n) {
-		    System.out.println(n.toString());
-		    modifier = n.getNode(3).toString();
-		    System.out.println(modifier);
-		    visit(n);
-		}
+	new Visitor() {
 
-		public void visit(Node n) {
-		    for (Object o : n) {
-			if (o instanceof Node) dispatch((Node)o);
-		    }
+	    public void visitExtension(GNode n) {
+		System.out.println("Vising extension");
+		return;
+	    }
+
+	    public void visit(Node n) {
+		for (Object o : n) {
+		    if (o instanceof Node) dispatch((Node)o);
 		}
-	    };
+	    }
+	}.dispatch(node);
+	root.add(node);
 	return root;
     }
 

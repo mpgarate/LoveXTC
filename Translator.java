@@ -92,8 +92,8 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printInheritance")) {
-    	Inheritance test = new Inheritance(node);
-    	runtime.console().format(test.getRoot()).pln().flush();
+    	//Inheritance test = new Inheritance(node);
+    	//runtime.console().format(test.getRoot()).pln().flush();
     }
 
     if (runtime.test("printCPPTree")) {
@@ -117,7 +117,10 @@ public class Translator extends Tool {
         System.out.println(" -> " + nodeList.get(i).getLocation().toString());
       }
       LOGGER.info("End print of node List.");
-
+      
+      //Build the Inheritance tree
+      Inheritance tree = new Inheritance(nodeList);
+      runtime.console().format(tree.getRoot()).pln().flush();
     }
 
     if (runtime.test("printCPP")) {
