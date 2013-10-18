@@ -1,4 +1,4 @@
-package examples;
+package subExamples;
 public class HelloUniverse extends HelloWorld {
 
 	public HelloUniverse(){

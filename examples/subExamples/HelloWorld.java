@@ -1,4 +1,4 @@
-package examples;
+package subExamples;
 public class HelloWorld {
 
 	public int world;

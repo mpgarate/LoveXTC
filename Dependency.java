@@ -59,14 +59,14 @@ public class Dependency extends Tool {
           /* visit the package and get all the files and then their nodes */
           public void visitPackageDeclaration(GNode n) {
             /* WISH LIST: Check if we have already handled the package */
-            String currentDir = System.getProperty("user.dir");
+            String rootDir = System.getProperty("user.dir") + "/examples";
             String packageName;
             String path = getRelativePath(n);
             packageName = path.substring(1).replace("/",".");
             LOGGER.info("Package name: " + packageName);
-            LOGGER.info("Package path: " + currentDir + path);
+            LOGGER.info("Package path: " + rootDir + path);
 
-            processDirectory(currentDir + path, packageName);
+            processDirectory(rootDir + path, packageName);
             
 
             /* These files then have to each pass through Dependency.java
