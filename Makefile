@@ -50,10 +50,10 @@ SOURCE = \
 	   ASTBuilder.java \
 	   Dependency.java \
 	   Inheritance.java \
-     Translator.java \
      CTranslator.java \
      TestDriver.java \
-     LoveXTCLogger.java
+     LoveXTCLogger.java \
+     Translator.java
 
 JNI_SOURCE =
 
