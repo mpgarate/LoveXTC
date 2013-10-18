@@ -18,7 +18,7 @@ Print a java file's C++ AST with:
 java xtc.oop.Translator -printCPPTree examples/XEqualsFive.java
 ```
 
-If you want to run our example java programs on their own, run the following:
+If you want to run our example java programs on their own, run the following in the examples folder:
 ```sh
 export CLASSPATH=~/xtc/oop:.
 javac TranslateMe.java
