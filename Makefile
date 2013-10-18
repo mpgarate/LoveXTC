@@ -49,7 +49,6 @@ SOURCE = \
 	   CCCP.java \
 	   ASTBuilder.java \
 	   Dependency.java \
-	   InheritanceTree.java \
 	   Inheritance.java \
        Translator.java \
        CTranslator.java \
