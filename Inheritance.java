@@ -39,9 +39,15 @@ public class Inheritance {
 	GNode stringNode = GNode.create("String");
 
 	root.add(headerNode);
+
 	headerNode.add(getObjectDataLayout());
+	headerNode.add(getObjectVTable());
+
 	root.add(stringNode);
-	stringNode.add(GNode.create("HeaderDeclaration").add(getStringDataLayoutAndVTable()));
+	GNode stringHeader = GNode.create("HeaderDeclaration");
+	stringNode.add(stringHeader);
+	stringHeader.add(getStringDataLayout());
+	stringHeader.add(getStringVTable());
 
 	for (int i=0;i<nodeList.size();i++) {
 	    buildTree(nodeList.get(i));
@@ -50,11 +56,10 @@ public class Inheritance {
     }
 
     public void buildTree(GNode node) {
-	System.out.println("Building Tree!");
 	new Visitor() {
 
 	    public void visitExtension(GNode n) {
-		System.out.println("Vising extension");
+		System.out.println("Visiting extension");
 		return;
 	    }
 
@@ -90,18 +95,24 @@ public class Inheritance {
     private GNode getObjectDataLayout() {
 	//Create the Data Layout here for Object Class
 	GNode objectDataLayout = GNode.create("DataLayout");
-	objectDataLayout.add(getObjectVTable());
+	objectDataLayout.add(createDataFieldEntry("vptr", "vptr"));
 	objectDataLayout.add(GNode.create("Object_FieldDeclaration"));
 	return objectDataLayout;
     }
 
-    private GNode getStringDataLayoutAndVTable() {
+    private GNode getStringDataLayout() {
 	//Create the Data Layout for the String Class
-	GNode stringDataLayout = getObjectDataLayout(); // this will add the object field declaration as well => Don't want that
+	GNode stringDataLayout = GNode.create("DataLayout");
+	stringDataLayout.add(createDataFieldEntry("vptr", "vptr"));
 	stringDataLayout.add(GNode.create("String_FieldDeclaration"));
-	stringDataLayout.getNode(0).add(createMethod("length", new String[]{"Object"}, "int32_t"));
-	stringDataLayout.getNode(0).add(createMethod("charAt", new String[]{"Object", "int32_t"}, "char"));
 	return stringDataLayout;
+    }
+
+    private GNode getStringVTable() {
+	GNode stringVTable = getObjectVTable();
+	stringVTable.add(createMethod("length", new String[]{"Object"}, "int32_t"));
+	stringVTable.add(createMethod("charAt", new String[]{"Object", "int32_t"}, "char"));
+	return stringVTable;
     }
 
     private GNode createMethod(String name, String[] args, String returnType) {
@@ -116,6 +127,16 @@ public class Inheritance {
 	    basic.add(args[i]);
 	}
 	return basic;
+    }
+
+    private GNode createDataFieldEntry(String type, String name) {
+	GNode node = GNode.create("Field Declaration");
+	node.add(GNode.create("Modifiers"));
+	node.add(GNode.create(type));
+	node.add(name);
+	node.add(GNode.create("Declarators"));
+	node.add(GNode.create("Declarator"));
+	return node;
     }
 
     private GNode createMethodWithModifier(String modifier, String returnType, String[] args, String name) {
