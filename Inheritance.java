@@ -49,7 +49,7 @@ public class Inheritance {
 
     }
 
-    public GNode buildTree(GNode node) {
+    public void buildTree(GNode node) {
 	System.out.println("Building Tree!");
 	new Visitor() {
 
@@ -64,8 +64,10 @@ public class Inheritance {
 		}
 	    }
 	}.dispatch(node);
-	root.add(node);
-	return root;
+	/* need to add the inheritance tree structure not the java ast tree. */
+	//root.add(node);
+	/* no need for return */
+	//return root;
     }
 
     public GNode getRoot() {
@@ -95,7 +97,7 @@ public class Inheritance {
 
     private GNode getStringDataLayoutAndVTable() {
 	//Create the Data Layout for the String Class
-	GNode stringDataLayout = getObjectDataLayout();
+	GNode stringDataLayout = getObjectDataLayout(); // this will add the object field declaration as well => Don't want that
 	stringDataLayout.add(GNode.create("String_FieldDeclaration"));
 	stringDataLayout.getNode(0).add(createMethod("length", new String[]{"Object"}, "int32_t"));
 	stringDataLayout.getNode(0).add(createMethod("charAt", new String[]{"Object", "int32_t"}, "char"));
