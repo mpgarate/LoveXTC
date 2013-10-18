@@ -16,16 +16,6 @@ public class LoveXTCLogger {
   static private Formatter formatterHTML;
 
   static public void setup() throws IOException {
-
-    /* 
-      Handler fh = new FileHandler("LoveXTC.log");
-      SimpleFormatter simpleFormat = new SimpleFormatter();
-      fh.setFormatter(simpleFormat);
-      LOGGER.addHandler(fh);
-      LOGGER.setLevel(Level.ALL);
-    */
-
-    // Get the global logger to configure it
     LogManager.getLogManager().reset();
     Logger logger = Logger.getLogger("");
     logger.setLevel(Level.ALL);
@@ -35,4 +25,3 @@ public class LoveXTCLogger {
     logger.addHandler(fh);
   }
 }
- 
