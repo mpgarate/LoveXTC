@@ -56,7 +56,7 @@ public class Dependency extends Tool {
         new Visitor() {
 
           /* visitExtension(GNode) will be called in the Inheritance Tree */
-
+          /* visit the package and get all the files and then their nodes */
           public void visitPackageDeclaration(GNode n) {
             /* WISH LIST: Check if we have already handled the package */
             String currentDir = System.getProperty("user.dir");
@@ -75,7 +75,8 @@ public class Dependency extends Tool {
             /* Pass a path to processPath() */
 
           }
-
+          /* visit the import statements and either get a single file or 
+             an entire folder */
           public void visitImportDeclaration(GNode n) {
             LOGGER.setLevel(Level.INFO); 
             LOGGER.info("Visiting import declaration");
@@ -105,12 +106,12 @@ public class Dependency extends Tool {
     }
   }
   
-  /* return the depList */
+  /* return the depList . ONLY call after makeAddressList. */
   public LinkedList<GNode> makeNodeList() {
     return depList;
   }
 
-  /* return a Java AST GNode */
+  /* returns a Java AST GNode */
   public GNode parse(Reader in, File file) throws IOException, ParseException {
     JavaFiveParser parser =
       new JavaFiveParser(in, file.toString(), (int)file.length());
@@ -118,6 +119,7 @@ public class Dependency extends Tool {
     return (GNode)parser.value(result);
   }
 
+  /* returns the name of the packge given the package declaration GNode */
   private String getPackageName(GNode n){
     GNode qualId = (GNode)n.getNode(1);
     String name = "";
@@ -130,6 +132,7 @@ public class Dependency extends Tool {
     return name;
   }
 
+  /* returns the path of the package or import statement given a GNode */
   private String getRelativePath(GNode n){
     String path = "";
     Node qualId = n.getNode(1);
@@ -141,6 +144,7 @@ public class Dependency extends Tool {
     return path;
   }
 
+  /* gets the filepath of the node */
   private String getNodeLoc(GNode n){
     String nodeLoc = n.getLocation().toString();
     nodeLoc = nodeLoc.substring(0, nodeLoc.lastIndexOf("/"));
@@ -148,9 +152,14 @@ public class Dependency extends Tool {
     return nodeLoc;
   }
 
+  /* used for importing an entire folder, basically calls processDirectory with an empty
+     package declaration */
   private void processDirectory(String path){
     processDirectory(path, "");
   }
+
+  /* get all the files in the directory and obtain their Java AST's  and then
+     put them in the deplist by calling processNode(node)*/
   private void processDirectory(String path, String packageName){
     File folder = new File(path);
     File[] files = folder.listFiles();
@@ -184,6 +193,7 @@ public class Dependency extends Tool {
     }
   }
 
+  /* used for a single import file */
   private void processFile(File file){
     try {
           Reader in = runtime.getReader(file);
@@ -198,6 +208,7 @@ public class Dependency extends Tool {
         }
   }
 
+  /* check to see if the node is already in the list. if not then add it */
   private void processNode(GNode n){
     if (!depList.contains(n)){
       depList.add(n);
