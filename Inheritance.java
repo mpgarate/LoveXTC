@@ -33,9 +33,6 @@ public class Inheritance {
 
     public Inheritance(LinkedList<GNode> nodeList) {
 	//Program starts here, we begin by creating Object and String class nodes.
-	for (int i=0; i<nodeList.size();i++){
-	    System.out.println(" -> " + nodeList.get(i).getLocation().toString());
-	}
 
 	root = GNode.create("Object");
 	GNode headerNode = GNode.create("HeaderDeclaration");
