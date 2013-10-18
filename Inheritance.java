@@ -20,6 +20,7 @@ import xtc.tree.Node;
 import xtc.tree.Visitor;
 
 import xtc.util.Tool;
+import java.util.LinkedList;
 
 /* End Translator.java imports */
 
@@ -30,8 +31,9 @@ public class Inheritance {
     public String class_name;
 
 
-    public Inheritance(Node n) {
+    public Inheritance(LinkedList<GNode> nodeList) {
 	//Program starts here, we begin by creating Object and String class nodes.
+
 	root = GNode.create("Object");
 	GNode headerNode = GNode.create("HeaderDeclaration");
 	GNode stringNode = GNode.create("String");
@@ -41,31 +43,31 @@ public class Inheritance {
 	root.add(stringNode);
 	stringNode.add(GNode.create("HeaderDeclaration").add(getStringDataLayoutAndVTable()));
 
-	//buildTree((GNode)n);
+	for (int i=0;i<nodeList.size();i++) {
+	    buildTree(nodeList.get(i));
+	}
+
     }
 
-    public GNode buildTree(GNode n) { //IGNORE THIS FOR NOW, EVENTUALLY THIS METHOD WILL PARSE THROUGH LINKED LIST
+    public void buildTree(GNode node) {
 	System.out.println("Building Tree!");
-	Visitor LLVisitor = new Visitor() {
-		String modifier = "";
-		public void visitCompilationUnit(GNode n) {
-		    System.out.println("Visiting Compilation Unit");
-		    visit(n);
-		}
-		public void visitClassDeclaration(GNode n) {
-		    System.out.println(n.toString());
-		    modifier = n.getNode(3).toString();
-		    System.out.println(modifier);
-		    visit(n);
-		}
+	new Visitor() {
 
-		public void visit(Node n) {
-		    for (Object o : n) {
-			if (o instanceof Node) dispatch((Node)o);
-		    }
+	    public void visitExtension(GNode n) {
+		System.out.println("Vising extension");
+		return;
+	    }
+
+	    public void visit(Node n) {
+		for (Object o : n) {
+		    if (o instanceof Node) dispatch((Node)o);
 		}
-	    };
-	return root;
+	    }
+	}.dispatch(node);
+	/* need to add the inheritance tree structure not the java ast tree. */
+	//root.add(node);
+	/* no need for return */
+	//return root;
     }
 
     public GNode getRoot() {
@@ -95,7 +97,7 @@ public class Inheritance {
 
     private GNode getStringDataLayoutAndVTable() {
 	//Create the Data Layout for the String Class
-	GNode stringDataLayout = getObjectDataLayout();
+	GNode stringDataLayout = getObjectDataLayout(); // this will add the object field declaration as well => Don't want that
 	stringDataLayout.add(GNode.create("String_FieldDeclaration"));
 	stringDataLayout.getNode(0).add(createMethod("length", new String[]{"Object"}, "int32_t"));
 	stringDataLayout.getNode(0).add(createMethod("charAt", new String[]{"Object", "int32_t"}, "char"));
