@@ -1,14 +1,18 @@
+#include <iostream>
 #include "java_lang.h"
 #include "output.h"
 
-void main(){
+using namespace java::lang;
+using namespace std;
+
+int main(void){
 
 	const HelloWorld hw = new HelloWorld();
-	std::cout << hw->__vptr->toString()->data <<stdendl;
+	cout << hw->__vptr->toString()->data <<endl;
 
 	const HelloUniverse hu = new HelloUniverse();
-	std::cout << hu->__vptr->toString()->data <<stdendl;
-	std::cout << hu->__vptr->createWorld()->data <<stdendl;
+	cout << hu->__vptr->toString()->data <<endl;
+	cout << hu->__vptr->createWorld()->data <<endl;
 
 	return 0;
 }
