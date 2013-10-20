@@ -29,7 +29,6 @@ Run the test suite and compile all code with ```make```
 TODO:
 
 * Work on vtables for each class = inheritance
-* Configure logging framework to output to file
 * use JavaDoc conventions when commenting
 * Write class to scan a directory of java files, translate to c++, compile, and compare results.
 * enhance CPPAST and CCCP Printer
