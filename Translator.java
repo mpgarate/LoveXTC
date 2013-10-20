@@ -97,8 +97,10 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printInheritance")) {
-    	//Inheritance test = new Inheritance(node);
-    	//runtime.console().format(test.getRoot()).pln().flush();
+	    LinkedList<GNode> nodeList = new LinkedList<GNode>();
+	    nodeList.add((GNode)node);
+    	Inheritance test = new Inheritance(nodeList);
+    	runtime.console().format(test.getRoot()).pln().flush();
     }
 
     if (runtime.test("printCPPTree")) {
