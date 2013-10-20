@@ -112,21 +112,35 @@ public class Inheritance {
 	objectDataLayout.add(createMethod(modifier,"hashcode", arg, "int32_t"));
 	objectDataLayout.add(createMethod(modifier,"getClass", arg, "Class"));
 	objectDataLayout.add(createMethod(modifier,"equals", 
-					   new String[]{"Object", "Object"}, "bool"));
-	objectDataLayout.add(createMethod(modifier,"__class", null, "Class"));
+					   new String[]{"__Object", "__Object"}, "bool"));
+	objectDataLayout.add(createMethod(modifier,"__class", null, "Class"));   
+
 	return objectDataLayout;
     }
 
     private GNode getStringDataLayout() {
 	//Create the Data Layout for the String Class
 	GNode stringDataLayout = GNode.create("DataLayout");
-	/*stringDataLayout.add(createDataFieldEntry("vptr", "vptr"));
-	  stringDataLayout.add(GNode.create("String_FieldDeclaration"));*/
+	stringDataLayout.add(createDataFieldEntry(null,"__String_VT*", "__vptr",null));
+	stringDataLayout.add(createDataFieldEntry("static","__String_VT","vtable",null));
+	stringDataLayout.add(createConstructor("String",null));
+	String arg[] = {"__String"};
+	String modifier[] = {"static"};
+	stringDataLayout.add(createMethod(modifier,"toString", arg,"String"));
+	stringDataLayout.add(createMethod(modifier,"hashcode", arg, "int32_t"));
+	stringDataLayout.add(createMethod(modifier,"getClass", arg, "Class"));
+	stringDataLayout.add(createMethod(modifier,"equals", 
+					   new String[]{"__String", "__Object"}, "bool"));
+	stringDataLayout.add(createMethod(modifier,"__class", null, "Class"));
+	stringDataLayout.add(createMethod(new String[]{"static"}, "length", new String[]{"__String"}, "int32_t"));
+	stringDataLayout.add(createMethod(new String[]{"static"}, "charAt", new String[]{"__String", "int32_t"}, "int32_t"));
 	return stringDataLayout;
     }
 
     private GNode getStringVTable() {
-	GNode stringVTable = getObjectVTable();	
+	GNode stringVTable = getObjectVTable();
+	stringVTable.add(createMethod(null, "length", new String[]{"__Object"}, "int32_t"));
+	stringVTable.add(createMethod(null, "charAt", new String[]{"__Object"}, "int32_t"));
 	/*stringVTable.add(createMethod("length", new String[]{"Object"}, "int32_t"));
 	stringVTable.add(createMethod("charAt", new String[]{"Object", "int32_t"}, "char"));*/
 	return stringVTable;
@@ -135,6 +149,19 @@ public class Inheritance {
     private GNode getClassDataLayout(){
 	//Create the Data Layout for the java.lang.Class class
 	GNode classDataLayout = GNode.create("DataLayout");
+	classDataLayout.add(createDataFieldEntry(null,"__Class_VT*", "__vptr",null));
+	classDataLayout.add(createDataFieldEntry(null,"String", "name",null));
+	classDataLayout.add(createDataFieldEntry(null,"Class", "parent",null));
+	classDataLayout.add(createDataFieldEntry("static","__Class_VT","vtable",null));
+	classDataLayout.add(createConstructor("Class",new String[]{"name", "parent"}));
+	String arg[] = {"__Object"};
+	String modifier[] = {"static"};
+	classDataLayout.add(createMethod(modifier,"toString", arg,"String"));
+	classDataLayout.add(createMethod(modifier,"getName", null, "String"));
+	classDataLayout.add(createMethod(modifier,"getSuperclass", null, "Class"));
+	classDataLayout.add(createMethod(new String[]{"Class", "Object"},"isInstance", null, "bool"));
+	classDataLayout.add(createMethod(modifier,"__class", null, "Class"));
+
 	/*classDataLayout.add(createDataFieldEntry("vptr","vptr"));
 	classDataLayout.add(createDataFieldEntry("String","name"));
 	classDataLayout.add(createDataFieldEntry("Class","parent"));
@@ -145,6 +172,11 @@ public class Inheritance {
 
     private GNode getClassVTable(){
 	GNode classVTable = getObjectVTable();
+	classVTable.add(createMethod(null, "getName", new String[]{"__Class"}, "String"));
+	classVTable.add(createMethod(null, "getSuperclass", new String[]{"__Class"}, "Class"));
+	classVTable.add(createMethod(null, "isInstance", new String[]{"__Class", "__Object"}, "bool"));
+
+
 	/*classVTable.add(createMethodWithModifier("static","String", 
 						 new String[]{"Class"},"getName"));
 	classVTable.add(createMethodWithModifier("static","Class", 
@@ -200,20 +232,6 @@ public class Inheritance {
 
 	node.add(declarators);
 	return node;
-    }
-
-    private GNode createMethodWithModifier(String modifier, String returnType, String[] args, String name) {
-	GNode basic = GNode.create(name);
-	basic.add(modifier);
-	basic.add(returnType);
-	if (args == null) {
-	    return basic;
-	}
-
-	for (int i=0;i<args.length;i++) {
-	    basic.add(args[i]);
-	}
-	return basic;
     }
     
     private GNode createConstructor(String classname, String parameters[]){
