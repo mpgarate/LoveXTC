@@ -1,26 +1,11 @@
 Java to C++ Translator, v. 0.1, (C) 2013 <LoveXTC>
-Processing examples/HelloWorld.java ...
+Processing HelloWorld.java ...
 CompilationUnit(
   PackageDeclaration(
     null,
     QualifiedIdentifier(
-      "examples"
+      "subExamples"
     )
-  ),
-  ImportDeclaration(
-    null,
-    QualifiedIdentifier(
-      "subpackage",
-      "SimpleNumber"
-    ),
-    null
-  ),
-  ImportDeclaration(
-    null,
-    QualifiedIdentifier(
-      "examples"
-    ),
-    "*"
   ),
   ClassDeclaration(
     Modifiers(
@@ -84,7 +69,12 @@ CompilationUnit(
           )
         ),
         null,
-        VoidType(),
+        Type(
+          PrimitiveType(
+            "int"
+          ),
+          null
+        ),
         "createWorld",
         FormalParameters(),
         null,
@@ -99,6 +89,11 @@ CompilationUnit(
               IntegerLiteral(
                 "1"
               )
+            )
+          ),
+          ReturnStatement(
+            PrimaryIdentifier(
+              "world"
             )
           )
         )
@@ -116,7 +111,7 @@ CompilationUnit(
           ),
           null
         ),
-        "main",
+        "returnX",
         FormalParameters(
           FormalParameter(
             Modifiers(),
