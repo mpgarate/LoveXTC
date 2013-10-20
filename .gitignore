@@ -1,6 +1,7 @@
 # Object files
 *.o
 *.class
+*.gch
 
 # Libraries
 *.lib
