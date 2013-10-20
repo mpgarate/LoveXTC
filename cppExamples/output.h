@@ -3,59 +3,62 @@
 #include "java_lang.h"
 #include <string>
 
+using namespace java::lang;
+using namespace std;
+
 namespace subExamples {
 	
-	struct HelloWorld;
-	struct HelloWorld_VT;
+	struct __HelloWorld;
+	struct __HelloWorld_VT;
 
-	struct HelloUniverse;
-	struct HelloUniverse_VT;
+	struct __HelloUniverse;
+	struct __HelloUniverse_VT;
 
-	typedef HelloWorld* HelloWorld;
-	typedef HelloUniverse* HelloUniverse;
+	typedef __HelloWorld* HelloWorld;
+	typedef __HelloUniverse* HelloUniverse;
 
-	struct Helloworld {
-		HelloWorld_VT* __vptr;
+	struct __Helloworld {
+		__HelloWorld_VT* __vptr;
 		static int32_t world;
 
-		Helloworld();
+		__Helloworld();
 
-		static int32_t hashCode(Helloworld);
-      	static bool equals(Helloworld, Object);
-      	static Class getClass(Helloworld);
-      	static String toString(Helloworld);
+		static int32_t hashCode(HelloWorld);
+      	static bool equals(HelloWorld, Object);
+      	static Class getClass(HelloWorld);
+      	static String toString(HelloWorld);
       	static int32_t createWorld();
       	static int32_t returnX(String);
       	static Class __class();
 
-      	static HelloWorld_VT __vtable;
+      	static __HelloWorld_VT __vtable;
 	};
 
-	struct HelloWorld_VT {
+	struct __HelloWorld_VT {
       Class __isa;
-      int32_t (*hashCode)(Helloworld);
-      bool (*equals)(Helloworld, Object);
-      Class (*getClass)(Helloworld);
-      String (*toString)(Helloworld);
+      int32_t (*hashCode)(HelloWorld);
+      bool (*equals)(HelloWorld, Object);
+      Class (*getClass)(HelloWorld);
+      String (*toString)(HelloWorld);
       int32_t (*createWorld)();
       int32_t (*returnX)(String);
 
-      __Object_VT()
-      : __isa(Helloworld::__class()),
-        hashCode((int32_t(*)(Helloworld)) &__Object::hashCode),
-        equals((bool(*)(Helloworld)) &__Object::equals),
-        getClass((Class(*)(Helloworld)) &__Object::getClass),
-        toString((String(*)(Helloworld)) &__Object::toString), 
-        createWorld(&Helloworld::createWorld),
-        returnX(&Helloworld::returnX) {
+      __HelloWorld_VT()
+      : __isa(__HelloWorld::__class()),
+        hashCode((int32_t(*)(HelloWorld)) &__Object::hashCode),
+        equals((bool(*)(HelloWorld)) &__Object::equals),
+        getClass((Class(*)(HelloWorld)) &__Object::getClass),
+        toString((String(*)(HelloWorld)) &__Object::toString), 
+        createWorld(&__HelloWorld::createWorld),
+        returnX(&__HelloWorld::returnX) {
       }
     };
 
-    struct HelloUniverse {
-    	HelloUniverse_VT* __vptr;
+    struct __HelloUniverse {
+    	__HelloUniverse_VT* __vptr;
     	static int32_t world;
 
-    	HelloUniverse();
+    	__HelloUniverse();
 
     	static int32_t hashCode(HelloUniverse);
       	static bool equals(HelloUniverse, Object);
@@ -65,11 +68,11 @@ namespace subExamples {
       	static int32_t returnX(String);
       	static Class __class();
 
-      	static HelloUniverse_VT __vtable;
+      	static __HelloUniverse_VT __vtable;
 
     };
 
-    struct HelloUniverse_VT {
+    struct __HelloUniverse_VT {
       Class __isa;
       int32_t (*hashCode)(HelloUniverse);
       bool (*equals)(HelloUniverse, Object);
@@ -78,14 +81,14 @@ namespace subExamples {
       int32_t (*createWorld)();
       int32_t (*returnX)(String);
 
-      __Object_VT()
-      : __isa(HelloUniverse::__class()),
-        hashCode((int32_t(*)(HelloUniverse)) &Helloworld::hashCode),
-        equals((bool(*)(Helloworld)) &Helloworld::equals),
-        getClass((Class(*)(Helloworld)) &Helloworld::getClass),
-        toString(&HelloUniverse::toString), 
-        createWorld(&Helloworld::createWorld),
-        returnX(&HelloUniverse::returnX) {
+      __HelloUniverse_VT()
+      : __isa(__HelloUniverse::__class()),
+        hashCode((int32_t(*)(HelloUniverse)) &__Helloworld::hashCode),
+        equals((bool(*)(Helloworld)) &__Helloworld::equals),
+        getClass((Class(*)(Helloworld)) &__Helloworld::getClass),
+        toString(&__HelloUniverse::toString), 
+        createWorld(&__Helloworld::createWorld),
+        returnX(&__HelloUniverse::returnX) {
       }
     };
 }
