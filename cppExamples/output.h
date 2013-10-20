@@ -17,11 +17,11 @@ namespace subExamples {
 	typedef __HelloWorld* HelloWorld;
 	typedef __HelloUniverse* HelloUniverse;
 
-	struct __Helloworld {
+	struct __HelloWorld {
 		__HelloWorld_VT* __vptr;
 		static int32_t world;
 
-		__Helloworld();
+		__HelloWorld();
 
 		static int32_t hashCode(HelloWorld);
       	static bool equals(HelloWorld, Object);
@@ -46,7 +46,7 @@ namespace subExamples {
       __HelloWorld_VT()
       : __isa(__HelloWorld::__class()),
         hashCode((int32_t(*)(HelloWorld)) &__Object::hashCode),
-        equals((bool(*)(HelloWorld)) &__Object::equals),
+        equals((bool(*)(HelloWorld,Object)) &__Object::equals),
         getClass((Class(*)(HelloWorld)) &__Object::getClass),
         toString((String(*)(HelloWorld)) &__Object::toString), 
         createWorld(&__HelloWorld::createWorld),
@@ -83,11 +83,11 @@ namespace subExamples {
 
       __HelloUniverse_VT()
       : __isa(__HelloUniverse::__class()),
-        hashCode((int32_t(*)(HelloUniverse)) &__Helloworld::hashCode),
-        equals((bool(*)(Helloworld)) &__Helloworld::equals),
-        getClass((Class(*)(Helloworld)) &__Helloworld::getClass),
+        hashCode((int32_t(*)(HelloUniverse)) &__HelloWorld::hashCode),
+        equals((bool(*)(HelloUniverse, Object)) &__HelloWorld::equals),
+        getClass((Class(*)(HelloUniverse)) &__HelloWorld::getClass),
         toString(&__HelloUniverse::toString), 
-        createWorld(&__Helloworld::createWorld),
+        createWorld(&__HelloWorld::createWorld),
         returnX(&__HelloUniverse::returnX) {
       }
     };
