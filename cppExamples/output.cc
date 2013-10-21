@@ -40,7 +40,7 @@ namespace subExamples {
 		return x;
 	}
 
-	String __HelloUniverse::toString(HelloUniverse hu) {
+	String __HelloUniverse::toString(HelloUniverse __this) {
 				return new __String("x");
     }
     __HelloUniverse_VT __HelloUniverse::__vtable;
