@@ -52,6 +52,7 @@ SOURCE = \
 	   Inheritance.java \
      CTranslator.java \
      TestDriver.java \
+     ASTModifier.java \
      LoveXTCLogger.java \
      Translator.java
 
