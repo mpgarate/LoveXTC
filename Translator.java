@@ -135,20 +135,23 @@ public class Translator extends Tool {
         ASTModifier CppT = new ASTModifier(listNode);
         //runtime.console().format(CppT.getRoot()).pln().flush();
       }
-      for (GNode listNode : nodeList){
-        LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
         Writer writer = null;
         try {
             writer = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream("output/output.cc"), "utf-8"));
             Printer p = new Printer(writer);
-            new CCCP(p).dispatch(listNode);
+
+            initHeaderCCFile(p);
+
+            for (GNode listNode : nodeList){
+              LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
+              new CCCP(p).dispatch(listNode);
+            }
         } catch (IOException ex){
           // report
         } finally {
            try {writer.close();} catch (Exception ex) {}
         }
-      }
 
     }
 
@@ -167,6 +170,12 @@ public class Translator extends Tool {
       }
     }
   }
+
+  private void initHeaderCCFile(Printer p){
+    p.pln("#include \"output.h\"");
+    p.pln("#include <sstream>");
+  }
+  
   /**
    * Run the translator with the specified command line arguments.
    *

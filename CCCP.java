@@ -39,14 +39,13 @@ public class CCCP extends Visitor {
 		printer.register(this);
 	}
 
-	public void visitTranslationUnit(GNode n) {
-    printer.pln("/* Visiting translation unit */ ");
+	public void visitCompilationUnit(GNode n) {
+    printer.pln("/* Visiting translation unit for " + n.getLocation().toString() + " */");
     visit(n);
   }
 
 	public void visitClassDeclaration(GNode n) {
     printer.pln("/* visiting class declaration */");
-    printer.pln("/* " + n.getLocation().toString() + " */");
     visit(n);
   }
 
