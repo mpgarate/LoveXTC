@@ -1,22 +1,13 @@
 Java to C++ Translator, v. 0.1, (C) 2013 <LoveXTC>
-Processing TranslateMe.java ...
+Processing examples/TranslateMe.java ...
 CompilationUnit(
   null,
   ImportDeclaration(
     null,
     QualifiedIdentifier(
-      "subExamples",
-      "HelloWorld"
+      "subExamples"
     ),
-    null
-  ),
-  ImportDeclaration(
-    null,
-    QualifiedIdentifier(
-      "subExamples",
-      "HelloUniverse"
-    ),
-    null
+    "*"
   ),
   ClassDeclaration(
     Modifiers(

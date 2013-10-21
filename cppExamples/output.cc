@@ -2,12 +2,13 @@
 #include "output.h"
 #include <sstream>
 
-/* Print namespace by using the package name in the tree */
-namespace subExamples {
 
 	/************************************************/
 	/********* Define Items for HelloWorld **********/
 	/************************************************/
+	/* Print namespace by using the package name in the tree */
+namespace subExamples {
+		
 	__HelloWorld::__HelloWorld() : __vptr(&__vtable), world(0) {}
 
 	int32_t __HelloWorld::createWorld(HelloWorld __this) {
@@ -28,10 +29,13 @@ namespace subExamples {
   }
 
 	__HelloWorld_VT __HelloWorld::__vtable;
+}
 
 	/************************************************/
 	/******** Define Items for HelloUniverse ********/
 	/************************************************/
+
+namespace subExamples {
 
 	__HelloUniverse::__HelloUniverse() : __vptr(&__vtable) {}
 
@@ -51,6 +55,5 @@ namespace subExamples {
         new __Class(__rt::literal("subExamples.HelloUniverse"), (Class) __rt::null());
       return k;
   }
-
 
 }

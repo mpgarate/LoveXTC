@@ -91,9 +91,9 @@ public class Dependency extends Tool {
             }
             else {
               LOGGER.info("Importing an entire folder");
-              String path = getRelativePath(n);
+              String path = "examples/" + getRelativePath(n);
 
-              processDirectory(path.substring(1));
+              processDirectory(path);
             }
           }
 

@@ -1,6 +1,3 @@
-/* CCCP is a C++ printer named for the centralized nature of 
-the Soviet Union. */
-
 package xtc.oop;
 
 import java.lang.*;
@@ -18,7 +15,7 @@ import xtc.tree.Token;
 import xtc.tree.Visitor;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
-public class CCCP extends Visitor {
+public class ASTModifier extends Visitor {
 
 	/* We should base this file on src/xtc/lang/CPrinter.java */
 
@@ -29,54 +26,48 @@ public class CCCP extends Visitor {
 
 	*/
 
-	/** The printer for this C printer. */
-  protected Printer printer;
+  private GNode root;
 
-  public GNode root;
-
-	public CCCP(Printer printer){
-		this.printer = printer;
-		printer.register(this);
+	public ASTModifier(GNode n){
+		root = n;
 	}
 
-	public void visitTranslationUnit(GNode n) {
-    printer.pln("/* Visiting translation unit */ ");
+	public GNode getRoot(){
+		return root;
+	}
+
+	public void visitCompilationUnit(GNode n) {
     visit(n);
   }
 
 	public void visitClassDeclaration(GNode n) {
-    printer.pln("/* visiting class declaration */");
-    printer.pln("/* " + n.getLocation().toString() + " */");
     visit(n);
   }
 
-  /* TRICKY need to have the namespace scope */
   public void visitPackageDeclaration(GNode n) {
-    printer.pln("/* visiting package declaration */");
     visit(n);
   }
   public void visitImportDeclaration(GNode n) {
-    printer.pln("/* visiting Import declaration */");
     visit(n);
   }
 
 	public void visitClassBody(GNode n) {
-    printer.pln("/* visiting class body */");
-      visit(n);
+    visit(n);
+  }
+
+  public void visitConstructor(GNode n){
+    visit(n);
   }
 
   public void visitMethodDeclaration(GNode n){
-    printer.pln("/* visiting method declaration */");
     visit(n);
   }
 
   public void visitBlock(GNode n){
-    printer.pln().pln("/* visiting block */");
     visit(n);
   }
 
   public void visitFieldDeclaration(GNode n){
-    printer.pln("/* visiting Field Declaration */");
 	  visit(n);
   }
 

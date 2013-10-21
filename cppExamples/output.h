@@ -11,11 +11,7 @@ namespace subExamples {
 	struct __HelloWorld;
 	struct __HelloWorld_VT;
 
-	struct __HelloUniverse;
-	struct __HelloUniverse_VT;
-
 	typedef __HelloWorld* HelloWorld;
-	typedef __HelloUniverse* HelloUniverse;
 
 	struct __HelloWorld {
 		__HelloWorld_VT* __vptr;
@@ -53,6 +49,13 @@ namespace subExamples {
         returnX(&__HelloWorld::returnX) {
       }
     };
+
+}
+namespace subExamples {
+  struct __HelloUniverse;
+  struct __HelloUniverse_VT;
+
+  typedef __HelloUniverse* HelloUniverse;
 
     struct __HelloUniverse {
     	__HelloUniverse_VT* __vptr;
