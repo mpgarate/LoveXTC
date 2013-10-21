@@ -1,13 +1,14 @@
+/* Print these automatically */
 #include "output.h"
 #include <sstream>
 
+/* Print namespace by using the package name in the tree */
 namespace subExamples {
 
 	/************************************************/
 	/********* Define Items for HelloWorld **********/
 	/************************************************/
 	__HelloWorld::__HelloWorld() : __vptr(&__vtable), world(0) {}
-
 
 	int32_t __HelloWorld::createWorld(HelloWorld __this) {
 		__this->world = 1;
@@ -19,6 +20,7 @@ namespace subExamples {
 		return x;
 	}
 
+	/* Print this statically, filling in only the class name as necessary */
 	Class __HelloWorld::__class() {
       static Class k =
         new __Class(__rt::literal("subExamples.HelloWorld"), (Class) __rt::null());
@@ -39,12 +41,7 @@ namespace subExamples {
 	}
 
 	String __HelloUniverse::toString(HelloUniverse hu) {
-			String toReturn = new __String("x");
-      return toReturn;
-      /* alternative:
 				return new __String("x");
-      */
-
     }
     __HelloUniverse_VT __HelloUniverse::__vtable;
 
