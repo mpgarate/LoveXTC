@@ -14,6 +14,7 @@ namespace subExamples {
 		int32_t x = 5;
 		return x;
 	}
+	__HelloWorld_VT __HelloWorld::__vtable;
 
 	__HelloUniverse::__HelloUniverse() : __vptr(&__vtable) {}
 
@@ -23,8 +24,9 @@ namespace subExamples {
 	}
 
 	String __HelloUniverse::toString() {
-		return "x";
-	}
+      return (String)"x";
+    }
+    __HelloUniverse_VT __HelloUniverse::__vtable;
 
 
 
