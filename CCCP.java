@@ -46,7 +46,7 @@ public class CCCP extends Visitor {
 
 	public void visitClassDeclaration(GNode n) {
     printer.pln("/* visiting class declaration */");
-    printer.p("Class ").p(n.getString(0)).pln(" {");
+    printer.pln("/* " + n.getLocation().toString() + " */");
     visit(n);
   }
 
@@ -57,50 +57,30 @@ public class CCCP extends Visitor {
   }
   public void visitImportDeclaration(GNode n) {
     printer.pln("/* visiting Import declaration */");
-    printer.p("using ");
-    int num = n.size();
-    for (int i = 0; i < num; i++) {
-      printer.p(n.getString(i));
-      if (i < num-1) {
-        printer.p("::");
-      }
-    }
-    printer.pln(";");
     visit(n);
   }
 
 	public void visitClassBody(GNode n) {
     printer.pln("/* visiting class body */");
       visit(n);
-    printer.pln("}");
   }
 
   public void visitMethodDeclaration(GNode n){
     printer.pln("/* visiting method declaration */");
-    printer.p(n.getString(0)).p(' ');
-    printer.p(n.getString(1)).p(" (");
-    printer.p(n.getNode(2).getString(0)).p(' ');
-    printer.p(n.getNode(2).getString(1)).p(")");
-    if (n.get(3) == null) printer.pln(";");
     visit(n);
   }
 
   public void visitBlock(GNode n){
     printer.pln().pln("/* visiting block */");
-    printer.pln("{");
-	    visit(n);
-    printer.pln("}");
+    visit(n);
   }
 
   public void visitFieldDeclaration(GNode n){
     printer.pln("/* visiting Field Declaration */");
-    printer.p(n.getString(1)).p(' ');
 	  visit(n);
   }
 
   public void visitDeclarator(GNode n){
-  	printer.p(n.getString(0)).p(" = ");
-  	printer.p(n.getString(1)).pln(";");
 	  visit(n);
   }
 
