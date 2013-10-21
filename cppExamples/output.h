@@ -1,7 +1,7 @@
 #pragma once
 #include <stdint.h>
-#include "java_lang.h"
 #include <string>
+#include "java_lang.h"
 
 using namespace java::lang;
 using namespace std;
@@ -19,19 +19,19 @@ namespace subExamples {
 
 	struct __HelloWorld {
 		__HelloWorld_VT* __vptr;
-		static int32_t world;
+		int32_t world;
 
 		__HelloWorld();
 
 		static int32_t hashCode(HelloWorld);
-      	static bool equals(HelloWorld, Object);
-      	static Class getClass(HelloWorld);
-      	static String toString(HelloWorld);
-      	static int32_t createWorld();
-      	static int32_t returnX(String);
-      	static Class __class();
+  	static bool equals(HelloWorld, Object);
+  	static Class getClass(HelloWorld);
+  	static String toString(HelloWorld);
+  	static int32_t createWorld(HelloWorld);
+  	static int32_t returnX(String);
+  	static Class __class();
 
-      	static __HelloWorld_VT __vtable;
+  	static __HelloWorld_VT __vtable;
 	};
 
 	struct __HelloWorld_VT {
@@ -40,7 +40,7 @@ namespace subExamples {
       bool (*equals)(HelloWorld, Object);
       Class (*getClass)(HelloWorld);
       String (*toString)(HelloWorld);
-      int32_t (*createWorld)();
+      int32_t (*createWorld)(HelloWorld);
       int32_t (*returnX)(String);
 
       __HelloWorld_VT()
@@ -49,26 +49,26 @@ namespace subExamples {
         equals((bool(*)(HelloWorld,Object)) &__Object::equals),
         getClass((Class(*)(HelloWorld)) &__Object::getClass),
         toString((String(*)(HelloWorld)) &__Object::toString), 
-        createWorld(&__HelloWorld::createWorld),
+        createWorld((int32_t(*)(HelloWorld)) &__HelloWorld::createWorld),
         returnX(&__HelloWorld::returnX) {
       }
     };
 
     struct __HelloUniverse {
     	__HelloUniverse_VT* __vptr;
-    	static int32_t world;
+    	int32_t world;
 
     	__HelloUniverse();
 
     	static int32_t hashCode(HelloUniverse);
-      	static bool equals(HelloUniverse, Object);
-      	static Class getClass(HelloUniverse);
-      	static String toString(HelloUniverse);
-      	static int32_t createWorld();
-      	static int32_t returnX(String);
-      	static Class __class();
+    	static bool equals(HelloUniverse, Object);
+    	static Class getClass(HelloUniverse);
+    	static String toString(HelloUniverse);
+    	static int32_t createWorld(HelloUniverse);
+    	static int32_t returnX(String);
+    	static Class __class();
 
-      	static __HelloUniverse_VT __vtable;
+    	static __HelloUniverse_VT __vtable;
 
     };
 
@@ -78,16 +78,16 @@ namespace subExamples {
       bool (*equals)(HelloUniverse, Object);
       Class (*getClass)(HelloUniverse);
       String (*toString)(HelloUniverse);
-      int32_t (*createWorld)();
+      int32_t (*createWorld)(HelloUniverse);
       int32_t (*returnX)(String);
 
       __HelloUniverse_VT()
       : __isa(__HelloUniverse::__class()),
-        hashCode((int32_t(*)(HelloUniverse)) &__HelloWorld::hashCode),
-        equals((bool(*)(HelloUniverse, Object)) &__HelloWorld::equals),
-        getClass((Class(*)(HelloUniverse)) &__HelloWorld::getClass),
+        hashCode((int32_t(*)(HelloUniverse)) &__Object::hashCode),
+        equals((bool(*)(HelloUniverse, Object)) &__Object::equals),
+        getClass((Class(*)(HelloUniverse)) &__Object::getClass),
         toString(&__HelloUniverse::toString), 
-        createWorld(&__HelloWorld::createWorld),
+        createWorld((int32_t(*)(HelloUniverse)) &__HelloWorld::createWorld),
         returnX(&__HelloUniverse::returnX) {
       }
     };
