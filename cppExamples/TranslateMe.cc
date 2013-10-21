@@ -12,7 +12,7 @@ int main(void){
 	cout << hw->__vptr->toString(hw)->data <<endl;
 
 	const HelloUniverse hu = new __HelloUniverse();
-	cout << hu->__vptr->toString(hu) <<endl;
+	cout << hu->__vptr->toString(hu)->data <<endl;
 	cout << hu->__vptr->createWorld(hu) <<endl;
 
 	return 0;

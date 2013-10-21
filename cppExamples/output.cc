@@ -39,8 +39,12 @@ namespace subExamples {
 	}
 
 	String __HelloUniverse::toString(HelloUniverse hu) {
-			String toReturn = new __String("yolo!");
+			String toReturn = new __String("x");
       return toReturn;
+      /* alternative:
+				return new __String("x");
+      */
+
     }
     __HelloUniverse_VT __HelloUniverse::__vtable;
 
