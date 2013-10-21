@@ -3,26 +3,26 @@
 
 namespace subExamples {
 
-	Helloworld::HelloWorld() : __vptr(&__vtable), world = 0 {}
+	__HelloWorld::__HelloWorld() : __vptr(&__vtable) {}
 
-	int32_t Helloworld::createWorld() {
+	int32_t __HelloWorld::createWorld() {
 		world = 1;
 		return world;
 	}
 
-	int32_t Helloworld::returnX(String a) {
+	int32_t __HelloWorld::returnX(String a) {
 		int32_t x = 5;
 		return x;
 	}
 
-	HelloUniverse::HelloUniverse() : __vptr(&__vtable) {}
+	__HelloUniverse::__HelloUniverse() : __vptr(&__vtable) {}
 
-	int32_t HelloUniverse::returnX(String b) {
+	int32_t __HelloUniverse::returnX(String b) {
 		int32_t x = 10;
 		return x;
 	}
 
-	String HelloUniverse::toString() {
+	String __HelloUniverse::toString() {
 		return "x";
 	}
 
