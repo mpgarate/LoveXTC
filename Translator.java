@@ -119,15 +119,37 @@ public class Translator extends Tool {
       dep.makeAddressList();
       nodeList = dep.makeNodeList();
       /* now nodeList contain all the java files AST's */
+      /*
       LOGGER.info("Printing nodeList:");
       for (int i=0; i<nodeList.size();i++){
         System.out.println(" -> " + nodeList.get(i).getLocation().toString());
       }
       LOGGER.info("End print of node List.");
-      
+      */
+      LOGGER.info("Building inheritance tree:");
       //Build the Inheritance tree
       Inheritance tree = new Inheritance(nodeList);
-      runtime.console().format(tree.getRoot()).pln().flush();
+      //runtime.console().format(tree.getRoot()).pln().flush();
+      LOGGER.info("Modifying AST:");
+      for (GNode listNode : nodeList){
+        ASTModifier CppT = new ASTModifier(listNode);
+        //runtime.console().format(CppT.getRoot()).pln().flush();
+      }
+      for (GNode listNode : nodeList){
+        LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
+        Writer writer = null;
+        try {
+            writer = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream("output/output.cc"), "utf-8"));
+            Printer p = new Printer(writer);
+            new CCCP(p).dispatch(listNode);
+        } catch (IOException ex){
+          // report
+        } finally {
+           try {writer.close();} catch (Exception ex) {}
+        }
+      }
+
     }
 
     if (runtime.test("printCPP")) {
