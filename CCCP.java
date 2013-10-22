@@ -124,16 +124,11 @@ public class CCCP extends Visitor {
     printer.p("__vptr(&__vtable) ");
     visit(n);
     printer.p("{");
+    printer.p("}");
     printer.pln();
-  }
-  public void visitConstructorBlock(GNode n){
-    printer.p(n.toString());
-    visit(n);
   }
   public void visitConstructorExpression(GNode n){
-    printer.p("visiting constructor expression");
-    printer.pln();
-    printer.p(n.getString(0) + "(" +n.getString(1) +")");
+    printer.p(n.getString(0) + "(" +n.getString(1) +") ");
   }
 
   public void visitFieldDeclaration(GNode n){
