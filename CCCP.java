@@ -81,9 +81,9 @@ public class CCCP extends Visitor {
 	public void visitClassBody(GNode n) {
     printer.pln("/* visiting class body */");
     /* Begin the namespace. */
-    printer.pln(unlessNull("namespace " + packageName + " {", packageName));
+    printlnUnlessNull("namespace " + packageName + " {", packageName);
     visit(n);
-    printer.pln(unlessNull("}",packageName)); //Closing namespace
+    printlnUnlessNull("}",packageName); //Closing namespace
   }
 
   public void visitMethodDeclaration(GNode n){
@@ -115,13 +115,13 @@ public class CCCP extends Visitor {
     for (Object o : n) if (o instanceof Node) dispatch((Node) o);
   }
 
-  private String unlessNull(String s){
-    return unlessNull(s, s);
+  private void printlnUnlessNull(String s){
+    printlnUnlessNull(s, s);
   }
 
-  private String unlessNull(String s, String compare){
-    if (!(compare == null)) return s;
-    else return "";
+  private void printlnUnlessNull(String s, String compare){
+    if (!(compare == null)) printer.pln(s);
+    else return;
   }
 
 }

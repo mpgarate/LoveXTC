@@ -5,7 +5,6 @@
 /* visiting qualified identifier */
 /* visiting class declaration */
 /* visiting class body */
-
 /* visiting method declaration */
 /* visiting qualified identifier */
 
@@ -16,7 +15,6 @@
 /* visiting Field Declaration */
 /* visiting qualified identifier */
 /* visiting qualified identifier */
-
 /* Visiting translation unit for examples/subExamples/HelloWorld.java:1:1 */
 /* visiting package declaration */
 /* visiting qualified identifier */
