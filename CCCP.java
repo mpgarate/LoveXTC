@@ -86,15 +86,34 @@ public class CCCP extends Visitor {
   public void visitMethodDeclaration(GNode n){
     v("/* visiting method declaration */");
     String methodName = n.getString(3);
-    printer.p(className + "::" + methodName + "()" +"{");
-    visit(n);
+    printer.p(n.getNode(2));
+    // NEED: formal parameters
+    printer.p(" " +className + "::" + methodName);
+    if (n.getNode(4).size() !=0) {
+      printer.p("(parameters please)" + " {");
+    }
+    else {
+      printer.p("(" + className + " __this)" + " {");
+    }
+    printer.pln();
+    printer.p(n.getNode(7));
   }
+  /** Visit the specified type. */
+  public void visitType(GNode n) {
+    printer.p(n.getNode(0));
+  }
+
+  /** Visit the specified primitive type. */
+  public void visitPrimitiveType(GNode n) {
+    printer.p(n.getString(0));
+  } 
 
   public void visitBlock(GNode n){
     v("/* visiting block */");
     printer.incr();
     visit(n);
     printer.decr().p("}");
+    printer.pln();
   }
 
   public void visitConstructorDeclaration(GNode n){
@@ -103,7 +122,7 @@ public class CCCP extends Visitor {
     printer.p(className + "::" + constructorName + "()" );
     printer.p(" : ");
     printer.p("__vptr(&__vtable) ");
-    printer.p("{}");
+    printer.p("{");
     printer.pln();
     visit(n);
   }
@@ -111,6 +130,13 @@ public class CCCP extends Visitor {
   public void visitFieldDeclaration(GNode n){
     v("/* visiting Field Declaration */");
 	  visit(n);
+    printer.p(";");
+    printer.pln();
+  }
+  public void visitReturnStatement(GNode n){
+    printer.p("return ");
+    visit(n);
+    printer.pln();
   }
 
   public void visitExpressionStatement(GNode n){
@@ -120,11 +146,20 @@ public class CCCP extends Visitor {
   public void visitExpression(GNode n) {
   }
   public void visitPrimaryIdentifier(GNode n) {
+    printer.p(n.getString(0));
   }  
 
-  public void visitDeclarator(GNode n){
+  public void visitDeclarators(GNode n){
 	  visit(n);
   }
+  public void visitDeclarator(GNode n){
+    printer.p(" " + n.getString(0) + " = ");
+    visit(n);
+  }
+  public void visitIntegerLiteral(GNode n){
+    printer.p(n.getString(0));
+  }
+
 
 
   /***************************************************************/
