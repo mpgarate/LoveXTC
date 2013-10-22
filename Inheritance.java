@@ -90,7 +90,7 @@ public class Inheritance {
 			public void visitExtension(GNode n) {
 			    childCount--;
 			    GNode thisNode = (GNode)root.getNode(childCount);
-			    String parent = (String)(n.getNode(0).getNode(0).get(0));
+			    String parent = n.getNode(0).getNode(0).getString(0);
 			    GNode parentNode = findParentNode(root, parent);
 			    if (parentNode == null) {
 						System.out.println("Did not find parent node for " + n.getLocation().toString());
