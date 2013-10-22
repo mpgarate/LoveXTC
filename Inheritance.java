@@ -93,8 +93,8 @@ public class Inheritance {
 			    String parent = (String)(n.getNode(0).getNode(0).get(0));
 			    GNode parentNode = findParentNode(root, parent);
 			    if (parentNode == null) {
-				System.out.println("NOT FOUND");
-				return;
+						System.out.println("Did not find parent node for " + n.getLocation().toString());
+						return;
 			    }
 			    parentNode.add(thisNode);
 			    root.remove(childCount);
