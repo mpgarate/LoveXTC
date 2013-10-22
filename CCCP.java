@@ -32,14 +32,15 @@ public class CCCP extends Visitor {
 	/** The printer for this C printer. */
   protected Printer printer;
   protected Printer header;
-  private String packageName;
   public GNode root;
 
-	public CCCP(Printer pDotCC, Printer pDotH){
-    this.printer = pDotCC;
-    this.header = pDotCC;
+
+  private String packageName;
+  private String className;
+
+	public CCCP(Printer p){
+    this.printer = p;
     printer.register(this);
-    header.register(this);
 	}
 
 
@@ -54,26 +55,17 @@ public class CCCP extends Visitor {
 
 	public void visitClassDeclaration(GNode n) {
     v("/* visiting class declaration */");
+    className = n.getString(1);
     visit(n);
-  }
-
-  public String visitQualifiedIdentifier(GNode n){
-    v("/* visiting qualified identifier */");
-    StringBuilder sb = new StringBuilder();
-
-    int size = n.size();
-    for(int i = size-1; i > -1; i--){
-      sb.append(n.getString(i));
-      if(i > 0) sb.append(".");
-    }
-    visit(n);
-    return sb.toString();
   }
 
   /* TRICKY need to have the namespace scope */
   public void visitPackageDeclaration(GNode n) {
     v("/* visiting package declaration */");
-    packageName = dispatch(n.getNode(1)).toString();
+
+    GNode qid  = n.getGeneric(1);
+    int   size = qid.size();
+    packageName = fold(qid,size);
     visit(n);
   }
   public void visitImportDeclaration(GNode n) {
@@ -84,9 +76,11 @@ public class CCCP extends Visitor {
 	public void visitClassBody(GNode n) {
     v("/* visiting class body */");
     /* Begin the namespace. */
+    printer.incr();
     printlnUnlessNull("namespace " + packageName + " {", packageName);
     visit(n);
     printlnUnlessNull("}",packageName); //Closing namespace
+    printer.decr();
   }
 
   public void visitMethodDeclaration(GNode n){
@@ -96,6 +90,16 @@ public class CCCP extends Visitor {
 
   public void visitBlock(GNode n){
     v("/* visiting block */");
+    visit(n);
+  }
+
+  public void visitConstructorDeclaration(GNode n){
+    String constructorName = n.getString(2);
+    /* TODO: Allow constructor to accept parameters */
+    printer.p(className + "::" + constructorName + "()" );
+    printer.p(" : ");
+    printer.p("__vptr(&__vtable) ");
+    printer.pln();
     visit(n);
   }
 
@@ -110,7 +114,7 @@ public class CCCP extends Visitor {
 
 
   /***************************************************************/
-  /********************   Helper Methods   ***********************/
+  /*******************  XTC Helper Methods  **********************/
   /***************************************************************/
 
 
@@ -118,14 +122,37 @@ public class CCCP extends Visitor {
     for (Object o : n) if (o instanceof Node) dispatch((Node) o);
   }
 
+  /**
+   * Fold the specified qualified identifier.
+   *
+   * @param qid The qualified identifier.
+   * @param size Its size.
+   */
+  protected String fold(GNode qid, int size) {
+    StringBuilder buf = new StringBuilder();
+    for (int i=0; i<size; i++) {
+      buf.append(qid.getString(i));
+      if (i<size-1) buf.append('.');
+    }
+    return buf.toString();
+  }
+
+  /***************************************************************/
+  /***************** Custom Helper Methods  **********************/
+  /***************************************************************/
+
+  /* Unless the string is null, print it out as a line */
   private void printlnUnlessNull(String s){
     printlnUnlessNull(s, s);
   }
 
+  /* Unless the compare string is null, print another string out as a line */
   private void printlnUnlessNull(String s, String compare){
     if (!(compare == null)) printer.pln(s);
     else return;
   }
+
+  /* Print verbose debug messages into output file */
   private void v(String s){
     if(VERBOSE) printer.pln(s);
   }

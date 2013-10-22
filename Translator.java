@@ -133,7 +133,8 @@ public class Translator extends Tool {
       LOGGER.info("Modifying AST:");
       for (GNode listNode : nodeList){
         ASTModifier CppT = new ASTModifier(listNode);
-        //runtime.console().format(CppT.getRoot()).pln().flush();
+        CppT.dispatch(listNode);
+        //runtime.console().format(listNode).pln().flush();
       }
         Writer outCC = null;
         Writer outH = null;
@@ -151,7 +152,7 @@ public class Translator extends Tool {
 
             for (GNode listNode : nodeList){
               LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
-              new CCCP(pCC, pH).dispatch(listNode);
+              new CCCP(pCC).dispatch(listNode);
             }
 
         } catch (IOException ex){

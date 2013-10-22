@@ -15,7 +15,11 @@ import xtc.tree.Token;
 import xtc.tree.Visitor;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
+import java.util.logging.Logger;
+import java.util.logging.Level;
+
 public class ASTModifier extends Visitor {
+  private final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
 
 	/* We should base this file on src/xtc/lang/CPrinter.java */
 
@@ -26,21 +30,18 @@ public class ASTModifier extends Visitor {
 
 	*/
 
-  private GNode root;
-
 	public ASTModifier(GNode n){
-		root = n;
 	}
 
-	public GNode getRoot(){
-		return root;
-	}
 
 	public void visitCompilationUnit(GNode n) {
     visit(n);
   }
 
 	public void visitClassDeclaration(GNode n) {
+    String className = n.getString(1);
+    n.set(1, "__" + className);
+    LOGGER.info("Class dec child 1 is " + n.getString(1));
     visit(n);
   }
 
@@ -55,7 +56,9 @@ public class ASTModifier extends Visitor {
     visit(n);
   }
 
-  public void visitConstructor(GNode n){
+  public void visitConstructorDeclaration(GNode n){
+    String constructorName = n.getString(2);
+    n.set(2, "__" + constructorName);
     visit(n);
   }
 
