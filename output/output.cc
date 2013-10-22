@@ -1,46 +1,27 @@
 #include "output.h"
 #include <sstream>
-/* Visiting translation unit for examples/subExamples/HelloWorld.java:1:1 */
-/* visiting package declaration */
-/* visiting class declaration */
-/* visiting class body */
+__TranslateMe::main(parameters please) {
+ hw = ;
+ hu = ;
+  }
 namespace subExamples {
-/* visiting Field Declaration */
 int32_t world = ;
-__HelloWorld::__HelloWorld() : __vptr(&__vtable) {
-/* visiting block */
+__HelloWorld::__HelloWorld() : __vptr(&__vtable), world(0) {}
+int32_t__HelloWorld::createWorld(HelloWorld __this) {
+return world;
 }
-/* visiting method declaration */
-int32_t __HelloWorld::createWorld(HelloWorld __this) {
-/* visiting block */
-return world
-}
-/* visiting method declaration */
-int32_t __HelloWorld::returnX(parameters please) {
-/* visiting block */
-/* visiting Field Declaration */
+int32_t__HelloWorld::returnX(parameters please) {
 int32_t x = 5;
-return x
+return x;
 }
 }
-/* Visiting translation unit for /Users/ahmadchatha/xtc/oop/examples/subExamples/HelloUniverse.java:1:1 */
-/* visiting package declaration */
-/* visiting class declaration */
-/* visiting class body */
 namespace subExamples {
-__HelloUniverse::__HelloUniverse() : __vptr(&__vtable) {
-/* visiting block */
-}
-/* visiting method declaration */
-int32_t __HelloUniverse::returnX(parameters please) {
-/* visiting block */
-/* visiting Field Declaration */
+__HelloUniverse::__HelloUniverse() : __vptr(&__vtable), {}
+int32_t__HelloUniverse::returnX(parameters please) {
 int32_t x = 10;
-return x
+return x;
 }
-/* visiting method declaration */
- __HelloUniverse::toString(HelloUniverse __this) {
-/* visiting block */
-return 
+__HelloUniverse::toString(HelloUniverse __this) {
+return ;
 }
 }

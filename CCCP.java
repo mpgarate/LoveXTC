@@ -88,9 +88,10 @@ public class CCCP extends Visitor {
     String methodName = n.getString(3);
     printer.p(n.getNode(2));
     // NEED: formal parameters
-    printer.p(" " +className + "::" + methodName);
+    printer.p(className + "::" + methodName);
     if (n.getNode(4).size() !=0) {
       printer.p("(parameters please)" + " {");
+      printer.incr();
     }
     else {
       printer.p("(" + n.getString(5) + " __this)" + " {");
@@ -110,9 +111,8 @@ public class CCCP extends Visitor {
 
   public void visitBlock(GNode n){
     v("/* visiting block */");
-    printer.incr();
     visit(n);
-    printer.decr().p("}");
+    printer.decr().indent().p("}");
     printer.pln();
   }
 
@@ -140,7 +140,7 @@ public class CCCP extends Visitor {
   public void visitReturnStatement(GNode n){
     printer.p("return ");
     visit(n);
-    printer.pln();
+    printer.p(";").pln();
   }
 
   public void visitExpressionStatement(GNode n){
@@ -150,6 +150,7 @@ public class CCCP extends Visitor {
   public void visitExpression(GNode n) {
   }
   public void visitPrimaryIdentifier(GNode n) {
+    //if this is a field, prepend "__this->"
     printer.p(n.getString(0));
   }  
 
