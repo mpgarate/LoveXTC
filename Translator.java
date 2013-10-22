@@ -97,8 +97,14 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printInheritance")) {
-	    LinkedList<GNode> nodeList = new LinkedList<GNode>();
-	    nodeList.add((GNode)node);
+	LinkedList<GNode> nodeList = new LinkedList<GNode>();
+	nodeList.add((GNode)node);
+	Dependency dep = new Dependency(nodeList);
+	dep.makeAddressList();
+	nodeList = dep.makeNodeList();
+	for (int i=0; i<nodeList.size();i++){
+	    System.out.println(" -> " + nodeList.get(i).getLocation().toString());
+	}
     	Inheritance test = new Inheritance(nodeList);
     	runtime.console().format(test.getRoot()).pln().flush();
     }

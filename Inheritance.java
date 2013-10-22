@@ -28,53 +28,57 @@ import static org.junit.Assert.*;
 public class Inheritance {
 	public GNode root;
 	public String class_name;
+	int childCount = 3; //SEE Buildtree function
 
-	public Inheritance(LinkedList<GNode> nodeList) {
-		// Program starts here, we begin by creating Object and String class
-		// nodes.
+	    public Inheritance(LinkedList<GNode> nodeList) {
+		    // Program starts here, we begin by creating Object and String class
+		    // nodes.
 
-		root = GNode.create("Object");
-		GNode headerNode = GNode.create("HeaderDeclaration");
-		GNode stringNode = GNode.create("String");
-		GNode classNode = GNode.create("Class");
+		    root = GNode.create("Object");
+		    GNode headerNode = GNode.create("HeaderDeclaration");
+		    GNode stringNode = GNode.create("String");
+		    GNode classNode = GNode.create("Class");
 
-		root.add(headerNode);
+		    root.add(headerNode);
 
-		headerNode.add(getObjectDataLayout());
-		headerNode.add(getObjectVTable());
+		    headerNode.add(getObjectDataLayout());
+		    headerNode.add(getObjectVTable());
 
-		root.add(stringNode);
-		GNode stringHeader = GNode.create("HeaderDeclaration");
-		stringNode.add(stringHeader);
-		stringHeader.add(getStringDataLayout());
-		stringHeader.add(getStringVTable());
+		    root.add(stringNode);
+		    GNode stringHeader = GNode.create("HeaderDeclaration");
+		    stringNode.add(stringHeader);
+		    stringHeader.add(getStringDataLayout());
+		    stringHeader.add(getStringVTable());
 
-		GNode classHeader = GNode.create("HeaderDeclaration");
-		classHeader.add(getClassDataLayout());
-		classHeader.add(getClassVTable());
-		classNode.add(classHeader);
-		root.add(classNode);
+		    GNode classHeader = GNode.create("HeaderDeclaration");
+		    classHeader.add(getClassDataLayout());
+		    classHeader.add(getClassVTable());
+		    classNode.add(classHeader);
+		    root.add(classNode);
+		    
+		    root.setProperty("type", "CompilationUnit");
+		    stringNode.setProperty("type", "CompilationUnit");
+		    classNode.setProperty("type", "CompilationUnit");
 
-		for (int i = 0; i < nodeList.size(); i++) {
-			buildTree(nodeList.get(i));
-		}
+		    for (int i = 0; i < nodeList.size(); i++) {
+			    buildTree(nodeList.get(i));
+		    }
+	    }
 
-	}
+	    public void buildTree(GNode node) {
+		
+		    childCount++; //keeps track of the location of the most recent child in the tree
 
-	public void buildTree(GNode node) {
-		new Visitor() {
+		    new Visitor() {
 
-			public void visitExtension(GNode n) {
-				System.out.println("Visiting extension");
-				return;
-			}
 
 			public void visitClassDeclaration(GNode n) {
-				System.out.println("Visiting class declaration");
 				String classname = n.getString(1);
 				GNode classNode = GNode.create(classname);
+				classNode.setProperty("type", "CompilationUnit"); //all class nodes should have type compilationunit so we can easily identify them.
 				classNode.add(buildHeader(n));
 				root.add(classNode);
+				visit(n);
 				/*
 				 * if(n.get(3) instanceof Node){ Node child = n.getNode(3); if
 				 * (child.hasName("Extension")){
@@ -82,6 +86,21 @@ public class Inheritance {
 				 */
 				return;
 			}
+
+			public void visitExtension(GNode n) {
+			    childCount--;
+			    GNode thisNode = (GNode)root.getNode(childCount);
+			    String parent = (String)(n.getNode(0).getNode(0).get(0));
+			    GNode parentNode = findParentNode(root, parent);
+			    if (parentNode == null) {
+				System.out.println("NOT FOUND");
+				return;
+			    }
+			    parentNode.add(thisNode);
+			    root.remove(childCount);
+			    return;
+			}
+
 
 			public void visit(Node n) {
 				for (Object o : n) {
@@ -95,6 +114,30 @@ public class Inheritance {
 		/* no need for return */
 		// return root;
 	}
+
+        private GNode findParentNode(GNode startNode, String name) {
+	//DOES A DEPTH-FIRST SEARCH THROUGH THE TREE
+	//RETURNS THE GNODE IF IT FINDS THE PARENT, RETURNS NULL IF IT DOESN'T
+	    if (startNode.getName().equals(name)) {
+		return startNode;
+	    }
+	    else if (!startNode.hasProperty("type")) {
+		return null;
+	    }
+	    else if (startNode.size() == 0) {
+		return null;
+	    }
+	    else { //DEPTH FIRST SEARCH THROUGH THE TREE TO FIND THE PARENT NODE
+		for (int i=0;i<startNode.size();i++) {
+		    GNode solution = findParentNode((GNode)startNode.getNode(i), name);
+		    if (solution != null) {
+			return solution;
+		    }
+		}
+		return null;
+	    }
+	}
+
 
 	public GNode getRoot() {
 		return root;
