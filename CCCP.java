@@ -31,13 +31,18 @@ public class CCCP extends Visitor {
 
 	/** The printer for this C printer. */
   protected Printer printer;
-
+  private String packageName;
   public GNode root;
 
 	public CCCP(Printer printer){
 		this.printer = printer;
 		printer.register(this);
 	}
+
+
+  /***************************************************************/
+  /********************  Visitor Methods  ************************/
+  /***************************************************************/
 
 	public void visitCompilationUnit(GNode n) {
     printer.pln("/* Visiting translation unit for " + n.getLocation().toString() + " */");
@@ -49,9 +54,23 @@ public class CCCP extends Visitor {
     visit(n);
   }
 
+  public String visitQualifiedIdentifier(GNode n){
+    printer.pln("/* visiting qualified identifier */");
+    StringBuilder sb = new StringBuilder();
+
+    int size = n.size();
+    for(int i = size-1; i > -1; i--){
+      sb.append(n.getString(i));
+      if(i > 0) sb.append(".");
+    }
+    visit(n);
+    return sb.toString();
+  }
+
   /* TRICKY need to have the namespace scope */
   public void visitPackageDeclaration(GNode n) {
     printer.pln("/* visiting package declaration */");
+    packageName = dispatch(n.getNode(1)).toString();
     visit(n);
   }
   public void visitImportDeclaration(GNode n) {
@@ -61,7 +80,10 @@ public class CCCP extends Visitor {
 
 	public void visitClassBody(GNode n) {
     printer.pln("/* visiting class body */");
-      visit(n);
+    /* Begin the namespace. */
+    printer.pln(unlessNull("namespace " + packageName + " {", packageName));
+    visit(n);
+    printer.pln(unlessNull("}",packageName)); //Closing namespace
   }
 
   public void visitMethodDeclaration(GNode n){
@@ -83,7 +105,23 @@ public class CCCP extends Visitor {
 	  visit(n);
   }
 
+
+  /***************************************************************/
+  /********************   Helper Methods   ***********************/
+  /***************************************************************/
+
+
   public void visit(Node n) {
     for (Object o : n) if (o instanceof Node) dispatch((Node) o);
   }
+
+  private String unlessNull(String s){
+    return unlessNull(s, s);
+  }
+
+  private String unlessNull(String s, String compare){
+    if (!(compare == null)) return s;
+    else return "";
+  }
+
 }
