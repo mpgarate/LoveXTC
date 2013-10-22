@@ -110,7 +110,8 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printCPPTree")) {
-      ASTBuilder CppT = new ASTBuilder(node);
+      ASTModifier CppT = new ASTModifier((GNode)node);
+      CppT.dispatch((GNode)node);
       runtime.console().format(CppT.getRoot()).pln().flush();
     }
 

@@ -29,9 +29,14 @@ public class ASTModifier extends Visitor {
 			2 - Helper methods to test for various contextual conditions for printing nodes  
 
 	*/
-
+  public GNode root;
 	public ASTModifier(GNode n){
+    root = n;
 	}
+  public GNode getRoot(){
+    return root;
+  }
+
 
 
 	public void visitCompilationUnit(GNode n) {
