@@ -87,6 +87,7 @@ public class CCCP extends Visitor {
     v("/* visiting method declaration */");
     String methodName = n.getString(3);
     printer.p(n.getNode(2));
+    printer.p(" ");
     // NEED: formal parameters
     printer.p(className + "::" + methodName);
     if (n.getNode(4).size() !=0) {
@@ -108,6 +109,10 @@ public class CCCP extends Visitor {
   public void visitPrimitiveType(GNode n) {
     printer.p(n.getString(0));
   } 
+
+  public void visitStringLiteral(GNode n){
+    printer.p(n.getString(0));
+  }
 
   public void visitBlock(GNode n){
     v("/* visiting block */");
