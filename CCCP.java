@@ -19,7 +19,7 @@ import xtc.tree.Visitor;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
 public class CCCP extends Visitor {
-
+  private static final boolean VERBOSE = true;
 	/* We should base this file on src/xtc/lang/CPrinter.java */
 
 	/* This file will have a ton of methods of two types:
@@ -48,17 +48,17 @@ public class CCCP extends Visitor {
   /***************************************************************/
 
 	public void visitCompilationUnit(GNode n) {
-    printer.pln("/* Visiting translation unit for " + n.getLocation().toString() + " */");
+    v("/* Visiting translation unit for " + n.getLocation().toString() + " */");
     visit(n);
   }
 
 	public void visitClassDeclaration(GNode n) {
-    printer.pln("/* visiting class declaration */");
+    v("/* visiting class declaration */");
     visit(n);
   }
 
   public String visitQualifiedIdentifier(GNode n){
-    printer.pln("/* visiting qualified identifier */");
+    v("/* visiting qualified identifier */");
     StringBuilder sb = new StringBuilder();
 
     int size = n.size();
@@ -72,17 +72,17 @@ public class CCCP extends Visitor {
 
   /* TRICKY need to have the namespace scope */
   public void visitPackageDeclaration(GNode n) {
-    printer.pln("/* visiting package declaration */");
+    v("/* visiting package declaration */");
     packageName = dispatch(n.getNode(1)).toString();
     visit(n);
   }
   public void visitImportDeclaration(GNode n) {
-    printer.pln("/* visiting Import declaration */");
+    v("/* visiting Import declaration */");
     visit(n);
   }
 
 	public void visitClassBody(GNode n) {
-    printer.pln("/* visiting class body */");
+    v("/* visiting class body */");
     /* Begin the namespace. */
     printlnUnlessNull("namespace " + packageName + " {", packageName);
     visit(n);
@@ -90,17 +90,17 @@ public class CCCP extends Visitor {
   }
 
   public void visitMethodDeclaration(GNode n){
-    printer.pln("/* visiting method declaration */");
+    v("/* visiting method declaration */");
     visit(n);
   }
 
   public void visitBlock(GNode n){
-    printer.pln().pln("/* visiting block */");
+    v("/* visiting block */");
     visit(n);
   }
 
   public void visitFieldDeclaration(GNode n){
-    printer.pln("/* visiting Field Declaration */");
+    v("/* visiting Field Declaration */");
 	  visit(n);
   }
 
@@ -125,6 +125,9 @@ public class CCCP extends Visitor {
   private void printlnUnlessNull(String s, String compare){
     if (!(compare == null)) printer.pln(s);
     else return;
+  }
+  private void v(String s){
+    if(VERBOSE) printer.pln(s);
   }
 
 }
