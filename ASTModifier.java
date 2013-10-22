@@ -43,6 +43,12 @@ public class ASTModifier extends Visitor {
     visit(n);
   }
 
+  public void visitPrimitiveType(GNode n){
+    if(n.getString(0).equals("int")){
+      n.set(0,"int32_t");
+    }
+  }
+
 	public void visitClassDeclaration(GNode n) {
     String className = n.getString(1);
     n.set(1, "__" + className);
