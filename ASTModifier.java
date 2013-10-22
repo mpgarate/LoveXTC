@@ -30,6 +30,7 @@ public class ASTModifier extends Visitor {
 
 	*/
   public GNode root;
+  public String className;
 	public ASTModifier(GNode n){
     root = n;
 	}
@@ -50,7 +51,7 @@ public class ASTModifier extends Visitor {
   }
 
 	public void visitClassDeclaration(GNode n) {
-    String className = n.getString(1);
+    className = n.getString(1);
     n.set(1, "__" + className);
     LOGGER.info("Class dec child 1 is " + n.getString(1));
     visit(n);
@@ -74,6 +75,9 @@ public class ASTModifier extends Visitor {
   }
 
   public void visitMethodDeclaration(GNode n){
+    if (n.getNode(4).size() == 0){
+      n.set(5, className);
+    }
     visit(n);
   }
 

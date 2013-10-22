@@ -93,7 +93,7 @@ public class CCCP extends Visitor {
       printer.p("(parameters please)" + " {");
     }
     else {
-      printer.p("(" + className + " __this)" + " {");
+      printer.p("(" + n.getString(5) + " __this)" + " {");
     }
     printer.pln();
     printer.p(n.getNode(7));

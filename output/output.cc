@@ -11,7 +11,7 @@ __HelloWorld::__HelloWorld() : __vptr(&__vtable) {
 /* visiting block */
 }
 /* visiting method declaration */
-int32_t __HelloWorld::createWorld(__HelloWorld __this) {
+int32_t __HelloWorld::createWorld(HelloWorld __this) {
 /* visiting block */
 return world
 }
@@ -39,7 +39,7 @@ int32_t x = 10;
 return x
 }
 /* visiting method declaration */
- __HelloUniverse::toString(__HelloUniverse __this) {
+ __HelloUniverse::toString(HelloUniverse __this) {
 /* visiting block */
 return 
 }
