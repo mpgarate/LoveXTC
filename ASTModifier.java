@@ -66,6 +66,21 @@ public class ASTModifier extends Visitor {
 
 	public void visitClassBody(GNode n) {
     visit(n);
+    for (int i = 0; i< n.size(); i++) {
+      if(n.getNode(i).hasName("FieldDeclaration")) {
+        GNode loveFieldDeclaration = GNode.create("LoveFieldDeclaration");
+        GNode loveType = GNode.create("LoveType");
+        GNode loveDeclarator = GNode.create("LoveDeclarator");
+        String ls = n.getNode(i).getNode(1).getNode(0).getString(0);
+        String rs = n.getNode(i).getNode(2).getNode(0).getString(0);
+        loveType.add(ls);
+        loveDeclarator.add(rs);
+        loveFieldDeclaration.add(loveType);
+        loveFieldDeclaration.add(loveDeclarator);
+        n.set(i,loveFieldDeclaration);
+      }
+    }
+    
   }
 
   public void visitConstructorDeclaration(GNode n){
