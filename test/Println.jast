@@ -1,0 +1,66 @@
+Java to C++ Translator, v. 0.1, (C) 2013 <LoveXTC>
+Processing test/Println.java ...
+CompilationUnit(
+  null,
+  ClassDeclaration(
+    Modifiers(
+      Modifier(
+        "public"
+      )
+    ),
+    "Println",
+    null,
+    null,
+    null,
+    ClassBody(
+      MethodDeclaration(
+        Modifiers(
+          Modifier(
+            "public"
+          ),
+          Modifier(
+            "static"
+          )
+        ),
+        null,
+        VoidType(),
+        "main",
+        FormalParameters(
+          FormalParameter(
+            Modifiers(),
+            Type(
+              QualifiedIdentifier(
+                "String"
+              ),
+              null
+            ),
+            null,
+            "args",
+            null
+          )
+        ),
+        null,
+        null,
+        Block(
+          ExpressionStatement(
+            CallExpression(
+              SelectionExpression(
+                PrimaryIdentifier(
+                  "System"
+                ),
+                "out"
+              ),
+              null,
+              "println",
+              Arguments(
+                StringLiteral(
+                  "\"Hello World!\""
+                )
+              )
+            )
+          )
+        )
+      )
+    )
+  )
+)

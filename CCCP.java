@@ -90,7 +90,9 @@ public class CCCP extends Visitor {
 
   public void visitBlock(GNode n){
     v("/* visiting block */");
+    printer.p("{").incr();
     visit(n);
+    printer.decr().p("}");
   }
 
   public void visitConstructorDeclaration(GNode n){
@@ -107,6 +109,18 @@ public class CCCP extends Visitor {
     v("/* visiting Field Declaration */");
 	  visit(n);
   }
+
+  public void visitExpressionStatement(GNode n){
+    printer.indent().p(n.getNode(0)).pln(';');
+  }
+
+  public void visitExpression(GNode n) {
+    printer.p(n.getNode(0));
+    printer.p(' ').p(n.getString(1)).p(' ').p(n.getNode(2));
+  }
+  public void visitPrimaryIdentifier(GNode n) {
+    printer.p(n.getString(0));
+  }  
 
   public void visitDeclarator(GNode n){
 	  visit(n);

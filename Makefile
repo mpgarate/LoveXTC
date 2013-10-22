@@ -54,6 +54,7 @@ SOURCE = \
      TestDriver.java \
      ASTModifier.java \
      LoveXTCLogger.java \
+     JavaPrinter.java \
      Translator.java
 
 JNI_SOURCE =
