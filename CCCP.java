@@ -31,12 +31,15 @@ public class CCCP extends Visitor {
 
 	/** The printer for this C printer. */
   protected Printer printer;
+  protected Printer header;
   private String packageName;
   public GNode root;
 
-	public CCCP(Printer printer){
-		this.printer = printer;
-		printer.register(this);
+	public CCCP(Printer pDotCC, Printer pDotH){
+    this.printer = pDotCC;
+    this.header = pDotCC;
+    printer.register(this);
+    header.register(this);
 	}
 
 

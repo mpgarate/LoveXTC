@@ -135,22 +135,30 @@ public class Translator extends Tool {
         ASTModifier CppT = new ASTModifier(listNode);
         //runtime.console().format(CppT.getRoot()).pln().flush();
       }
-        Writer writer = null;
+        Writer outCC = null;
+        Writer outH = null;
         try {
-            writer = new BufferedWriter(new OutputStreamWriter(
+            outCC = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream("output/output.cc"), "utf-8"));
-            Printer p = new Printer(writer);
+            Printer pCC = new Printer(outCC);
 
-            initHeaderCCFile(p);
+            outH = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream("output/output.h"), "utf-8"));
+            Printer pH = new Printer(outH);
+
+            initOutputCCFile(pCC);
+            initOutputHFile(pH);
 
             for (GNode listNode : nodeList){
               LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
-              new CCCP(p).dispatch(listNode);
+              new CCCP(pCC, pH).dispatch(listNode);
             }
+
         } catch (IOException ex){
           // report
         } finally {
-           try {writer.close();} catch (Exception ex) {}
+           try {outCC.close();} catch (Exception ex) {}
+           try {outH.close();} catch (Exception ex) {}
         }
 
     }
@@ -162,7 +170,7 @@ public class Translator extends Tool {
           writer = new BufferedWriter(new OutputStreamWriter(
                   new FileOutputStream(CppT.getName() + ".cpp"), "utf-8"));
           Printer p = new Printer(writer);
-          new CCCP(p).dispatch(CppT.getRoot());
+          // needs to be updated to have second printer: new CCCP(p).dispatch(CppT.getRoot());
       } catch (IOException ex){
         // report
       } finally {
@@ -171,9 +179,18 @@ public class Translator extends Tool {
     }
   }
 
-  private void initHeaderCCFile(Printer p){
+  private void initOutputCCFile(Printer p){
     p.pln("#include \"output.h\"");
     p.pln("#include <sstream>");
+  }
+  private void initOutputHFile(Printer p){
+    p.pln("#pragma once");
+    p.pln("#include <stdint.h>");
+    p.pln("#include <string>");
+    p.pln("#include \"java_lang.h\"");
+    p.pln("");
+    p.pln("using namespace java::lang;");
+    p.pln("using namespace std;");
   }
   
   /**
