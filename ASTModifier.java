@@ -73,19 +73,16 @@ public class ASTModifier extends Visitor {
     n.set(2, "__" + constructorName);
     GNode constructorBlock = GNode.create("ConstructorBlock");
     GNode constExpressionStatement = GNode.create("ConstructorExpression");
-
-    for (int i = 0; i< n.getNode(5).size()-1; i++) {
+    for (int i = 0; i< n.getNode(5).size(); i++) {
       if(n.getNode(5).getNode(i).hasName("ExpressionStatement")) {
         String ls = n.getNode(5).getNode(i).getNode(0).getNode(0).getString(0);
         String rs = n.getNode(5).getNode(i).getNode(0).getNode(2).getString(0);
-        constExpressionStatement.add(0,ls);
-        constExpressionStatement.add(1,rs);
-        constructorBlock.set(0,constExpressionStatement);
+        constExpressionStatement.add(ls);
+        constExpressionStatement.add(rs);
+        constructorBlock.add(constExpressionStatement);
       }
     }
     n.set(5,constructorBlock);
-    GNode test = 
-    LOGGER.info("Constructor Expression is: " + constExpressionStatement.getString(0));
     visit(n);
   }
 
