@@ -85,12 +85,14 @@ public class CCCP extends Visitor {
 
   public void visitMethodDeclaration(GNode n){
     v("/* visiting method declaration */");
+    String methodName = n.getString(3);
+    printer.p(className + "::" + methodName + "()" +"{");
     visit(n);
   }
 
   public void visitBlock(GNode n){
     v("/* visiting block */");
-    printer.p("{").incr();
+    printer.incr();
     visit(n);
     printer.decr().p("}");
   }
@@ -101,6 +103,7 @@ public class CCCP extends Visitor {
     printer.p(className + "::" + constructorName + "()" );
     printer.p(" : ");
     printer.p("__vptr(&__vtable) ");
+    printer.p("{}");
     printer.pln();
     visit(n);
   }
@@ -111,15 +114,12 @@ public class CCCP extends Visitor {
   }
 
   public void visitExpressionStatement(GNode n){
-    printer.indent().p(n.getNode(0)).pln(';');
+
   }
 
   public void visitExpression(GNode n) {
-    printer.p(n.getNode(0));
-    printer.p(' ').p(n.getString(1)).p(' ').p(n.getNode(2));
   }
   public void visitPrimaryIdentifier(GNode n) {
-    printer.p(n.getString(0));
   }  
 
   public void visitDeclarator(GNode n){
