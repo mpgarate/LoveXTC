@@ -1,53 +1,46 @@
 #include "output.h"
 #include <sstream>
-import subExamples.*;
-
-public class __TranslateMe {
-  public static void main(String[] args) {
-    HelloWorld hw = new HelloWorld();
-
-    System.out.println(hw.toString());
-
-    HelloUniverse hu = new HelloUniverse();
-
-    System.out.println(hu.toString());
-    System.out.println(hu.createWorld());
-  }
+/* Visiting translation unit for examples/subExamples/HelloWorld.java:1:1 */
+/* visiting package declaration */
+/* visiting class declaration */
+/* visiting class body */
+namespace subExamples {
+/* visiting Field Declaration */
+int32_t world = ;
+__HelloWorld::__HelloWorld() : __vptr(&__vtable) {
+/* visiting block */
 }
-package subExamples;
-
-public class __HelloWorld {
-  public int world;
-
-  public __HelloWorld() {
-    world = 0;
-  }
-
-  public int createWorld() {
-    world = 1;
-    return world;
-  }
-
-  public int returnX(String a) {
-    int x = 5;
-
-    return x;
-  }
+/* visiting method declaration */
+int32_t __HelloWorld::createWorld(__HelloWorld __this) {
+/* visiting block */
+return world
 }
-package subExamples;
-
-public class __HelloUniverse extends HelloWorld {
-  public __HelloUniverse() {
-    super();
-  }
-
-  public int returnX(String b) {
-    int x = 10;
-
-    return x;
-  }
-
-  public String toString() {
-    return "x";
-  }
+/* visiting method declaration */
+int32_t __HelloWorld::returnX(parameters please) {
+/* visiting block */
+/* visiting Field Declaration */
+int32_t x = 5;
+return x
+}
+}
+/* Visiting translation unit for /Users/ahmadchatha/xtc/oop/examples/subExamples/HelloUniverse.java:1:1 */
+/* visiting package declaration */
+/* visiting class declaration */
+/* visiting class body */
+namespace subExamples {
+__HelloUniverse::__HelloUniverse() : __vptr(&__vtable) {
+/* visiting block */
+}
+/* visiting method declaration */
+int32_t __HelloUniverse::returnX(parameters please) {
+/* visiting block */
+/* visiting Field Declaration */
+int32_t x = 10;
+return x
+}
+/* visiting method declaration */
+ __HelloUniverse::toString(__HelloUniverse __this) {
+/* visiting block */
+return 
+}
 }
