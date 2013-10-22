@@ -1,37 +1,53 @@
 #include "output.h"
 #include <sstream>
-/* Visiting translation unit for examples/TranslateMe.java:1:1 */
-/* visiting Import declaration */
-/* visiting class declaration */
-/* visiting class body */
-/* visiting method declaration */
-/* visiting block */
-/* visiting Field Declaration */
-/* visiting Field Declaration */
-/* Visiting translation unit for examples/subExamples/HelloWorld.java:1:1 */
-/* visiting package declaration */
-/* visiting class declaration */
-/* visiting class body */
-namespace subExamples {
-/* visiting Field Declaration */
-__HelloWorld::__HelloWorld() : __vptr(&__vtable) 
-/* visiting block */
-/* visiting method declaration */
-/* visiting block */
-/* visiting method declaration */
-/* visiting block */
-/* visiting Field Declaration */
+import subExamples.*;
+
+public class __TranslateMe {
+  public static void main(String[] args) {
+    HelloWorld hw = new HelloWorld();
+
+    System.out.println(hw.toString());
+
+    HelloUniverse hu = new HelloUniverse();
+
+    System.out.println(hu.toString());
+    System.out.println(hu.createWorld());
+  }
 }
-/* Visiting translation unit for examples/subExamples/HelloUniverse.java:1:1 */
-/* visiting package declaration */
-/* visiting class declaration */
-/* visiting class body */
-namespace subExamples {
-__HelloUniverse::__HelloUniverse() : __vptr(&__vtable) 
-/* visiting block */
-/* visiting method declaration */
-/* visiting block */
-/* visiting Field Declaration */
-/* visiting method declaration */
-/* visiting block */
+package subExamples;
+
+public class __HelloWorld {
+  public int world;
+
+  public __HelloWorld() {
+    world = 0;
+  }
+
+  public int createWorld() {
+    world = 1;
+    return world;
+  }
+
+  public int returnX(String a) {
+    int x = 5;
+
+    return x;
+  }
+}
+package subExamples;
+
+public class __HelloUniverse extends HelloWorld {
+  public __HelloUniverse() {
+    super();
+  }
+
+  public int returnX(String b) {
+    int x = 10;
+
+    return x;
+  }
+
+  public String toString() {
+    return "x";
+  }
 }

@@ -159,7 +159,7 @@ public class Translator extends Tool {
 
             for (GNode listNode : nodeList){
               LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
-              new CCCP(pCC).dispatch(listNode);
+              new JavaPrinter(pCC).dispatch(listNode);
             }
 
         } catch (IOException ex){
