@@ -19,7 +19,7 @@ import xtc.tree.Visitor;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
 public class CCCP extends Visitor {
-  private static final boolean VERBOSE = true;
+  private static final boolean VERBOSE = false;
 	/* We should base this file on src/xtc/lang/CPrinter.java */
 
 	/* This file will have a ton of methods of two types:
@@ -121,7 +121,7 @@ public class CCCP extends Visitor {
     /* TODO: Allow constructor to accept parameters */
     printer.p(className + "::" + constructorName + "()" );
     printer.p(" : ");
-    printer.p("__vptr(&__vtable) ");
+    printer.p("__vptr(&__vtable), ");
     visit(n);
     printer.p("{");
     printer.p("}");
