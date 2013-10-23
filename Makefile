@@ -47,7 +47,6 @@ PACKAGE_LOC = xtc/oop
 
 SOURCE = \
 	   CCCP.java \
-	   ASTBuilder.java \
 	   Dependency.java \
 	   Inheritance.java \
      CTranslator.java \

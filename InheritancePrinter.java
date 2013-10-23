@@ -39,9 +39,32 @@ public class InheritancePrinter extends Visitor {
   public void visitHeaderDeclaration(GNode n){
 
   	printer.pln("namespace " + n.getString(0) + " {");
-  	printer.pln("struct __" + n.getString(1) + ";");
+  	className = n.getString(1);
   	visit(n);
   	printer.pln("}").pln();
+  }
+
+  public void visitDataLayout(GNode n){
+  	printer.pln("struct __" + className + ";");
+  	printer.p("struct __" + className + "_VT;").pln(); //
+  	printer.p("typedef __" + className + "* " + className + ";").pln();
+  	printer.p("struct __" + className + " {").pln();
+  	visit(n);
+  	printer.pln("};").pln();
+  }
+
+  public void visitConstructorDeclaration(GNode n){
+  	printer.pln(n.getString(0) + "();");
+  }
+
+  public void visitMethodDeclaration(GNode n){
+  	if (!(n.get(0) == null)) printer.p(n.getNode(0));
+  	if (!(n.get(1) == null)) printer.p(n.getString(1)).p(" ");
+  	printer.p(n.getString(2));
+  	printer.p("(");
+		visit(n.getNode(4));
+  	printer.pln(");");
+
   }
 
   public void visitFieldDeclaration(GNode n){
@@ -51,6 +74,9 @@ public class InheritancePrinter extends Visitor {
   }
 
   public void visitModifiers(GNode n){
+  	if (n.size() == 1) printer.p(n.getString(0)).p(" ");
+  }
+  public void visitParameters(GNode n){
   	if (n.size() == 1) printer.p(n.getString(0)).p(" ");
   }
 
