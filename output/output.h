@@ -20,12 +20,15 @@ static Class __class();
 static main();
 };
 
-Class __isa();
-String toString();
-int32_t hashcode();
-Class getClass();
-bool equals();
-main();
+struct __TranslateMe_VT {
+Class __isa;
+String (*toString)(TranslateMe);
+int32_t (*hashcode)(TranslateMe);
+Class (*getClass)(TranslateMe);
+bool (*equals)(TranslateMe);
+null (*main)(TranslateMe);
+};
+
 }
 
 namespace subExamples {
@@ -46,13 +49,16 @@ static int32_t createWorld();
 static int32_t returnX();
 };
 
-Class __isa();
-String toString();
-int32_t hashcode();
-Class getClass();
-bool equals();
-int32_t createWorld();
-int32_t returnX();
+struct __HelloWorld_VT {
+Class __isa;
+String (*toString)(HelloWorld);
+int32_t (*hashcode)(HelloWorld);
+Class (*getClass)(HelloWorld);
+bool (*equals)(HelloWorld);
+int32_t (*createWorld)(HelloWorld);
+int32_t (*returnX)(HelloWorld);
+};
+
 }
 
 namespace subExamples {
@@ -72,11 +78,15 @@ static int32_t returnX();
 static String toString();
 };
 
-Class __isa();
-int32_t hashcode();
-Class getClass();
-bool equals();
-int32_t returnX();
-String toString();
+struct __HelloUniverse_VT {
+Class __isa;
+String (*toString)(HelloUniverse);
+int32_t (*hashcode)(HelloUniverse);
+Class (*getClass)(HelloUniverse);
+bool (*equals)(HelloUniverse);
+int32_t (*returnX)(HelloUniverse);
+String (*toString)(HelloUniverse);
+};
+
 }
 

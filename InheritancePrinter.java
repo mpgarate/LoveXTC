@@ -21,6 +21,7 @@ public class InheritancePrinter extends Visitor {
 	/** The printer for this C printer. */
   protected Printer printer;
   public GNode root;
+  public GNode dataLayout;
 
   private String packageName;
   private String className;
@@ -45,12 +46,19 @@ public class InheritancePrinter extends Visitor {
   }
 
   public void visitDataLayout(GNode n){
+  	dataLayout = n;
   	printer.pln("struct __" + className + ";");
   	printer.p("struct __" + className + "_VT;").pln(); //
   	printer.p("typedef __" + className + "* " + className + ";").pln();
   	printer.p("struct __" + className + " {").pln();
   	visit(n);
   	printer.pln("};").pln();
+  }
+
+  public void visitFieldDeclaration(GNode n){
+  	visit(n);
+  	printer.p(n.getString(1)).p(" ").p(n.getString(2));
+  	printer.pln(";");
   }
 
   public void visitConstructorDeclaration(GNode n){
@@ -67,10 +75,26 @@ public class InheritancePrinter extends Visitor {
 
   }
 
-  public void visitFieldDeclaration(GNode n){
-  	visit(n);
-  	printer.p(n.getString(1)).p(" ").p(n.getString(2));
-  	printer.pln(";");
+  public void visitVTable(GNode n){
+  	printer.pln("struct __" + className + "_VT {");
+  	printer.pln("Class __isa;");
+  	new Visitor(){
+  		public void visitMethodDeclaration(GNode n){
+  			if(!(n.getString(2).equals("__class"))){
+  				printer.p(n.getString(1) + " (*");
+  				printer.p(n.getString(2));
+  				printer.p(")(");
+  				printer.p(className);
+  				printer.p(");");
+  				printer.pln();
+  			}
+  		}
+  		  public void visit(Node n) {
+		    for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+		  }
+  	}.dispatch(dataLayout);
+  	printer.pln("};");
+  	printer.pln();
   }
 
   public void visitModifiers(GNode n){
