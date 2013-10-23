@@ -5,3 +5,9 @@
 
 using namespace java::lang;
 using namespace std;
+namespace subExamples{
+}
+namespace subExamples{
+}
+namespace subExamples{
+}

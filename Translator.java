@@ -129,7 +129,6 @@ public class Translator extends Tool {
       LOGGER.info("Building inheritance tree:");
       //Build the Inheritance tree
       Inheritance inheritanceTree = new Inheritance(nodeList);
-      runtime.console().format(inheritanceTree.getRoot()).pln().flush();
 
         Writer outH = null;
         try {
@@ -142,7 +141,9 @@ public class Translator extends Tool {
 
             for (GNode listNode : nodeList){
               LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
-              new InheritancePrinter(pH).dispatch(inheritanceTree.parseNodeToInheritance(listNode));
+              GNode listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
+              new InheritancePrinter(pH).dispatch(listNodeTree);
+              runtime.console().format(listNodeTree).pln().flush();
             }
 
         } catch (IOException ex){

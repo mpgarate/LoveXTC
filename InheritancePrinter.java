@@ -36,15 +36,12 @@ public class InheritancePrinter extends Visitor {
   /********************  Visitor Methods  ************************/
   /***************************************************************/
 
-  public void visitObject(GNode n){
-  	LinkedList<String> globalNames = new LinkedList<String>();
-  	for(int i = 0; i<n.size(); i++){
-  		if (!(globalNames.contains(n.getNode(0).getName()))){
-  			printer.p("got here: " + n.getNode(0).getName());
-  		}
-  	}
-  }
+  public void visitHeaderDeclaration(GNode n){
 
+  	printer.pln("namespace " + n.getString(0) + "{");
+  	visit(n);
+  	printer.pln("}");
+  }
 
 
   /***************************************************************/
