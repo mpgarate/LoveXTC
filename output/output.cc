@@ -34,7 +34,7 @@ int32_t x = 10;
 return x;
 }
  __HelloUniverse::toString(HelloUniverse __this) {
-return "x";
+return new __String("x");
 }
 __HelloUniverse_VT __HelloUniverse::__vtable;
 

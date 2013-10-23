@@ -199,7 +199,14 @@ public class CCCP extends Visitor {
     printer.p(n.getString(0));
   }
 
-
+  public void visitNewClassExpression(GNode n){
+    String className = fold((GNode)n.getNode(2), n.getNode(2).size());
+    if (className.equals("String")){
+        printer.p("new __String(");
+        visit(n);
+        printer.p(")");
+    }
+  }
 
   /***************************************************************/
   /*******************  XTC Helper Methods  **********************/
