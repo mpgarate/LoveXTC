@@ -135,7 +135,7 @@ public class CCCP extends Visitor {
   public void visitBlock(GNode n){
     v("/* visiting block */");
     visit(n);
-    printer.decr().indent().p("}");
+    printer.decr().p("}");
     printer.pln();
   }
 
@@ -202,11 +202,9 @@ public class CCCP extends Visitor {
 
   public void visitNewClassExpression(GNode n){
     String className = fold((GNode)n.getNode(2), n.getNode(2).size());
-    if (className.equals("String")){
-        printer.p("new __String(");
-        visit(n);
-        printer.p(")");
-    }
+    printer.p("new __" + className + "(");
+    printer.p(n.getNode(3));      
+    printer.p(")");
   }
 
 

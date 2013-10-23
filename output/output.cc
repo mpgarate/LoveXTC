@@ -1,12 +1,12 @@
 #include "output.h"
 #include <sstream>
 subExamples __TranslateMe::main(String args) {
-HelloWorld hw = ;
+HelloWorld hw = new __HelloWorld();
 Systemhw;
-HelloUniverse hu = ;
+HelloUniverse hu = new __HelloUniverse();
 Systemhu;
 Systemhu;
-  }
+}
 namespace subExamples {
 __HelloWorld::__HelloWorld() : __vptr(&__vtable), world(0) {}
 
@@ -34,7 +34,7 @@ int32_t x = 10;
 return x;
 }
 String __HelloUniverse::toString(HelloUniverse __this) {
-return new __String(String"x");
+return new __String("x");
 }
 __HelloUniverse_VT __HelloUniverse::__vtable;
 
