@@ -31,6 +31,7 @@ public class ASTModifier extends Visitor {
 	*/
   public GNode root;
   public String className;
+  public String a,b,c;
 	public ASTModifier(GNode n){
     root = n;
 	}
@@ -113,7 +114,16 @@ public class ASTModifier extends Visitor {
   public void visitCallExpression(GNode n){
     if(n.getString(2).equals("println")){
       n.set(2, null);
-      n.set(0, "cout");
+      GNode cout = GNode.create("COUT");
+      cout.add("cout");
+      n.set(0, cout);
+    }
+    GNode temp = n.getGeneric(0);
+    if(temp != null && n.getNode(0).getString(0).equals(a)){
+      /*GNode cast = GNode.create("CAST");
+      cast.add("("+b+")"+c);
+      n.set(1,cast);*/
+      n.getNode(0).set(0,"("+b+")"+c);
     }
     visit(n);
   }
@@ -127,6 +137,13 @@ public class ASTModifier extends Visitor {
   }
 
   public void visitDeclarator(GNode n){
+    GNode temp = n.getGeneric(2);
+      if(temp != null && n.getNode(2).hasName("CastExpression")) {
+        a = n.getString(0);
+        b = n.getNode(2).getNode(0).getNode(0).getString(0);
+        c = n.getNode(2).getNode(1).getString(0);
+      }
+
 	  visit(n);
   }
 

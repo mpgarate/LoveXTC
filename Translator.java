@@ -160,13 +160,23 @@ public class Translator extends Tool {
         //runtime.console().format(listNode).pln().flush();
       }
         Writer outCC = null;
+        Writer mainCC = null;
+
         try {
             outCC = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream("output/output.cc"), "utf-8"));
             Printer pCC = new Printer(outCC);
 
-            initOutputCCFile(pCC);
+            mainCC = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream("output/main.cc"), "utf-8"));
+            Printer mCC = new Printer(mainCC);
 
+            initOutputCCFile(pCC);
+            initMainFile(mCC);
+
+            LOGGER.info("Running CCCP on " + nodeList.getFirst().getLocation().toString());
+            new CCCP(mCC).dispatch(nodeList.getFirst());
+            nodeList.removeFirst();
             for (GNode listNode : nodeList){
               LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
               new CCCP(pCC).dispatch(listNode);
@@ -177,6 +187,7 @@ public class Translator extends Tool {
         } finally {
            try {outCC.close();} catch (Exception ex) {}
            try {outH.close();} catch (Exception ex) {}
+           try {mainCC.close();} catch (Exception ex) {}
         }
 
     }
@@ -209,6 +220,15 @@ public class Translator extends Tool {
     p.pln("");
     p.pln("using namespace java::lang;");
     p.pln("using namespace std;");
+  }
+  private void initMainFile(Printer p){
+    p.pln("#include <iostream>");
+    p.pln("#include \"java_lang.h\"");
+    p.pln("#include \"output.h\"");
+    p.pln("");
+    p.pln("using namespace java::lang;");
+    p.pln("using namespace std;");
+    p.pln("");
   }
   
   /**
