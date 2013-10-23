@@ -38,9 +38,20 @@ public class InheritancePrinter extends Visitor {
 
   public void visitHeaderDeclaration(GNode n){
 
-  	printer.pln("namespace " + n.getString(0) + "{");
+  	printer.pln("namespace " + n.getString(0) + " {");
+  	printer.pln("struct __" + n.getString(1) + ";");
   	visit(n);
-  	printer.pln("}");
+  	printer.pln("}").pln();
+  }
+
+  public void visitFieldDeclaration(GNode n){
+  	visit(n);
+  	printer.p(n.getString(1)).p(" ").p(n.getString(2));
+  	printer.pln(";");
+  }
+
+  public void visitModifiers(GNode n){
+  	if (n.size() == 1) printer.p(n.getString(0)).p(" ");
   }
 
 
