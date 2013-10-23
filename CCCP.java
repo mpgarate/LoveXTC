@@ -217,6 +217,12 @@ public class CCCP extends Visitor {
   public void visitIntegerLiteral(GNode n){
     printer.p(n.getString(0));
   }
+  public void visitCastExpression (GNode n){
+    printer.p("(");
+    printer.p(n.getNode(0));
+    printer.p(")");
+    printer.p(n.getNode(1));
+  }
 
   public void visitNewClassExpression(GNode n){
     String className = fold((GNode)n.getNode(2), n.getNode(2).size());
