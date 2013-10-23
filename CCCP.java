@@ -79,10 +79,14 @@ public class CCCP extends Visitor {
     GNode qid  = n.getGeneric(1);
     int   size = qid.size();
     packageName = fold(qid,size);
+
   }
   public void visitImportDeclaration(GNode n) {
     v("/* visiting Import declaration */");
+    printer.p("using namespace ");
     visit(n);
+    printer.pln(";");
+    printer.pln("");
   }
 
 	public void visitClassBody(GNode n) {
@@ -101,6 +105,13 @@ public class CCCP extends Visitor {
   public void visitMethodDeclaration(GNode n){
     v("/* visiting method declaration */");
     String methodName = n.getString(3);
+    if (methodName.equals("main")) {
+      printer.pln("int main(void){");
+      printer.p(n.getNode(7));
+      printer.pln("return 0;");
+      printer.pln("}");
+    }
+    else {
     printer.p(n.getNode(2));
     printer.p(" ");
     // NEED: formal parameters
@@ -117,6 +128,8 @@ public class CCCP extends Visitor {
     }
     printer.pln();
     printer.p(n.getNode(7));
+    printer.pln("}");
+  }
   }
   /** Visit the specified type. */
   public void visitType(GNode n) {
@@ -135,7 +148,7 @@ public class CCCP extends Visitor {
   public void visitBlock(GNode n){
     v("/* visiting block */");
     visit(n);
-    printer.decr().p("}");
+    printer.decr();
     printer.pln();
   }
 
@@ -170,7 +183,7 @@ public class CCCP extends Visitor {
   public void visitExpressionStatement(GNode n){
 
     if ((n.getNode(0).getName().equals("CallExpression")) && 
-       (n.getNode(0).getString(0).equals("cout"))){
+       (n.getNode(0).getNode(0).getString(0).equals("cout"))){
         printer.p("cout << ");
         printer.p(n.getNode(0).getNode(3).getNode(0).getNode(0).getString(0));
         printer.p("->__vptr->");
@@ -203,9 +216,9 @@ public class CCCP extends Visitor {
       printer.p("__this->" + variableName);
     }
     else{
-      printer.p(variableName);
+        printer.p(variableName);
     }
-  }  
+  } 
 
   public void visitDeclarators(GNode n){
 	  visit(n);
