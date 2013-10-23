@@ -55,6 +55,7 @@ SOURCE = \
      ASTModifier.java \
      LoveXTCLogger.java \
      JavaPrinter.java \
+     InheritancePrinter.java \
      Translator.java
 
 JNI_SOURCE =

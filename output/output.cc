@@ -5,6 +5,8 @@ HelloWorld hw = new __HelloWorld();
 cout << hw->__vptr->toString(hw)->data <<endl;
 HelloUniverse hu = new __HelloUniverse();
 cout << hu->__vptr->toString(hu)->data <<endl;
+Object o = (Object)hu;
+cout << o->__vptr->toString(o)->data <<endl;
 cout << hu->__vptr->createWorld(hu) <<endl;
 }
 namespace subExamples {

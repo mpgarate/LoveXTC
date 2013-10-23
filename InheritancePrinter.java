@@ -1,0 +1,71 @@
+package xtc.oop;
+
+import java.lang.*;
+
+/* Imports based on src/xtc/lang/CPrinter.java */
+import java.util.Iterator;
+
+import java.util.LinkedList;
+import xtc.tree.LineMarker;
+import xtc.tree.Node;
+import xtc.tree.GNode;
+import xtc.tree.Pragma;
+import xtc.tree.Printer;
+import xtc.tree.SourceIdentity;
+import xtc.tree.Token;
+import xtc.tree.Visitor;
+/* End imports based on src/xtc/lang/CPrinter.java */
+
+public class InheritancePrinter extends Visitor {
+  private static final boolean VERBOSE = true;
+	/** The printer for this C printer. */
+  protected Printer printer;
+  public GNode root;
+
+  private String packageName;
+  private String className;
+  private String javaClassName;
+
+	public InheritancePrinter(Printer p){
+    this.printer = p;
+    printer.register(this);
+	}
+
+
+  /***************************************************************/
+  /********************  Visitor Methods  ************************/
+  /***************************************************************/
+
+  public void visitHeaderDeclaration(GNode n){
+
+  	printer.pln("namespace " + n.getString(0) + " {");
+  	printer.pln("struct __" + n.getString(1) + ";");
+  	visit(n);
+  	printer.pln("}").pln();
+  }
+
+  public void visitFieldDeclaration(GNode n){
+  	visit(n);
+  	printer.p(n.getString(1)).p(" ").p(n.getString(2));
+  	printer.pln(";");
+  }
+
+  public void visitModifiers(GNode n){
+  	if (n.size() == 1) printer.p(n.getString(0)).p(" ");
+  }
+
+
+  /***************************************************************/
+  /********************  Helper Methods  *************************/
+  /***************************************************************/
+
+  public void visit(Node n) {
+    for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+  }
+
+  /* Print verbose debug messages into output file */
+  private void v(String s){
+    if(VERBOSE) printer.pln(s);
+  }
+
+}
