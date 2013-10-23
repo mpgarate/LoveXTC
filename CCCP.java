@@ -8,6 +8,7 @@ import java.lang.*;
 /* Imports based on src/xtc/lang/CPrinter.java */
 import java.util.Iterator;
 
+import java.util.LinkedList;
 import xtc.tree.LineMarker;
 import xtc.tree.Node;
 import xtc.tree.GNode;
@@ -20,6 +21,7 @@ import xtc.tree.Visitor;
 
 public class CCCP extends Visitor {
   private static final boolean VERBOSE = false;
+  LinkedList<String> classFields = new LinkedList<String>();
 	/* We should base this file on src/xtc/lang/CPrinter.java */
 
 	/* This file will have a ton of methods of two types:
@@ -43,6 +45,16 @@ public class CCCP extends Visitor {
     printer.register(this);
 	}
 
+
+  /***************************************************************/
+  /********************  Visit Love AST  *************************/
+  /***************************************************************/
+
+  public void visitLoveFieldDeclaration(GNode n){
+    StringBuilder sb = new StringBuilder();
+    sb.append(n.getNode(1).getString(0));
+    classFields.add(sb.toString());
+  }
 
   /***************************************************************/
   /********************  Visitor Methods  ************************/
@@ -131,6 +143,7 @@ public class CCCP extends Visitor {
     printer.p("{");
     printer.p("}");
     printer.pln();
+    printer.pln();
   }
   public void visitConstructorExpression(GNode n){
     printer.p(n.getString(0) + "(" +n.getString(1) +") ");
@@ -149,14 +162,25 @@ public class CCCP extends Visitor {
   }
 
   public void visitExpressionStatement(GNode n){
-
+    visit(n);
+    printer.pln(";");
   }
 
   public void visitExpression(GNode n) {
+    printer.p(n.getNode(0));
+    if (n.get(1) != null) printer.p(" = ");
+    if (n.get(2) != null) printer.p(n.getNode(2));
+    //visit(n);
   }
   public void visitPrimaryIdentifier(GNode n) {
     //if this is a field, prepend "__this->"
-    printer.p(n.getString(0));
+    String variableName = n.getString(0);
+    if (classFields.contains(variableName)){
+      printer.p("__this->" + variableName);
+    }
+    else{
+      printer.p(variableName);
+    }
   }  
 
   public void visitDeclarators(GNode n){
