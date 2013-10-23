@@ -29,6 +29,7 @@ public class Inheritance {
 	public GNode root;
 	public String class_name;
 	int childCount = 3; //SEE Buildtree function
+        int[] extraNodes = new int[50];
 
 	    public Inheritance(LinkedList<GNode> nodeList) {
 		    // Program starts here, we begin by creating Object and String class
@@ -63,11 +64,17 @@ public class Inheritance {
 		    for (int i = 0; i < nodeList.size(); i++) {
 			    buildTree(nodeList.get(i));
 		    }
+
+		    for(int i=0;extraNodes[i]!=0;i++) { //Gonna replace this shit with something better later, this just makes sure HelloUniverse is placed in the tree as child of HelloWorld
+			GNode parent = findParentNode(root, (String)root.getNode(i).getProperty("parent"));
+			parent.add(extraNodes[i]);
+			root.remove(i);
+		    }
 	    }
 
 	    public void buildTree(GNode node) {
 		
-		    childCount++; //keeps track of the location of the most recent child in the tree
+		     //childCount keeps track of the location of the most recent child in the tree
 
 		    new Visitor() {
 
@@ -76,8 +83,9 @@ public class Inheritance {
 				String classname = n.getString(1);
 				GNode classNode = GNode.create(classname);
 				classNode.setProperty("type", "CompilationUnit"); //all class nodes should have type compilationunit so we can easily identify them.
-				classNode.add(buildHeader(n));
 				root.add(classNode);
+				childCount++;
+				classNode.setProperty("n", n);
 				visit(n);
 				/*
 				 * if(n.get(3) instanceof Node){ Node child = n.getNode(3); if
@@ -86,18 +94,36 @@ public class Inheritance {
 				 */
 				return;
 			}
-
+			
 			public void visitExtension(GNode n) {
 			    childCount--;
 			    GNode thisNode = (GNode)root.getNode(childCount);
 			    String parent = n.getNode(0).getNode(0).getString(0);
 			    GNode parentNode = findParentNode(root, parent);
 			    if (parentNode == null) {
-						System.out.println("Did not find parent node for " + n.getLocation().toString());
-						return;
+				System.out.println("Did not find parent node for " + n.getLocation().toString());
+				extraNodes[0] = childCount;
+				thisNode.setProperty("parent", parent);
+				childCount++;
+				visit(n);
+				return;
 			    }
+			    thisNode.setProperty("parent", parentNode);
 			    parentNode.add(thisNode);
 			    root.remove(childCount);
+			    thisNode.add(buildHeader((GNode)thisNode.getProperty("n")));
+			    childCount++;
+			    return;
+			    }
+
+			public void visitClassBody(GNode n) {
+			    if (childCount > root.size()) {
+				return;
+			    }
+			    childCount--;
+			    GNode node = (GNode)root.getNode(childCount);
+			    node.add(buildHeader((GNode)node.getProperty("n")));
+			    childCount++;
 			    return;
 			}
 
@@ -147,12 +173,12 @@ public class Inheritance {
 		// Create the VTable here for Object Class
 		GNode objectVTable = GNode.create("VTable");
 		String arg[] = { "__Object" };
-		objectVTable.add(createMethod(null, "__isa", null, "Class"));
-		objectVTable.add(createMethod(null, "toString", arg, "String"));
-		objectVTable.add(createMethod(null, "hashcode", arg, "int32_t"));
-		objectVTable.add(createMethod(null, "getClass", arg, "Class"));
+		objectVTable.add(createMethod(null, "__isa", null, "Class", "Object"));
+		objectVTable.add(createMethod(null, "toString", arg, "String", "Object"));
+		objectVTable.add(createMethod(null, "hashcode", arg, "int32_t", "Object"));
+		objectVTable.add(createMethod(null, "getClass", arg, "Class", "Object"));
 		objectVTable.add(createMethod(null, "equals", new String[] { "Object",
-				"Object" }, "bool"));
+									     "Object" }, "bool", "Object"));
 
 		return objectVTable;
 	}
@@ -167,13 +193,13 @@ public class Inheritance {
 		objectDataLayout.add(createConstructor("Object", null));
 		String arg[] = { "__Object" };
 		String modifier[] = { "static" };
-		objectDataLayout.add(createMethod(modifier, "toString", arg, "String"));
+		objectDataLayout.add(createMethod(modifier, "toString", arg, "String", "Object"));
 		objectDataLayout
-				.add(createMethod(modifier, "hashcode", arg, "int32_t"));
-		objectDataLayout.add(createMethod(modifier, "getClass", arg, "Class"));
+		    .add(createMethod(modifier, "hashcode", arg, "int32_t", "Object"));
+		objectDataLayout.add(createMethod(modifier, "getClass", arg, "Class", "Object"));
 		objectDataLayout.add(createMethod(modifier, "equals", new String[] {
-				"Object", "Object" }, "bool"));
-		objectDataLayout.add(createMethod(modifier, "__class", null, "Class"));
+			    "Object", "Object" }, "bool", "Object"));
+		objectDataLayout.add(createMethod(modifier, "__class", null, "Class", "Object"));
 		return objectDataLayout;
 	}
 
@@ -185,22 +211,22 @@ public class Inheritance {
         	stringDataLayout.add(createConstructor("String",null));
         	String arg[] = {"__String"};
         	String modifier[] = {"static"};
-        	stringDataLayout.add(createMethod(modifier,"toString", arg,"String"));
-        	stringDataLayout.add(createMethod(modifier,"hashcode", arg, "int32_t"));
-        	stringDataLayout.add(createMethod(modifier,"getClass", arg, "Class"));
+        	stringDataLayout.add(createMethod(modifier,"toString", arg,"String", "String"));
+        	stringDataLayout.add(createMethod(modifier,"hashcode", arg, "int32_t", "String"));
+        	stringDataLayout.add(createMethod(modifier,"getClass", arg, "Class", "String"));
         	stringDataLayout.add(createMethod(modifier,"equals",
-                                         new String[]{"__String", "__Object"}, "bool"));
-        	stringDataLayout.add(createMethod(modifier,"__class", null, "Class"));
-        	stringDataLayout.add(createMethod(new String[]{"static"}, "length", new String[]{"__String"}, "int32_t"));
-        	stringDataLayout.add(createMethod(new String[]{"static"}, "charAt", new String[]{"__String", "int32_t"}, "int32_t"));
+						  new String[]{"__String", "__Object"}, "bool", "String"));
+        	stringDataLayout.add(createMethod(modifier,"__class", null, "Class", "String"));
+        	stringDataLayout.add(createMethod(new String[]{"static"}, "length", new String[]{"__String"}, "int32_t", "String"));
+        	stringDataLayout.add(createMethod(new String[]{"static"}, "charAt", new String[]{"__String", "int32_t"}, "int32_t", "String"));
         	return stringDataLayout;
 	
 	}
 
 	private GNode getStringVTable() {
 		GNode stringVTable = getObjectVTable();
-	        stringVTable.add(createMethod(null, "length", new String[]{"__Object"}, "int32_t"));
-	        stringVTable.add(createMethod(null, "charAt", new String[]{"__Object"}, "int32_t"));
+	        stringVTable.add(createMethod(null, "length", new String[]{"__Object"}, "int32_t", "String"));
+	        stringVTable.add(createMethod(null, "charAt", new String[]{"__Object"}, "int32_t", "String"));
 		return stringVTable;
 	}
 
@@ -214,26 +240,26 @@ public class Inheritance {
         	classDataLayout.add(createConstructor("Class",new String[]{"name", "parent"}));
         	String arg[] = {"__Object"};
         	String modifier[] = {"static"};
-        	classDataLayout.add(createMethod(modifier,"toString", arg,"String"));
-        	classDataLayout.add(createMethod(modifier,"getName", null, "String"));
-        	classDataLayout.add(createMethod(modifier,"getSuperclass", null, "Class"));
-        	classDataLayout.add(createMethod(new String[]{"Class", "Object"},"isInstance", null, "bool"));
-        	classDataLayout.add(createMethod(modifier,"__class", null, "Class"));
+        	classDataLayout.add(createMethod(modifier,"toString", arg,"String", "Class"));
+        	classDataLayout.add(createMethod(modifier,"getName", null, "String", "Class"));
+        	classDataLayout.add(createMethod(modifier,"getSuperclass", null, "Class", "Class"));
+        	classDataLayout.add(createMethod(new String[]{"Class", "Object"},"isInstance", null, "bool", "Class"));
+        	classDataLayout.add(createMethod(modifier,"__class", null, "Class", "Class"));
 		return classDataLayout;
 
 	}
 
 	private GNode getClassVTable() {
 		GNode classVTable = getObjectVTable();
-        	classVTable.add(createMethod(null, "getName", new String[]{"__Class"}, "String"));
-        	classVTable.add(createMethod(null, "getSuperclass", new String[]{"__Class"}, "Class"));
-       		classVTable.add(createMethod(null, "isInstance", new String[]{"__Class", "__Object"}, "bool"));
+        	classVTable.add(createMethod(null, "getName", new String[]{"__Class"}, "String", "Class"));
+        	classVTable.add(createMethod(null, "getSuperclass", new String[]{"__Class"}, "Class", "Class"));
+       		classVTable.add(createMethod(null, "isInstance", new String[]{"__Class", "__Object"}, "bool", "Class"));
 
 		return classVTable;
 	}
 
 	private GNode createMethod(String modifiers[], String name, String[] args,
-			String returnType) {
+				   String returnType, String className) {
 		// Create a GNode with method arguments and the returnType as children.
 		// The returnType will always be the first child.
 		GNode methodDeclaration = GNode.create("MethodDeclaration");
@@ -248,6 +274,7 @@ public class Inheritance {
 		methodDeclaration.add(modifierDeclaration);
 		methodDeclaration.add(returnType);
 		methodDeclaration.add(name);
+		methodDeclaration.add(className);
 
 		if (args != null) {
 			for (String arg : args) {
@@ -318,7 +345,9 @@ public class Inheritance {
 	}
 	//Create the node's DataLayout node
 	private GNode getNodeDataLayout(GNode astNode){
-		GNode dataLayout = getParentDataLayout(null);
+	        GNode dataLayout = getParentDataLayout((GNode)astNode.getProperty("parent"));
+		String parent = astNode.getString(1);
+		dataLayout.setProperty("parent", parent);
 		String type = "__" + astNode.getString(1) + "_VT";
 		dataLayout.set(0,createDataFieldEntry(null, type + "*", "__vptr", null));
 		dataLayout.set(1,createDataFieldEntry("static", type, "__vtable", null));
@@ -342,12 +371,14 @@ public class Inheritance {
 	}
 	//Creates the node's VTable node
 	private GNode getNodeVTable(GNode astNode){		
-		GNode vTable = getParentVTable(null);		
+	        GNode vTable = getParentVTable((GNode)astNode.getProperty("parent"));
+		String parent = astNode.getString(1);
+		vTable.setProperty("parent", parent);
 		for(int i = 0;i<astNode.size();i++){
 			if(astNode.get(i) != null && astNode.get(i) instanceof Node){
-				Node child = astNode.getNode(i);
+			        GNode child = (GNode)astNode.getNode(i);
 				if(child.hasName("ClassBody")){		
-					handleClassBody(vTable,(GNode)child,true);
+					handleClassBody(vTable,child,true);
 				}
 			}
 		}
@@ -362,6 +393,19 @@ public class Inheritance {
 					handleFieldDeclaration(inheritNode, (GNode) child);
 				} else if (child.hasName("MethodDeclaration")) {
 					handleMethodDeclaration(inheritNode,(GNode)child, isVTable);
+					if (isVTable) { //METHOD OVERWRITING
+					    for (int j=0;j<inheritNode.size()-1;j++) {
+						String searchName = (String)inheritNode.getNode(j).get(2);
+						String checkName = (String)inheritNode.getNode(inheritNode.size()-1).get(2);
+						if (inheritNode.getNode(j).getNode(4).size() != 0) {
+						    inheritNode.getNode(j).getNode(4).set(0, inheritNode.getProperty("parent"));
+						}
+						if (searchName.equals(checkName)) {
+						    inheritNode.remove(j);
+						    break;
+						}
+					    }
+					}
 				} else if (child.hasName("ConstructorDeclaration") && !isVTable) {
 					handleConstructorDeclaration(inheritNode, (GNode)child);
 				}
@@ -399,6 +443,7 @@ public class Inheritance {
 		if(astNode.getString(3) != null){
 			name = astNode.getString(3);
 		}
+		String className = (String)inheritNode.getProperty("parent");
 		for (int i = 0; i < astNode.size(); i++) {
 			if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
 				Node child = astNode.getNode(i);
@@ -419,7 +464,7 @@ public class Inheritance {
 				}
 			}
 		}
-		inheritNode.add((createMethod(modifiers, name, parameters, returnType)));
+		inheritNode.add((createMethod(modifiers, name, parameters, returnType, className)));
 		return inheritNode;
 	}
 	
@@ -458,19 +503,25 @@ public class Inheritance {
 			cppType = "int32_t";
 		return cppType;
 	}
-	//Returns the parent node Data Layout for inheritance. If parent == null, assumes it's java.lang.Object. Right now it only returns object.
-	private GNode getParentDataLayout(String parent){
+	//Returns the parent node Data Layout for inheritance. If parent == null, assumes it's java.lang.Object.  Added code to get parent node dataLayout.
+	private GNode getParentDataLayout(GNode parent){
 		GNode dataLayout = null;
 		if (parent == null){
 			dataLayout = getObjectDataLayout();
 		}
+		else {
+		        dataLayout = (GNode)parent.getNode(0).getNode(0);
+		}
 		return dataLayout;
 	}
-	//Returns the parent node VTable for inheritance. If parent == null, assumes it's java.lang.Object. Right now it only returns object.
-	private GNode getParentVTable(String parent){
+	//Returns the parent node VTable for inheritance. If parent == null, assumes it's java.lang.Object. Added code to get parent node VTable.
+	private GNode getParentVTable(GNode parent){
 		GNode vTable = null;
 		if (parent == null){
 			vTable = getObjectVTable();
+		}
+		else {
+		        vTable = (GNode)parent.getNode(0).getNode(1);
 		}
 		return vTable;
 	}
