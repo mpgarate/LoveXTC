@@ -27,6 +27,12 @@ int32_t (*hashcode)(TranslateMe);
 Class (*getClass)(TranslateMe);
 bool (*equals)(TranslateMe);
 null (*main)(TranslateMe);
+Class __isa();
+String toString();
+int32_t hashcode();
+Class getClass();
+bool equals();
+main();
 };
 
 }
@@ -57,6 +63,13 @@ Class (*getClass)(HelloWorld);
 bool (*equals)(HelloWorld);
 int32_t (*createWorld)(HelloWorld);
 int32_t (*returnX)(HelloWorld);
+Class __isa();
+String toString();
+int32_t hashcode();
+Class getClass();
+bool equals();
+int32_t createWorld();
+int32_t returnX();
 };
 
 }
@@ -86,6 +99,12 @@ Class (*getClass)(HelloUniverse);
 bool (*equals)(HelloUniverse);
 int32_t (*returnX)(HelloUniverse);
 String (*toString)(HelloUniverse);
+Class __isa();
+int32_t hashcode();
+Class getClass();
+bool equals();
+int32_t returnX();
+String toString();
 };
 
 }

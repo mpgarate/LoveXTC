@@ -78,6 +78,7 @@ public class InheritancePrinter extends Visitor {
   public void visitVTable(GNode n){
   	printer.pln("struct __" + className + "_VT {");
   	printer.pln("Class __isa;");
+
   	new Visitor(){
   		public void visitMethodDeclaration(GNode n){
   			if(!(n.getString(2).equals("__class"))){
@@ -93,6 +94,8 @@ public class InheritancePrinter extends Visitor {
 		    for (Object o : n) if (o instanceof Node) dispatch((Node) o);
 		  }
   	}.dispatch(dataLayout);
+
+    visit(n);
   	printer.pln("};");
   	printer.pln();
   }
