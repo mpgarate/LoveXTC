@@ -385,6 +385,9 @@ public class Inheritance {
 	
 	public GNode parseNodeToInheritance(GNode n){
 		new Visitor(){
+			public void visitPackageDeclaration(Node n){
+				packageName = n.getNode(1).getString(0);
+			}
 			
 			public void visitClassDeclaration(Node n){
 				targetNode = (GNode) n;
@@ -398,9 +401,9 @@ public class Inheritance {
 			}
 		}.dispatch(n);
 		
-		targetNode = GNode.create(n.getString(1));
-		targetNode.add(buildHeader(n));
-		return targetNode;
+		GNode returnNode = GNode.create(targetNode.getString(1));
+		returnNode.add(buildHeader(targetNode));
+		return returnNode;
 	}
 
 	// Create the node's DataLayout node
