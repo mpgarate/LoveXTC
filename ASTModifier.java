@@ -53,6 +53,7 @@ public class ASTModifier extends Visitor {
 	public void visitClassDeclaration(GNode n) {
     className = n.getString(1);
     n.set(1, "__" + className);
+    n.set(3, null);
     LOGGER.info("Class dec child 1 is " + n.getString(1));
     visit(n);
   }

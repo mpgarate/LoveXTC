@@ -1,9 +1,9 @@
 #include "output.h"
 #include <sstream>
- __TranslateMe::main(parameters please) {
- hw = ;
+subExamples __TranslateMe::main(String args) {
+HelloWorld hw = ;
 Systemhw;
- hu = ;
+HelloUniverse hu = ;
 Systemhu;
 Systemhu;
   }
@@ -14,7 +14,7 @@ int32_t __HelloWorld::createWorld(HelloWorld __this) {
 __this->world = 1;
 return __this->world;
 }
-int32_t __HelloWorld::returnX(parameters please) {
+int32_t __HelloWorld::returnX(String a) {
 int32_t x = 5;
 return x;
 }
@@ -29,12 +29,12 @@ return k;
 namespace subExamples {
 __HelloUniverse::__HelloUniverse() : __vptr(&__vtable), {}
 
-int32_t __HelloUniverse::returnX(parameters please) {
+int32_t __HelloUniverse::returnX(String b) {
 int32_t x = 10;
 return x;
 }
- __HelloUniverse::toString(HelloUniverse __this) {
-return new __String("x");
+String __HelloUniverse::toString(HelloUniverse __this) {
+return new __String(String"x");
 }
 __HelloUniverse_VT __HelloUniverse::__vtable;
 

@@ -79,7 +79,6 @@ public class CCCP extends Visitor {
     GNode qid  = n.getGeneric(1);
     int   size = qid.size();
     packageName = fold(qid,size);
-    visit(n);
   }
   public void visitImportDeclaration(GNode n) {
     v("/* visiting Import declaration */");
@@ -107,7 +106,9 @@ public class CCCP extends Visitor {
     // NEED: formal parameters
     printer.p(className + "::" + methodName);
     if (n.getNode(4).size() !=0) {
-      printer.p("(parameters please)" + " {");
+      //printer.p("(").p(n.getNode(4)).p(") {");
+      printer.p(n.getNode(4)).p(" {");
+      //printer.p("(parameters please)" + " {");
       printer.incr();
     }
     else {
@@ -205,6 +206,50 @@ public class CCCP extends Visitor {
         printer.p("new __String(");
         visit(n);
         printer.p(")");
+    }
+  }
+
+
+  /***************************************************************/
+  /*****************  XTC-based Visitor Methods  *****************/
+  /***************************************************************/
+
+  /** Visit the specified formal parameter. */
+  public void visitFormalParameter(GNode n) {
+    final int size = n.size();
+    printer.p(n.getNode(0)).p(n.getNode(1));
+    for (int i=2; i<size-3; i++) { // Print multiple catch types.
+      printer.p(" | ").p(n.getNode(i));
+    }
+    if (null != n.get(size-3)) printer.p(n.getString(size-3));
+    printer.p(' ').p(n.getString(size-2)).p(n.getNode(size-1));
+  }
+  
+
+  public void visitFormalParameters(GNode n) {
+    Iterator<Object> iter = n.iterator();
+      if (iter.hasNext()){
+      printer.p('(');
+      for (iter = n.iterator(); iter.hasNext(); ) {
+        printer.p((Node)iter.next());
+        if (iter.hasNext()) printer.p(", ");
+      }
+      printer.p(')'); 
+    }
+  }
+
+  /** Visit the specified qualified identifier. */
+  public void visitQualifiedIdentifier(GNode n) {
+    if (1 == n.size()) {
+      //String folded = fold(n,1);
+      //if (!(folded.equals(packageName)) && !(folded.equals(javaClassName))){
+        printer.p(n.getString(0));
+      //}
+    } else {
+      for (Iterator<Object> iter = n.iterator(); iter.hasNext(); ) {
+        printer.p(Token.cast(iter.next()));
+        if (iter.hasNext()) printer.p('.');
+      }
     }
   }
 
