@@ -2,10 +2,10 @@
 #include <sstream>
 subExamples __TranslateMe::main(String args) {
 HelloWorld hw = new __HelloWorld();
-Systemhw;
+cout << hw->__vptr->toString(hw)->data <<endl;
 HelloUniverse hu = new __HelloUniverse();
-Systemhu;
-Systemhu;
+cout << hu->__vptr->toString(hu)->data <<endl;
+cout << hu->__vptr->createWorld(hu) <<endl;
 }
 namespace subExamples {
 __HelloWorld::__HelloWorld() : __vptr(&__vtable), world(0) {}

@@ -168,7 +168,25 @@ public class CCCP extends Visitor {
   }
 
   public void visitExpressionStatement(GNode n){
-    visit(n);
+
+    if ((n.getNode(0).getName().equals("CallExpression")) && 
+       (n.getNode(0).getString(0).equals("cout"))){
+        printer.p("cout << ");
+        printer.p(n.getNode(0).getNode(3).getNode(0).getNode(0).getString(0));
+        printer.p("->__vptr->");
+        String functionName = n.getNode(0).getNode(3).getNode(0).getString(2);
+        printer.p(functionName);
+        printer.p("(");
+        visit(n);
+        printer.p(")");
+        if (functionName.equals("toString")){
+          printer.p("->data");
+        }
+        printer.p(" <<endl");
+    }
+    else{
+      visit(n);
+    }
     printer.pln(";");
   }
 

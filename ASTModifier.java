@@ -110,6 +110,14 @@ public class ASTModifier extends Visitor {
     visit(n);
   }
 
+  public void visitCallExpression(GNode n){
+    if(n.getString(2).equals("println")){
+      n.set(2, null);
+      n.set(0, "cout");
+    }
+    visit(n);
+  }
+
   public void visitBlock(GNode n){
     visit(n);
   }
