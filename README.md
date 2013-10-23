@@ -9,13 +9,13 @@ source setup.sh
 
 Convert a java file to C++ with:
 ```sh
-java xtc.oop.Translator -translate examples/XEqualsFive.java
+java xtc.oop.Translator -translate examples/TranslateMe.java
 ```
-This will write a C++ file to ```output.cpp```
+This will write a C++ file to ```output/filename.cc``` as well as the helpers ```output/output.cc``` and ```output/output.h```
 
 Print a java file's C++ AST with:
 ```sh
-java xtc.oop.Translator -printCPPTree examples/XEqualsFive.java
+java xtc.oop.Translator -printCPPTree examples/TranslateMe.java
 ```
 
 If you want to run our example java programs on their own, run the following in the examples folder:
@@ -28,21 +28,18 @@ Run the test suite and compile all code with ```make```
 
 TODO:
 
-* Work on vtables for each class = inheritance
-* use JavaDoc conventions when commenting
 * Write class to scan a directory of java files, translate to c++, compile, and compare results.
-* enhance CPPAST and CCCP Printer
 
 WHAT ARE WE DOING RIGHT NOW?
 * Adam:
 * Ahmad: Dependency finder
 * Bruno:
 * Carl:
-* Michael: Dependency.java
+* Michael: CCCP
 
 FILE STATUS
 * Dependency.java : working for HelloWorld.java and HelloUniverse.java inputs!
 * Inheritance.java : some tree structure present, requires further testing
-* ASTBuilder.java: Handle dependencies and create many many different nodes making NO ASSUMPTIONS.
-* CCCP.java: waiting for the AST to be finished.
-* Translator.java: continue building out -translate option
+* ASTModifier : manipulates tree for C++ output
+* CCCP.java: prints much of output.cc correctly
+* Translator.java: needs to be cleaned up
