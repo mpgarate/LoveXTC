@@ -66,9 +66,9 @@ public class Inheritance {
 		    }
 
 		    for(int i=0;extraNodes[i]!=0;i++) { //Gonna replace this shit with something better later, this just makes sure HelloUniverse is placed in the tree as child of HelloWorld
-			GNode parent = findParentNode(root, (String)root.getNode(i).getProperty("parent"));
-			parent.add(extraNodes[i]);
-			root.remove(i);
+			GNode parent = findParentNode(root, (String)root.getNode(extraNodes[i]).getProperty("parent"));
+			parent.add(root.getNode(extraNodes[i]));
+			root.remove(extraNodes[i]);
 		    }
 	    }
 
