@@ -8,10 +8,10 @@ using namespace std;
 
 int main(void){
 
-	const HelloWorld hw = new __HelloWorld();
+	HelloWorld hw = new __HelloWorld();
 	cout << hw->__vptr->toString(hw)->data <<endl;
 
-	const HelloUniverse hu = new __HelloUniverse();
+	HelloUniverse hu = new __HelloUniverse();
 	cout << hu->__vptr->toString(hu)->data <<endl;
 	cout << hu->__vptr->createWorld(hu) <<endl;
 
