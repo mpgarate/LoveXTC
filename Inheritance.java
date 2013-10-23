@@ -62,7 +62,7 @@ public class Inheritance {
 		root.setProperty("type", "CompilationUnit");
 		stringNode.setProperty("type", "CompilationUnit");
 		classNode.setProperty("type", "CompilationUnit");
-
+		
 		for (int i = 0; i < nodeList.size(); i++) {
 			buildTree(nodeList.get(i));
 		}
@@ -385,15 +385,15 @@ public class Inheritance {
 	
 	public GNode parseNodeToInheritance(GNode n){
 		new Visitor(){
-			public void visitPackageDeclaration(Node n){
+			public void visitPackageDeclaration(GNode n){
 				packageName = n.getNode(1).getString(0);
 			}
 			
-			public void visitClassDeclaration(Node n){
+			public void visitClassDeclaration(GNode n){
 				targetNode = (GNode) n;
 			}
 			
-			public void visit(Node n) {
+			public void visit(GNode n) {
 				for (Object o : n) {
 					if (o instanceof Node)
 						dispatch((Node) o);
