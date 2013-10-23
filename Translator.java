@@ -97,14 +97,14 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printInheritance")) {
-	LinkedList<GNode> nodeList = new LinkedList<GNode>();
-	nodeList.add((GNode)node);
-	Dependency dep = new Dependency(nodeList);
-	dep.makeAddressList();
-	nodeList = dep.makeNodeList();
-	for (int i=0; i<nodeList.size();i++){
-	    System.out.println(" -> " + nodeList.get(i).getLocation().toString());
-	}
+    	LinkedList<GNode> nodeList = new LinkedList<GNode>();
+    	nodeList.add((GNode)node);
+    	Dependency dep = new Dependency(nodeList);
+    	dep.makeAddressList();
+    	nodeList = dep.makeNodeList();
+    	for (int i=0; i<nodeList.size();i++){
+  	    System.out.println(" -> " + nodeList.get(i).getLocation().toString());
+      }
     	Inheritance test = new Inheritance(nodeList);
     	runtime.console().format(test.getRoot()).pln().flush();
     }
@@ -126,17 +126,32 @@ public class Translator extends Tool {
       dep.makeAddressList();
       nodeList = dep.makeNodeList();
       /* now nodeList contain all the java files AST's */
-      /*
-      LOGGER.info("Printing nodeList:");
-      for (int i=0; i<nodeList.size();i++){
-        System.out.println(" -> " + nodeList.get(i).getLocation().toString());
-      }
-      LOGGER.info("End print of node List.");
-      */
       LOGGER.info("Building inheritance tree:");
       //Build the Inheritance tree
-      Inheritance tree = new Inheritance(nodeList);
-      //runtime.console().format(tree.getRoot()).pln().flush();
+      Inheritance inheritanceTree = new Inheritance(nodeList);
+      runtime.console().format(inheritanceTree.getRoot()).pln().flush();
+
+        Writer outH = null;
+        try {
+
+            outH = new BufferedWriter(new OutputStreamWriter(
+                    new FileOutputStream("output/output.h"), "utf-8"));
+            Printer pH = new Printer(outH);
+            
+            initOutputHFile(pH);
+
+            for (GNode listNode : nodeList){
+              LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
+              new InheritancePrinter(pH).dispatch(inheritanceTree.parseNodeToInheritance(listNode));
+            }
+
+        } catch (IOException ex){
+          // report
+        } finally {
+           try {outH.close();} catch (Exception ex) {}
+        }
+
+
       LOGGER.info("Modifying AST:");
       for (GNode listNode : nodeList){
         ASTModifier CppT = new ASTModifier(listNode);
@@ -144,18 +159,12 @@ public class Translator extends Tool {
         //runtime.console().format(listNode).pln().flush();
       }
         Writer outCC = null;
-        Writer outH = null;
         try {
             outCC = new BufferedWriter(new OutputStreamWriter(
                     new FileOutputStream("output/output.cc"), "utf-8"));
             Printer pCC = new Printer(outCC);
 
-            outH = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("output/output.h"), "utf-8"));
-            Printer pH = new Printer(outH);
-
             initOutputCCFile(pCC);
-            initOutputHFile(pH);
 
             for (GNode listNode : nodeList){
               LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
