@@ -193,12 +193,14 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printCPP")) {
-      ASTBuilder CppT = new ASTBuilder(node);
+      ASTModifier CppT = new ASTModifier((GNode)node);
+      CppT.dispatch((GNode)node);
       Writer writer = null;
       try {
           writer = new BufferedWriter(new OutputStreamWriter(
-                  new FileOutputStream(CppT.getName() + ".cpp"), "utf-8"));
+                  new FileOutputStream(CppT.getName() + ".cc"), "utf-8"));
           Printer p = new Printer(writer);
+          new CCCP(p).dispatch((GNode)node);
           // needs to be updated to have second printer: new CCCP(p).dispatch(CppT.getRoot());
       } catch (IOException ex){
         // report
