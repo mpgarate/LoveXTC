@@ -39,6 +39,7 @@ public class CCCP extends Visitor {
 
   private String packageName;
   private String className;
+  private String javaClassName;
 
 	public CCCP(Printer p){
     this.printer = p;
@@ -91,6 +92,9 @@ public class CCCP extends Visitor {
     printer.incr();
     printlnUnlessNull("namespace " + packageName + " {", packageName);
     visit(n);
+
+    printClassMethod();
+
     printlnUnlessNull("}",packageName); //Closing namespace
     printer.decr();
   }
@@ -107,7 +111,8 @@ public class CCCP extends Visitor {
       printer.incr();
     }
     else {
-      printer.p("(" + n.getString(5) + " __this)" + " {");
+      javaClassName = n.getString(5);
+      printer.p("(" + javaClassName + " __this)" + " {");
     }
     printer.pln();
     printer.p(n.getNode(7));
@@ -233,6 +238,18 @@ public class CCCP extends Visitor {
   private void printlnUnlessNull(String s, String compare){
     if (!(compare == null)) printer.pln(s);
     else return;
+  }
+
+  private void printClassMethod(){
+    if (javaClassName != null){
+      printer.pln(className + "_VT " + className + "::__vtable;");
+      printer.pln();
+      printer.pln("Class " + className + "::__class() {");
+      printer.pln("static Class k =");
+      printer.pln("new __Class(__rt::literal(\"" + packageName + "." + javaClassName + "\"), (Class) __rt::null());");
+      printer.pln("return k;");
+      printer.pln("}");
+    }
   }
 
   /* Print verbose debug messages into output file */

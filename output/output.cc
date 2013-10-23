@@ -18,6 +18,13 @@ int32_t __HelloWorld::returnX(parameters please) {
 int32_t x = 5;
 return x;
 }
+__HelloWorld_VT __HelloWorld::__vtable;
+
+Class __HelloWorld::__class() {
+static Class k =
+new __Class(__rt::literal("subExamples.HelloWorld"), (Class) __rt::null());
+return k;
+}
 }
 namespace subExamples {
 __HelloUniverse::__HelloUniverse() : __vptr(&__vtable), {}
@@ -28,5 +35,12 @@ return x;
 }
  __HelloUniverse::toString(HelloUniverse __this) {
 return "x";
+}
+__HelloUniverse_VT __HelloUniverse::__vtable;
+
+Class __HelloUniverse::__class() {
+static Class k =
+new __Class(__rt::literal("subExamples.HelloUniverse"), (Class) __rt::null());
+return k;
 }
 }
