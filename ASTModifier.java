@@ -38,6 +38,9 @@ public class ASTModifier extends Visitor {
   public GNode getRoot(){
     return root;
   }
+  public String getName(){
+    return className;
+  }
 
 
 
