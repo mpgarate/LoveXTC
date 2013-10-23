@@ -1,5 +1,5 @@
 Java to C++ Translator, v. 0.1, (C) 2013 <LoveXTC>
-Processing HelloUniverse.java ...
+Processing examples/subExamples/HelloUniverse.java ...
 CompilationUnit(
   PackageDeclaration(
     null,
@@ -13,7 +13,7 @@ CompilationUnit(
         "public"
       )
     ),
-    "HelloUniverse",
+    "__HelloUniverse",
     null,
     Extension(
       Type(
@@ -32,19 +32,10 @@ CompilationUnit(
           )
         ),
         null,
-        "HelloUniverse",
+        "__HelloUniverse",
         FormalParameters(),
         null,
-        Block(
-          ExpressionStatement(
-            CallExpression(
-              null,
-              null,
-              "super",
-              Arguments()
-            )
-          )
-        )
+        ConstructorBlock()
       ),
       MethodDeclaration(
         Modifiers(
@@ -55,7 +46,7 @@ CompilationUnit(
         null,
         Type(
           PrimitiveType(
-            "int"
+            "int32_t"
           ),
           null
         ),
@@ -81,7 +72,7 @@ CompilationUnit(
             Modifiers(),
             Type(
               PrimitiveType(
-                "int"
+                "int32_t"
               ),
               null
             ),
@@ -117,12 +108,22 @@ CompilationUnit(
         ),
         "toString",
         FormalParameters(),
-        null,
+        "HelloUniverse",
         null,
         Block(
           ReturnStatement(
-            StringLiteral(
-              "\"x\""
+            NewClassExpression(
+              null,
+              null,
+              QualifiedIdentifier(
+                "String"
+              ),
+              Arguments(
+                StringLiteral(
+                  "\"x\""
+                )
+              ),
+              null
             )
           )
         )

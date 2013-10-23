@@ -10,6 +10,6 @@ public class HelloUniverse extends HelloWorld {
 	}
 
 	public String toString(){
-		return "x";
+		return new String("x");
 	}
 }
