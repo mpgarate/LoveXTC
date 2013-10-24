@@ -629,7 +629,7 @@ public class Inheritance {
 				}
 			}
 		}
-		inheritNode.add(createConstructor(name, parameters));
+		inheritNode.add(2, createConstructor(name, parameters));
 		return inheritNode;
 	}
 
