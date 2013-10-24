@@ -27,9 +27,9 @@ import static org.junit.Assert.*;
 
 public class Inheritance {
 	public GNode root;
+    public GNode stackNode; //This is the top node of the stack of the nodes that have yet to be processed.
 	public String class_name;
 	int childCount = 3; // SEE Buildtree function
-	int[] extraNodes = new int[50];
 	String packageName = null;
 	GNode targetNode;
 
@@ -67,17 +67,19 @@ public class Inheritance {
 			buildTree(nodeList.get(i));
 		}
 
-		for (int i = 0; extraNodes[i] != 0; i++) { // Gonna replace this shit
-													// with something better
-													// later, this just makes
-													// sure HelloUniverse is
-													// placed in the tree as
-													// child of HelloWorld
-			GNode parent = findParentNode(root,
-					(String) root.getNode(extraNodes[i]).getProperty("parent"));
-			parent.add(root.getNode(extraNodes[i]));
-			root.remove(extraNodes[i]);
+		//STACKNODE FOR-LOOP
+		for (GNode s=stackNode;s!=null;s=(GNode)s.getNode(0)) {
+		    GNode parent = findParentNode(root, (String)s.getProperty("parentString"));
+		    parent.add(s);
+		    root.remove((Integer)s.getProperty("numberInRoot"));
+		    s.setProperty("parent", parent);
 		}
+
+		//BUILD THE HEADERS FOR THE TREE
+		for (int i=3;i<root.size();i++) {
+		    buildTreeHeaders((GNode)root.getNode(i));
+		}
+		    
 	}
 
 	public void buildTree(GNode node) {
@@ -96,7 +98,9 @@ public class Inheritance {
 				classNode.setProperty("type", "CompilationUnit"); //all class nodes should have type compilationunit so we can easily identify them.
 				root.add(classNode);
 				childCount++;
-				classNode.setProperty("n", n);
+				classNode.setProperty("javaAST", n);
+				
+				
 				visit(n);
 				/*
 				 * if(n.get(3) instanceof Node){ Node child = n.getNode(3); if
@@ -113,16 +117,16 @@ public class Inheritance {
 			    GNode parentNode = findParentNode(root, parent);
 			    if (parentNode == null) {
 				System.out.println("Did not find parent node for " + n.getLocation().toString());
-				extraNodes[0] = childCount;
-				thisNode.setProperty("parent", parent);
+				thisNode.setProperty("parentString", parent);
+				thisNode.setProperty("numberInRoot", childCount);
 				childCount++;
-				visit(n);
+				thisNode.add(stackNode);
+				stackNode = thisNode;
 				return;
 			    }
 			    thisNode.setProperty("parent", parentNode);
 			    parentNode.add(thisNode);
 			    root.remove(childCount);
-			    thisNode.add(buildHeader((GNode)thisNode.getProperty("n")));
 			    childCount++;
 			    return;
 			    }
@@ -131,9 +135,9 @@ public class Inheritance {
 			    if (childCount > root.size()) {
 				return;
 			    }
+
 			    childCount--;
 			    GNode node = (GNode)root.getNode(childCount);
-			    node.add(buildHeader((GNode)node.getProperty("n")));
 			    childCount++;
 			    return;
 			}
@@ -171,6 +175,17 @@ public class Inheritance {
 			}
 			return null;
 		}
+	}
+	private void buildTreeHeaders(GNode startNode) {
+		// DOES A DEPTH-FIRST SEARCH THROUGH THE TREE AND ADDS ALL HEADERS
+	    startNode.add(0, buildHeader((GNode)startNode.getProperty("javaAST"), (GNode)startNode.getProperty("parent")));
+	    if (startNode.size()<=1) {
+		return;
+	    }
+	    for (int i=1;i<startNode.size();i++) {
+		buildTreeHeaders((GNode)startNode.getNode(i));
+	    }
+	    return;
 	}
 
 	public GNode getRoot() {
@@ -374,12 +389,12 @@ public class Inheritance {
 	}
 
 	// Builds the header in the Inheritance tree
-	public GNode buildHeader(GNode astNode) {
+    public GNode buildHeader(GNode astNode, GNode parentNode) {
 		GNode header = GNode.create("HeaderDeclaration");
 		header.add(packageName);
 		header.add(astNode.getString(1));
-		header.add(getNodeDataLayout(astNode));
-		header.add(getNodeVTable(astNode));
+		header.add(getNodeDataLayout(astNode, parentNode));
+		header.add(getNodeVTable(astNode, parentNode));
 		return header;
 	}
 	
@@ -402,14 +417,13 @@ public class Inheritance {
 		}.dispatch(n);
 		
 		GNode returnNode = GNode.create(targetNode.getString(1));
-		returnNode.add(buildHeader(targetNode));
+		returnNode.add(buildHeader(targetNode, null));
 		return returnNode;
 	}
 
 	// Create the node's DataLayout node
-	private GNode getNodeDataLayout(GNode astNode) {
-		GNode dataLayout = getParentDataLayout((GNode) astNode
-				.getProperty("parent"));
+    private GNode getNodeDataLayout(GNode astNode, GNode parentNode) {
+	GNode dataLayout = getParentDataLayout(parentNode);
 		String parent = astNode.getString(1);
 		dataLayout.setProperty("parent", parent);
 		String type = "__" + astNode.getString(1) + "_VT";
@@ -439,8 +453,8 @@ public class Inheritance {
 	}
 
 	// Creates the node's VTable node
-	private GNode getNodeVTable(GNode astNode) {
-		GNode vTable = getParentVTable((GNode) astNode.getProperty("parent"));
+    private GNode getNodeVTable(GNode astNode, GNode parentNode) {
+	GNode vTable = getParentVTable(parentNode);
 		String parent = astNode.getString(1);
 		vTable.setProperty("parent", parent);
 		for (int i = 0; i < astNode.size(); i++) {
@@ -605,7 +619,7 @@ public class Inheritance {
 		if (parent == null) {
 			dataLayout = getObjectDataLayout();
 		} else {
-			dataLayout = (GNode) parent.getNode(0).getNode(0);
+			dataLayout = (GNode) parent.getNode(0).getNode(2);
 		}
 		return dataLayout;
 	}
@@ -617,7 +631,7 @@ public class Inheritance {
 		if (parent == null) {
 			vTable = getObjectVTable();
 		} else {
-			vTable = (GNode) parent.getNode(0).getNode(1);
+			vTable = (GNode) parent.getNode(0).getNode(3);
 		}
 		return vTable;
 	}
