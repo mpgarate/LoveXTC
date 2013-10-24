@@ -147,9 +147,9 @@ public class Inheritance {
 		headerNode.add(packageName);
 		headerNode.add(classname);
 		classNode.add(headerNode);
-		GNode parent = findInTree(parent);
-		if (parent != null){
-			parent.add(classNode);
+		GNode foundParent = findInTree(parent);
+		if (foundParent != null){
+			foundParent.add(classNode);
 		}
 
 	}
@@ -162,13 +162,14 @@ public class Inheritance {
 		}
 		for(int i =0; i< root.size();i++){
 			if (root.getNode(i).hasName(name)){
-				return root.getNode(i);
+				return (GNode)root.getNode(i);
 			}
 			else {
 				System.out.println("cannot find parent in inheritance tree");
 				return null;
 			}
 		}
+	}
 
 		
 	public GNode findParentInLL(String name){
