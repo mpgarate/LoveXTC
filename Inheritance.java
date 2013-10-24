@@ -523,6 +523,7 @@ public class Inheritance {
 					handleMethodDeclaration(inheritNode, (GNode) child,
 							isVTable);
 					// METHOD OVERWRITING
+					boolean isOverwritten = false;
 					for (int j = 0; j < inheritNode.size() - 1; j++) {
 					    if (inheritNode.getNode(j).size() == 5) {
 						String searchName = (String) inheritNode.getNode(j).get(2);
@@ -532,12 +533,14 @@ public class Inheritance {
 						    inheritNode.getNode(j).getNode(4).set(0,inheritNode.getProperty("parent"));
 						}
 						if (searchName.equals(checkName)) {
-						    inheritNode.set(j,inheritNode.getNode(inheritNode.size()-1));						    			
+						    inheritNode.set(j,inheritNode.getNode(inheritNode.size()-1));			
+						isOverwritten = true;			    			
 						    break;
 						}
 					    }
 					}
-					inheritNode.remove(inheritNode.size() -1);
+					if(isOverwritten)
+						inheritNode.remove(inheritNode.size() -1);
 				} else if (child.hasName("ConstructorDeclaration") && !isVTable) {
 					handleConstructorDeclaration(inheritNode, (GNode) child);
 				}
