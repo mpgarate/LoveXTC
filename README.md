@@ -11,7 +11,7 @@ Convert a java file to C++ with:
 ```sh
 java xtc.oop.Translator -translate examples/TranslateMe.java
 ```
-This will write a C++ file to ```output/filename.cc``` as well as the helpers ```output/output.cc``` and ```output/output.h```
+This will write a C++ file to ```output/main.cc``` as well as the helpers ```output/output.cc``` and ```output/output.h```
 
 Print a java file's C++ AST with:
 ```sh
