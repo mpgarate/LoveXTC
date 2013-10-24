@@ -213,12 +213,13 @@ public class Inheritance {
 		GNode objectVTable = GNode.create("VTable");
 		String arg[] = { "__Object" };
 		objectVTable.add(createMethod(null, "__isa", null, "Class", "Object", isVTable));
+		objectVTable.add(createMethod(null, "toString", arg, "String", "Object", isVTable));
 		objectVTable.add(createMethod(null, "hashCode", arg, "int32_t",
 				"Object", isVTable));
 		objectVTable.add(createMethod(null, "getClass", arg, "Class", "Object", isVTable));
 		objectVTable.add(createMethod(null, "equals", new String[] { "Object",
 				"Object" }, "bool", "Object", isVTable));
-		objectVTable.add(createMethod(null, "toString", arg, "String", "Object", isVTable));
+		
 
 		return objectVTable;
 	}
@@ -234,15 +235,14 @@ public class Inheritance {
 		objectDataLayout.add(createConstructor("Object", null));
 		String arg[] = { "__Object" };
 		String modifier[] = { "static" };
-		
+		objectDataLayout.add(createMethod(modifier, "toString", arg, "String",
+				"Object", isVTable));
 		objectDataLayout.add(createMethod(modifier, "hashCode", arg, "int32_t",
 				"Object",isVTable));
 		objectDataLayout.add(createMethod(modifier, "getClass", arg, "Class",
 				"Object",isVTable));
 		objectDataLayout.add(createMethod(modifier, "equals", new String[] {
 				"Object", "Object" }, "bool", "Object",isVTable));
-		objectDataLayout.add(createMethod(modifier, "toString", arg, "String",
-				"Object", isVTable));
 		objectDataLayout.add(createMethod(modifier, "__class", null, "Class",
 				"Object",isVTable));
 		return objectDataLayout;
