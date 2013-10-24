@@ -118,7 +118,7 @@ public class Inheritance {
 		/* no need for return */
 		// return root;
 	}
-	public addTotree(GNode n, String parent) {
+	public void addTotree(GNode n, String parent) {
 		String classname = n.getString(1);
         GNode classNode = GNode.create(classname);
         classNode.setProperty("type", "CompilationUnit");
@@ -133,13 +133,13 @@ public class Inheritance {
 		root.add(classNode);
 
 	}
-	public redefineObjectdatalayout(GNode dataLayout, GNode javaAST){
+	public void redefineObjectdatalayout(GNode dataLayout, GNode javaAST){
 
 	}
-	public redefineObjectVTable(GNode vTable, GNode javaAST){
+	public void redefineObjectVTable(GNode vTable, GNode javaAST){
 		
 	}
-	public addTotree(GNode n, GNode parent) {
+	public void addTotree(GNode n, GNode parent) {
 		String classname = n.getString(1);
         GNode classNode = GNode.create(classname);
         classNode.setProperty("type", "CompilationUnit");
@@ -148,11 +148,29 @@ public class Inheritance {
 		headerNode.add(classname);
 		classNode.add(headerNode);
 		GNode parent = findInTree(parent);
-		parent.add(classNode);
+		if (parent != null){
+			parent.add(classNode);
+		}
+
 	}
-	public findInTree(GNode parent){
-		String name = parent.getNode();
-	}
+	public GNode findInTree(GNode parent){
+		String name;
+		for(int i =0; i< parent.size();i++){
+			if (parent.getNode(i).hasName("ClassDeclaration")){
+				name = parent.getNode(i).getString(1);
+			}
+		}
+		for(int i =0; i< root.size();i++){
+			if (root.getNode(i).hasName(name)){
+				return root.getNode(i);
+			}
+			else {
+				System.out.println("cannot find parent in inheritance tree");
+				return null;
+			}
+		}
+
+		
 	public GNode findParentInLL(String name){
 
 	}
