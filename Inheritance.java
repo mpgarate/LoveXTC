@@ -179,23 +179,23 @@ public class Inheritance {
 
 	private GNode getObjectVTable() {
 		// Create the VTable here for Object Class
+		boolean isVTable = true;
 		GNode objectVTable = GNode.create("VTable");
 		String arg[] = { "__Object" };
-		objectVTable.add(createMethod(null, "__isa", null, "Class", "Object"));
-		objectVTable
-				.add(createMethod(null, "toString", arg, "String", "Object"));
+		objectVTable.add(createMethod(null, "__isa", null, "Class", "Object", isVTable));
+		objectVTable.add(createMethod(null, "toString", arg, "String", "Object", isVTable));
 		objectVTable.add(createMethod(null, "hashcode", arg, "int32_t",
-				"Object"));
-		objectVTable
-				.add(createMethod(null, "getClass", arg, "Class", "Object"));
+				"Object", isVTable));
+		objectVTable.add(createMethod(null, "getClass", arg, "Class", "Object", isVTable));
 		objectVTable.add(createMethod(null, "equals", new String[] { "Object",
-				"Object" }, "bool", "Object"));
+				"Object" }, "bool", "Object", isVTable));
 
 		return objectVTable;
 	}
 
 	private GNode getObjectDataLayout() {
 		// Create the Data Layout here for Object Class
+		boolean isVTable = false;
 		GNode objectDataLayout = GNode.create("DataLayout");
 		objectDataLayout.add(createDataFieldEntry(null, "__Object_VT*",
 				"__vptr", null));
@@ -205,20 +205,21 @@ public class Inheritance {
 		String arg[] = { "__Object" };
 		String modifier[] = { "static" };
 		objectDataLayout.add(createMethod(modifier, "toString", arg, "String",
-				"Object"));
+				"Object", isVTable));
 		objectDataLayout.add(createMethod(modifier, "hashcode", arg, "int32_t",
-				"Object"));
+				"Object",isVTable));
 		objectDataLayout.add(createMethod(modifier, "getClass", arg, "Class",
-				"Object"));
+				"Object",isVTable));
 		objectDataLayout.add(createMethod(modifier, "equals", new String[] {
-				"Object", "Object" }, "bool", "Object"));
+				"Object", "Object" }, "bool", "Object",isVTable));
 		objectDataLayout.add(createMethod(modifier, "__class", null, "Class",
-				"Object"));
+				"Object",isVTable));
 		return objectDataLayout;
 	}
 
 	private GNode getStringDataLayout() {
 		// Create the Data Layout for the String Class
+		boolean isVTable = false;
 		GNode stringDataLayout = GNode.create("DataLayout");
 		stringDataLayout.add(createDataFieldEntry(null, "__String_VT*",
 				"__vptr", null));
@@ -228,40 +229,41 @@ public class Inheritance {
 		String arg[] = { "__String" };
 		String modifier[] = { "static" };
 		stringDataLayout.add(createMethod(modifier, "toString", arg, "String",
-				"String"));
+				"String",isVTable));
 		stringDataLayout.add(createMethod(modifier, "hashcode", arg, "int32_t",
-				"String"));
+				"String",isVTable));
 		stringDataLayout.add(createMethod(modifier, "getClass", arg, "Class",
-				"String"));
+				"String",isVTable));
 		stringDataLayout.add(createMethod(modifier, "equals", new String[] {
-				"__String", "__Object" }, "bool", "String"));
+				"__String", "__Object" }, "bool", "String",isVTable));
 		stringDataLayout.add(createMethod(modifier, "__class", null, "Class",
-				"String"));
+				"String",isVTable));
 		stringDataLayout.add(createMethod(new String[] { "static" }, "length",
-				new String[] { "__String" }, "int32_t", "String"));
+				new String[] { "__String" }, "int32_t", "String",isVTable));
 		stringDataLayout.add(createMethod(new String[] { "static" }, "charAt",
-				new String[] { "__String", "int32_t" }, "int32_t", "String"));
+				new String[] { "__String", "int32_t" }, "int32_t", "String",isVTable));
 		return stringDataLayout;
 
 	}
 
 	private GNode getStringVTable() {
+		boolean isVTable = true;
 		GNode stringVTable = getObjectVTable();
 		stringVTable.add(createMethod(null, "length",
-				new String[] { "__Object" }, "int32_t", "String"));
+				new String[] { "__Object" }, "int32_t", "String",isVTable));
 		stringVTable.add(createMethod(null, "charAt",
-				new String[] { "__Object" }, "int32_t", "String"));
+				new String[] { "__Object" }, "int32_t", "String",isVTable));
 		return stringVTable;
 	}
 
 	private GNode getClassDataLayout() {
 		// Create the Data Layout for the java.lang.Class class
+		boolean isVTable = false;
 		GNode classDataLayout = GNode.create("DataLayout");
 		classDataLayout.add(createDataFieldEntry(null, "__Class_VT*", "__vptr",
 				null));
 		classDataLayout.add(createDataFieldEntry(null, "String", "name", null));
-		classDataLayout
-				.add(createDataFieldEntry(null, "Class", "parent", null));
+		classDataLayout.add(createDataFieldEntry(null, "Class", "parent", null));
 		classDataLayout.add(createDataFieldEntry("static", "__Class_VT",
 				"vtable", null));
 		classDataLayout.add(createConstructor("Class", new String[] { "name",
@@ -269,36 +271,41 @@ public class Inheritance {
 		String arg[] = { "__Object" };
 		String modifier[] = { "static" };
 		classDataLayout.add(createMethod(modifier, "toString", arg, "String",
-				"Class"));
+				"Class",isVTable));
 		classDataLayout.add(createMethod(modifier, "getName", null, "String",
-				"Class"));
+				"Class",isVTable));
 		classDataLayout.add(createMethod(modifier, "getSuperclass", null,
-				"Class", "Class"));
+				"Class", "Class",isVTable));
 		classDataLayout.add(createMethod(new String[] { "Class", "Object" },
-				"isInstance", null, "bool", "Class"));
+				"isInstance", null, "bool", "Class",isVTable));
 		classDataLayout.add(createMethod(modifier, "__class", null, "Class",
-				"Class"));
+				"Class",isVTable));
 		return classDataLayout;
 
 	}
 
 	private GNode getClassVTable() {
+		boolean isVTable = true;
 		GNode classVTable = getObjectVTable();
 		classVTable.add(createMethod(null, "getName",
-				new String[] { "__Class" }, "String", "Class"));
+				new String[] { "__Class" }, "String", "Class",isVTable));
 		classVTable.add(createMethod(null, "getSuperclass",
-				new String[] { "__Class" }, "Class", "Class"));
+				new String[] { "__Class" }, "Class", "Class",isVTable));
 		classVTable.add(createMethod(null, "isInstance", new String[] {
-				"__Class", "__Object" }, "bool", "Class"));
+				"__Class", "__Object" }, "bool", "Class",isVTable));
 
 		return classVTable;
 	}
 
 	private GNode createMethod(String modifiers[], String name, String[] args,
-			String returnType, String className) {
+			String returnType, String className, boolean isVTable) {
 		// Create a GNode with method arguments and the returnType as children.
 		// The returnType will always be the first child.
-		GNode methodDeclaration = GNode.create("MethodDeclaration");
+		GNode methodDeclaration = null;
+		if(isVTable)
+			methodDeclaration = GNode.create("VTableMethodDeclaration");
+		else
+			methodDeclaration = GNode.create("DataLayoutMethodDeclaration");
 		GNode modifierDeclaration = GNode.create("Modifiers");
 		GNode parameters = GNode.create("Parameters");
 
@@ -310,7 +317,8 @@ public class Inheritance {
 		methodDeclaration.add(modifierDeclaration);
 		methodDeclaration.add(returnType);
 		methodDeclaration.add(name);
-		methodDeclaration.add(className);
+		if(className != null)
+			methodDeclaration.add(className);
 
 		if (args != null) {
 			for (String arg : args) {
@@ -521,6 +529,7 @@ public class Inheritance {
 	private GNode handleMethodDeclaration(GNode inheritNode, GNode astNode,
 			boolean isVTable) {
 		String[] parameters = null, modifiers = null;
+		String classname = null;
 		if (!isVTable) {
 			modifiers = new String[1];
 			modifiers[0] = "static";
@@ -529,7 +538,8 @@ public class Inheritance {
 		if (astNode.getString(3) != null) {
 			name = astNode.getString(3);
 		}
-		String className = (String) inheritNode.getProperty("parent");
+		if(isVTable)
+			classname = (String) inheritNode.getProperty("parent");
 		for (int i = 0; i < astNode.size(); i++) {
 			if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
 				Node child = astNode.getNode(i);
@@ -554,7 +564,7 @@ public class Inheritance {
 			}
 		}
 		inheritNode.add((createMethod(modifiers, name, parameters, returnType,
-				className)));
+				classname, isVTable)));
 		return inheritNode;
 	}
 
