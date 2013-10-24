@@ -144,7 +144,7 @@ public class Translator extends Tool {
                 LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
                 GNode listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
                 new InheritancePrinter(pH).dispatch(listNodeTree);
-                runtime.console().format(listNodeTree).pln().flush();
+                //runtime.console().format(listNodeTree).pln().flush();
               }
               else count++;
             }

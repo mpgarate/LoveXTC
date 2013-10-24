@@ -22,7 +22,7 @@ return k;
 }
 }
 namespace subExamples {
-__HelloUniverse::__HelloUniverse() : __vptr(&__vtable), {}
+__HelloUniverse::__HelloUniverse() : __vptr(&__vtable){}
 
 int32_t __HelloUniverse::returnX(String b) {
 int32_t x = 10;

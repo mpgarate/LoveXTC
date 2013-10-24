@@ -63,15 +63,29 @@ public class InheritancePrinter extends Visitor {
   }
 
   public void visitConstructorDeclaration(GNode n){
-  	printer.pln(n.getString(0) + "();");
+  	printer.pln("__" + n.getString(0) + "();");
   }
 
   public void visitDataLayoutMethodDeclaration(GNode n){
-  	if (!(n.get(0) == null)) printer.p(n.getNode(0));
-  	if (!(n.get(1) == null)) printer.p(n.getString(1)).p(" ");
-  	printer.p(n.getString(2));
-  	printer.p("(");
-  	printer.pln(");");
+          if (!(n.get(0) == null)) printer.p(n.getNode(0));
+          if (!(n.get(1) == null)) printer.p(n.getString(1)).p(" ");
+    String methodName = n.getString(2);
+          printer.p(methodName);
+          printer.p("(");
+    if(methodName.equals("equals")){
+      printer.p(className + ", Object");
+    }
+    else if (methodName.equals("__class")){
+      printer.p("");
+    }
+    else if (methodName.equals("returnX")){
+      /* TODO: We should not be calling this at all. */
+      printer.p("String");
+    }
+    else{
+      printer.p(className);
+    }
+          printer.pln(");");
   }
 
   public void visitVTable(GNode n){
