@@ -111,14 +111,14 @@ public class InheritancePrinter extends Visitor {
 
   public void visitVTableMethodDeclaration(GNode n){
     if (isFirstVTMethod) {
-      printer.p("__isa(__" + className + ":: __class())");
+      printer.p("__isa(__" + className + "::__class())");
       isFirstVTMethod = false;
     }
     else{
       printer.p(",");
       printer.pln();
       printer.p(n.getString(2)).p("(");
-      if (n.get(1) != null) printer.p("(").p(n.getString(1)).p("(*)").p(className).p("))");
+      if (n.get(1) != null) printer.p("(").p(n.getString(1)).p("(*)(").p(className).p("))");
       printer.p(" &__" + n.getString(3) + "::" + n.getString(2));
       printer.p(")");
     }
