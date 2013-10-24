@@ -6,38 +6,6 @@
 using namespace java::lang;
 using namespace std;
 namespace subExamples {
-struct __TranslateMe;
-struct __TranslateMe_VT;
-typedef __TranslateMe* TranslateMe;
-struct __TranslateMe {
-__TranslateMe_VT* __vptr;
-static __TranslateMe_VT __vtable;
-static String toString();
-static int32_t hashcode();
-static Class getClass();
-static bool equals();
-static Class __class();
-static main();
-};
-
-struct __TranslateMe_VT {
-Class __isa;
-String (*toString)(TranslateMe);
-int32_t (*hashcode)(TranslateMe);
-Class (*getClass)(TranslateMe);
-bool (*equals)(TranslateMe);
-null (*main)(TranslateMe);
-Class __isa();
-String toString();
-int32_t hashcode();
-Class getClass();
-bool equals();
-main();
-};
-
-}
-
-namespace subExamples {
 struct __HelloWorld;
 struct __HelloWorld_VT;
 typedef __HelloWorld* HelloWorld;
@@ -63,13 +31,15 @@ Class (*getClass)(HelloWorld);
 bool (*equals)(HelloWorld);
 int32_t (*createWorld)(HelloWorld);
 int32_t (*returnX)(HelloWorld);
-Class __isa();
-String toString();
-int32_t hashcode();
-Class getClass();
-bool equals();
-int32_t createWorld();
-int32_t returnX();
+__HelloWorld_VT()
+: __isa(__HelloWorld:: __class()),
+toString((String(*)(HelloWorld)) &__Object::toString),
+hashcode((int32_t(*)(HelloWorld)) &__Object::hashcode),
+getClass((Class(*)(HelloWorld)) &__Object::getClass),
+equals((bool(*)(HelloWorld)) &__Object::equals),
+createWorld((int32_t(*)(HelloWorld)) &__HelloWorld::createWorld),
+returnX((int32_t(*)(HelloWorld)) &__HelloWorld::returnX){
+}
 };
 
 }
@@ -99,12 +69,14 @@ Class (*getClass)(HelloUniverse);
 bool (*equals)(HelloUniverse);
 int32_t (*returnX)(HelloUniverse);
 String (*toString)(HelloUniverse);
-Class __isa();
-int32_t hashcode();
-Class getClass();
-bool equals();
-int32_t returnX();
-String toString();
+__HelloUniverse_VT()
+: __isa(__HelloUniverse:: __class()),
+hashcode((int32_t(*)(HelloUniverse)) &__Object::hashcode),
+getClass((Class(*)(HelloUniverse)) &__Object::getClass),
+equals((bool(*)(HelloUniverse)) &__Object::equals),
+returnX((int32_t(*)(HelloUniverse)) &__HelloUniverse::returnX),
+toString((String(*)(HelloUniverse)) &__HelloUniverse::toString){
+}
 };
 
 }
