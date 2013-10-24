@@ -24,6 +24,13 @@ javac -cp . TranslateMe.java
 java -cp . TranslateMe
 ```
 
+To run converted code:
+```
+cd output
+g++ java_lang.cc output.cc main.cc
+./a.out
+```
+
 Run the test suite and compile all code with ```make```
 
 TODO:
