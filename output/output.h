@@ -12,7 +12,7 @@ typedef __HelloWorld* HelloWorld;
 struct __HelloWorld {
 __HelloWorld_VT* __vptr;
 static __HelloWorld_VT __vtable;
-HelloWorld();
+__HelloWorld();
 static String toString(HelloWorld);
 static int32_t hashCode(HelloWorld);
 static Class getClass(HelloWorld);
@@ -51,7 +51,7 @@ typedef __HelloUniverse* HelloUniverse;
 struct __HelloUniverse {
 __HelloUniverse_VT* __vptr;
 static __HelloUniverse_VT __vtable;
-HelloUniverse();
+__HelloUniverse();
 static int32_t hashCode(HelloUniverse);
 static Class getClass(HelloUniverse);
 static bool equals(HelloUniverse, Object);

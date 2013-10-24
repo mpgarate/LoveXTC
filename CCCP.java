@@ -157,7 +157,7 @@ public class CCCP extends Visitor {
     /* TODO: Allow constructor to accept parameters */
     printer.p(className + "::" + constructorName + "()" );
     printer.p(" : ");
-    printer.p("__vptr(&__vtable), ");
+    printer.p("__vptr(&__vtable)");
     visit(n);
     printer.p("{");
     printer.p("}");
@@ -165,7 +165,7 @@ public class CCCP extends Visitor {
     printer.pln();
   }
   public void visitConstructorExpression(GNode n){
-    printer.p(n.getString(0) + "(" +n.getString(1) +") ");
+    printer.p(", " + n.getString(0) + "(" +n.getString(1) +") ");
   }
 
   public void visitFieldDeclaration(GNode n){
