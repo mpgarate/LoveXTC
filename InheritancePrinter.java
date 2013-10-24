@@ -26,6 +26,7 @@ public class InheritancePrinter extends Visitor {
   private String packageName;
   private String className;
   private String javaClassName;
+  private boolean isFirstVTMethod = true;
 
 	public InheritancePrinter(Printer p){
     this.printer = p;
@@ -65,14 +66,12 @@ public class InheritancePrinter extends Visitor {
   	printer.pln(n.getString(0) + "();");
   }
 
-  public void visitMethodDeclaration(GNode n){
+  public void visitDataLayoutMethodDeclaration(GNode n){
   	if (!(n.get(0) == null)) printer.p(n.getNode(0));
   	if (!(n.get(1) == null)) printer.p(n.getString(1)).p(" ");
   	printer.p(n.getString(2));
   	printer.p("(");
-		visit(n.getNode(4));
   	printer.pln(");");
-
   }
 
   public void visitVTable(GNode n){
@@ -80,24 +79,49 @@ public class InheritancePrinter extends Visitor {
   	printer.pln("Class __isa;");
 
   	new Visitor(){
-  		public void visitMethodDeclaration(GNode n){
+  		public void visitDataLayoutMethodDeclaration(GNode n){
   			if(!(n.getString(2).equals("__class"))){
   				printer.p(n.getString(1) + " (*");
   				printer.p(n.getString(2));
   				printer.p(")(");
   				printer.p(className);
+          //printer.p(n.getNode(4));
   				printer.p(");");
   				printer.pln();
   			}
   		}
-  		  public void visit(Node n) {
-		    for (Object o : n) if (o instanceof Node) dispatch((Node) o);
-		  }
-  	}.dispatch(dataLayout);
 
+      public void visitParameters(GNode n){
+        if (n.size() > 0) printer.p(n.getString(0));
+      }
+
+		  public void visit(Node n) {
+	    for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+	  }
+  	}.dispatch(dataLayout);
+    printer.pln("__" + className + "_VT()");
+    printer.p(": ");
     visit(n);
+    printer.pln("{").pln("}");
   	printer.pln("};");
   	printer.pln();
+  }
+
+
+
+  public void visitVTableMethodDeclaration(GNode n){
+    if (isFirstVTMethod) {
+      printer.p("__isa(__" + className + ":: __class())");
+      isFirstVTMethod = false;
+    }
+    else{
+      printer.p(",");
+      printer.pln();
+      printer.p(n.getString(2)).p("(");
+      if (n.get(1) != null) printer.p("(").p(n.getString(1)).p("(*)").p(className).p("))");
+      printer.p(" &__" + n.getString(3) + "::" + n.getString(2));
+      printer.p(")");
+    }
   }
 
   public void visitModifiers(GNode n){
