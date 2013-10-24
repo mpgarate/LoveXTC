@@ -76,6 +76,12 @@ public class Inheritance {
 		//STACKNODE FOR-LOOP
 		for (GNode s=stackNode;s!=null;s=(GNode)s.getNode(0)) {
 		    GNode parent = findParentNode(root, (String)s.getProperty("parentString"));
+		    if (parent == null) {
+			((GNode)root.getNode(3)).add(s);
+			root.remove((Integer)s.getProperty("numberInRoot"));
+			s.setProperty("parent", (GNode)root.getNode(3));
+			continue;
+		    }
 		    parent.add(s);
 		    root.remove((Integer)s.getProperty("numberInRoot"));
 		    s.setProperty("parent", parent);
