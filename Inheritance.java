@@ -68,10 +68,11 @@ public class Inheritance {
 		root.setProperty("type", "CompilationUnit");
 		stringNode.setProperty("type", "CompilationUnit");
 		classNode.setProperty("type", "CompilationUnit");
-		
+		/*
         GNode temp = nodeList.get(1);
         nodeList.set(1,nodeList.get(2));
         nodeList.set(2,temp);
+        */
 		for (int i = 0; i < nodeList.size(); i++) {
 			buildTree(nodeList.get(i));
 		}
