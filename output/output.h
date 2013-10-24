@@ -13,14 +13,14 @@ struct __HelloWorld {
 __HelloUniverse_VT* __vptr;
 static __HelloUniverse_VT __vtable;
 HelloUniverse();
-static int32_t hashCode();
-static Class getClass();
-static bool equals();
+static int32_t hashCode(HelloWorld);
+static Class getClass(HelloWorld);
+static bool equals(HelloWorld, Object);
 static Class __class();
 int32_t world;
-static int32_t createWorld();
-static int32_t returnX();
-static String toString();
+static int32_t createWorld(HelloWorld);
+static int32_t returnX(String);
+static String toString(HelloWorld);
 };
 
 struct __HelloWorld_VT {
@@ -52,14 +52,14 @@ struct __HelloUniverse {
 __HelloUniverse_VT* __vptr;
 static __HelloUniverse_VT __vtable;
 HelloUniverse();
-static int32_t hashCode();
-static Class getClass();
-static bool equals();
+static int32_t hashCode(HelloUniverse);
+static Class getClass(HelloUniverse);
+static bool equals(HelloUniverse, Object);
 static Class __class();
 int32_t world;
-static int32_t createWorld();
-static int32_t returnX();
-static String toString();
+static int32_t createWorld(HelloUniverse);
+static int32_t returnX(String);
+static String toString(HelloUniverse);
 };
 
 struct __HelloUniverse_VT {
