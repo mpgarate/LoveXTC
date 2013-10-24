@@ -43,17 +43,23 @@ public class Inheritance {
 		GNode classNode = GNode.create("Class");
 
 		root.add(headerNode);
-
+		
+		headerNode.add("null");
+		headerNode.add("Object");
 		headerNode.add(getObjectDataLayout());
 		headerNode.add(getObjectVTable());
 
 		root.add(stringNode);
 		GNode stringHeader = GNode.create("HeaderDeclaration");
+		stringHeader.add("null");
+		stringHeader.add("String");
 		stringNode.add(stringHeader);
 		stringHeader.add(getStringDataLayout());
 		stringHeader.add(getStringVTable());
 
 		GNode classHeader = GNode.create("HeaderDeclaration");
+		classHeader.add("null");
+		classHeader.add("Class");
 		classHeader.add(getClassDataLayout());
 		classHeader.add(getClassVTable());
 		classNode.add(classHeader);
@@ -406,6 +412,24 @@ public class Inheritance {
 		return header;
 	}
 	
+    private GNode searchForNode(GNode node, String name) {
+		// DOES A DEPTH-FIRST SEARCH THROUGH THE TREE FOR A NODE OF SPECIFIC NAME
+	if (node.getNode(0).getString(1).equals(name)) {
+	    return node;
+	}
+	else if (node.size() == 1) {
+	    return null;
+	}
+	else {
+	    for (int i=1;i<node.size();i++) {
+		GNode foundNode = searchForNode((GNode)node.getNode(i), name);
+		if (foundNode != null) {
+		    return foundNode;
+		}
+	    }
+	}
+	return null;
+    }
 	public GNode parseNodeToInheritance(GNode n){
 		new Visitor(){
 			public void visitPackageDeclaration(GNode n){
@@ -424,8 +448,7 @@ public class Inheritance {
 			}
 		}.dispatch(n);
 		
-		GNode returnNode = GNode.create(targetNode.getString(1));
-		returnNode.add(buildHeader(targetNode, null));
+		GNode returnNode = searchForNode(root, targetNode.getString(1));
 		return returnNode;
 	}
 
@@ -552,8 +575,7 @@ public class Inheritance {
 		if (astNode.getString(3) != null) {
 			name = astNode.getString(3);
 		}
-		if(isVTable)
-			classname = (String) inheritNode.getProperty("parent");
+		classname = (String) inheritNode.getProperty("parent");
 		for (int i = 0; i < astNode.size(); i++) {
 			if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
 				Node child = astNode.getNode(i);
