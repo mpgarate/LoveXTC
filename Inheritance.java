@@ -205,7 +205,7 @@ public class Inheritance {
 		String arg[] = { "__Object" };
 		objectVTable.add(createMethod(null, "__isa", null, "Class", "Object", isVTable));
 		objectVTable.add(createMethod(null, "toString", arg, "String", "Object", isVTable));
-		objectVTable.add(createMethod(null, "hashcode", arg, "int32_t",
+		objectVTable.add(createMethod(null, "hashCode", arg, "int32_t",
 				"Object", isVTable));
 		objectVTable.add(createMethod(null, "getClass", arg, "Class", "Object", isVTable));
 		objectVTable.add(createMethod(null, "equals", new String[] { "Object",
@@ -227,7 +227,7 @@ public class Inheritance {
 		String modifier[] = { "static" };
 		objectDataLayout.add(createMethod(modifier, "toString", arg, "String",
 				"Object", isVTable));
-		objectDataLayout.add(createMethod(modifier, "hashcode", arg, "int32_t",
+		objectDataLayout.add(createMethod(modifier, "hashCode", arg, "int32_t",
 				"Object",isVTable));
 		objectDataLayout.add(createMethod(modifier, "getClass", arg, "Class",
 				"Object",isVTable));
@@ -251,7 +251,7 @@ public class Inheritance {
 		String modifier[] = { "static" };
 		stringDataLayout.add(createMethod(modifier, "toString", arg, "String",
 				"String",isVTable));
-		stringDataLayout.add(createMethod(modifier, "hashcode", arg, "int32_t",
+		stringDataLayout.add(createMethod(modifier, "hashCode", arg, "int32_t",
 				"String",isVTable));
 		stringDataLayout.add(createMethod(modifier, "getClass", arg, "Class",
 				"String",isVTable));
