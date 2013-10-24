@@ -138,12 +138,15 @@ public class Translator extends Tool {
             Printer pH = new Printer(outH);
             
             initOutputHFile(pH);
-
+            int count = 0;
             for (GNode listNode : nodeList){
-              LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
-              GNode listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
-              new InheritancePrinter(pH).dispatch(listNodeTree);
-              runtime.console().format(listNodeTree).pln().flush();
+              if (count > 0){
+                LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
+                GNode listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
+                new InheritancePrinter(pH).dispatch(listNodeTree);
+                runtime.console().format(listNodeTree).pln().flush();
+              }
+              else count++;
             }
 
         } catch (IOException ex){
