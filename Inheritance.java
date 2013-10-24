@@ -27,15 +27,16 @@ import static org.junit.Assert.*;
 
 public class Inheritance {
 	public GNode root;
-    public GNode stackNode; //This is the top node of the stack of the nodes that have yet to be processed.
+  public GNode stackNode; //This is the top node of the stack of the nodes that have yet to be processed.
 	public String class_name;
 	String packageName = null;
 	GNode targetNode;
+	private LinkedList<GNode> nodeList;
 
 	public Inheritance(LinkedList<GNode> nodeList) {
 		// Program starts here, we begin by creating Object and String class
 		// nodes.
-
+		this.nodeList = nodeList;
 		root = GNode.create("Object");
 		GNode headerNode = GNode.create("HeaderDeclaration");
 		GNode stringNode = GNode.create("String");
@@ -173,7 +174,13 @@ public class Inheritance {
 
 		
 	public GNode findParentInLL(String name){
-
+		/* Loop through all nodes in LL */
+		for (GNode listItem: nodeList){
+  		/* Check if the ClassDeclaration node holds name */
+    	if (listItem.getNode(2).getString(1).equals(name)){
+    		return listItem;
+    	}
+		}
 	}
 
 	
