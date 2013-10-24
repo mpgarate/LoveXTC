@@ -63,7 +63,7 @@ public class InheritancePrinter extends Visitor {
   }
 
   public void visitConstructorDeclaration(GNode n){
-  	printer.pln(n.getString(0) + "();");
+  	printer.pln("__" + n.getString(0) + "();");
   }
 
   public void visitDataLayoutMethodDeclaration(GNode n){
