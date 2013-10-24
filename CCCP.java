@@ -144,6 +144,9 @@ public class CCCP extends Visitor {
   public void visitStringLiteral(GNode n){
     printer.p(n.getString(0));
   }
+  public void visitCastS(GNode n){
+    printer.p(n.getString(1));
+  }
 
   public void visitBlock(GNode n){
     v("/* visiting block */");
