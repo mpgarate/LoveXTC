@@ -180,6 +180,7 @@ public class Inheritance {
     	if (listItem.getNode(2).getString(1).equals(name)){
     		return listItem;
     	}
+    	else return null;
 		}
 	}
 
