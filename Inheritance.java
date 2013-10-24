@@ -448,7 +448,9 @@ public class Inheritance {
 			}
 		}.dispatch(n);
 		
-		GNode returnNode = searchForNode(root, targetNode.getString(1));
+		GNode classNode = searchForNode(root, targetNode.getString(1));
+		GNode returnNode = GNode.create(targetNode.getString(1));
+		returnNode.add((GNode)classNode.getNode(0));
 		return returnNode;
 	}
 
@@ -511,25 +513,20 @@ public class Inheritance {
 				} else if (child.hasName("MethodDeclaration")) {
 					handleMethodDeclaration(inheritNode, (GNode) child,
 							isVTable);
-					if (isVTable) { // METHOD OVERWRITING
-						for (int j = 0; j < inheritNode.size() - 1; j++) {
-							String searchName = (String) inheritNode.getNode(j)
-									.get(2);
-							String checkName = (String) inheritNode.getNode(
-									inheritNode.size() - 1).get(2);
-							if (inheritNode.getNode(j).getNode(4).size() != 0) {
-								inheritNode
-										.getNode(j)
-										.getNode(4)
-										.set(0,
-												inheritNode
-														.getProperty("parent"));
-							}
-							if (searchName.equals(checkName)) {
-								inheritNode.remove(j);
-								break;
-							}
+					// METHOD OVERWRITING
+					for (int j = 0; j < inheritNode.size() - 1; j++) {
+					    if (inheritNode.getNode(j).size() == 5) {
+						String searchName = (String) inheritNode.getNode(j).get(2);
+						String checkName = (String) inheritNode.getNode(inheritNode.size() - 1).get(2);
+						if (inheritNode.getNode(j).getNode(4).size() != 0) {
+						//Renames the parameters in a method to be the classname type
+						    inheritNode.getNode(j).getNode(4).set(0,inheritNode.getProperty("parent"));
 						}
+						if (searchName.equals(checkName)) {
+						    inheritNode.remove(j);
+						    break;
+						}
+					    }
 					}
 				} else if (child.hasName("ConstructorDeclaration") && !isVTable) {
 					handleConstructorDeclaration(inheritNode, (GNode) child);
