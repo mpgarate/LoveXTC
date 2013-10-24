@@ -9,9 +9,11 @@ public class TranslateMe {
 		HelloUniverse hu = new HelloUniverse();
 		System.out.println(hu.toString());
 
-		Object o = (Object)hu;
-		System.out.println(o.toString());
-
+		/* Casting is a work in progress
+		
+			Object o = (Object)hu;
+			System.out.println(o.toString());
+		*/
 		System.out.println(hu.createWorld());
 
 		
