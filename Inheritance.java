@@ -648,7 +648,8 @@ public class Inheritance {
 		if (parent == null) {
 			dataLayout = getObjectDataLayout();
 		} else {
-			dataLayout = (GNode) parent.getNode(0).getNode(2);
+			GNode olddataLayout = (GNode) parent.getNode(0).getNode(2);
+			dataLayout = copyNode(olddataLayout);
 		}
 		return dataLayout;
 	}
@@ -660,9 +661,26 @@ public class Inheritance {
 		if (parent == null) {
 			vTable = getObjectVTable();
 		} else {
-			vTable = (GNode) parent.getNode(0).getNode(3);
+			GNode oldvTable = (GNode) parent.getNode(0).getNode(3);
+			vTable = copyNode(oldvTable);
 		}
 		return vTable;
 	}
+
+    private GNode copyNode(GNode oldNode) {
+	GNode newNode = GNode.create(oldNode.getName());
+	//masterNode.add(newNode);
+	if (oldNode.size() > 0) {
+	    for (int i=0;i<oldNode.size();i++) {
+		if (oldNode.get(i) instanceof String) {
+		    newNode.add(oldNode.get(i));
+		}
+		else {
+		    newNode.add(copyNode((GNode)oldNode.get(i)));
+		}
+	    }
+	}
+	return newNode;
+    }
 
 }
