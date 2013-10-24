@@ -151,15 +151,19 @@ public class Inheritance {
 		System.out.println("cannot find parent in inheritance tree");
 		return null;
 		}
+
 	public GNode findParentInLL(String name){
 		/* Loop through all nodes in LL */
-		for (GNode listItem: nodeList){
+		for (GNode listItem : nodeList){
   		/* Check if the ClassDeclaration node holds name */
-    	if (listItem.getNode(2).getString(1).equals(name)){
-    		return listItem;
-    	}
+
+			for(int i =0; i< listItem.size();i++){
+				if (listItem.getNode(i) != null && listItem.getNode(i).hasName("ClassDeclaration")){
+					return listItem;
+				}
+			}
 		}
-		return null;
+    return null;
 	}
 
 	
