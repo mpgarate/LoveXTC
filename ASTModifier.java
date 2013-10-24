@@ -123,10 +123,11 @@ public class ASTModifier extends Visitor {
     }
     GNode temp = n.getGeneric(0);
     if(temp != null && n.getNode(0).getString(0).equals(a)){
-      /*GNode cast = GNode.create("CAST");
-      cast.add("("+b+")"+c);
-      n.set(1,cast);*/
-      n.getNode(0).set(0,"("+b+")"+c);
+      GNode castS = GNode.create("CastS");
+      castS.add(a);
+      castS.add("("+b+")"+c);
+      //n.getNode(0).set(0,"("+b+")"+c);
+      n.set(0,castS);
     }
     visit(n);
   }
