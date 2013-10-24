@@ -532,11 +532,12 @@ public class Inheritance {
 						    inheritNode.getNode(j).getNode(4).set(0,inheritNode.getProperty("parent"));
 						}
 						if (searchName.equals(checkName)) {
-						    inheritNode.remove(j);
+						    inheritNode.set(j,inheritNode.getNode(inheritNode.size()-1));						    			
 						    break;
 						}
 					    }
 					}
+					inheritNode.remove(inheritNode.size() -1);
 				} else if (child.hasName("ConstructorDeclaration") && !isVTable) {
 					handleConstructorDeclaration(inheritNode, (GNode) child);
 				}
