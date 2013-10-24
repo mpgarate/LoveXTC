@@ -10,35 +10,35 @@ struct __HelloWorld;
 struct __HelloWorld_VT;
 typedef __HelloWorld* HelloWorld;
 struct __HelloWorld {
-__HelloUniverse_VT* __vptr;
-static __HelloUniverse_VT __vtable;
-HelloUniverse();
-static int32_t hashCode();
-static Class getClass();
-static bool equals();
+__HelloWorld_VT* __vptr;
+static __HelloWorld_VT __vtable;
+HelloWorld();
+static String toString(HelloWorld);
+static int32_t hashCode(HelloWorld);
+static Class getClass(HelloWorld);
+static bool equals(HelloWorld, Object);
 static Class __class();
 int32_t world;
-static int32_t createWorld();
-static int32_t returnX();
-static String toString();
+static int32_t createWorld(HelloWorld);
+static int32_t returnX(String);
 };
 
 struct __HelloWorld_VT {
 Class __isa;
+String (*toString)(HelloWorld);
 int32_t (*hashCode)(HelloWorld);
 Class (*getClass)(HelloWorld);
 bool (*equals)(HelloWorld);
 int32_t (*createWorld)(HelloWorld);
 int32_t (*returnX)(HelloWorld);
-String (*toString)(HelloWorld);
 __HelloWorld_VT()
 : __isa(__HelloWorld::__class()),
+toString((String(*)(HelloWorld)) &__Object::toString),
 hashCode((int32_t(*)(HelloWorld)) &__Object::hashCode),
 getClass((Class(*)(HelloWorld)) &__Object::getClass),
 equals((bool(*)(HelloWorld)) &__Object::equals),
 createWorld((int32_t(*)(HelloWorld)) &__HelloWorld::createWorld),
-returnX((int32_t(*)(HelloWorld)) &__HelloUniverse::returnX),
-toString((String(*)(HelloWorld)) &__HelloUniverse::toString){
+returnX((int32_t(*)(HelloWorld)) &__HelloWorld::returnX){
 }
 };
 
@@ -52,14 +52,14 @@ struct __HelloUniverse {
 __HelloUniverse_VT* __vptr;
 static __HelloUniverse_VT __vtable;
 HelloUniverse();
-static int32_t hashCode();
-static Class getClass();
-static bool equals();
+static int32_t hashCode(HelloUniverse);
+static Class getClass(HelloUniverse);
+static bool equals(HelloUniverse, Object);
 static Class __class();
 int32_t world;
-static int32_t createWorld();
-static int32_t returnX();
-static String toString();
+static int32_t createWorld(HelloUniverse);
+static int32_t returnX(String);
+static String toString(HelloUniverse);
 };
 
 struct __HelloUniverse_VT {
