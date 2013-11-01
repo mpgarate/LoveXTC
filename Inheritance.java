@@ -27,9 +27,9 @@ import static org.junit.Assert.*;
 
 public class Inheritance {
 	public GNode root;
-    public GNode stackNode; //This is the top node of the stack of the nodes that have yet to be processed.
+    public GNode stackNode; //A stack of nodes that have the extends keyword and thus must be moved in the tree to their correct place.
 	public String class_name;
-	int childCount = 3; // SEE Buildtree function
+	int childCount = 3; // When building the tree, keeps track of which child we're creating.
 	String packageName = null;
 	GNode targetNode;
 
@@ -68,40 +68,37 @@ public class Inheritance {
 		root.setProperty("type", "CompilationUnit");
 		stringNode.setProperty("type", "CompilationUnit");
 		classNode.setProperty("type", "CompilationUnit");
-		/*
-        GNode temp = nodeList.get(1);
-        nodeList.set(1,nodeList.get(2));
-        nodeList.set(2,temp);
-        */
+		
+		stackNode = GNode.create("FirstStackNode");
+
+		//Places each node in the tree as a child of Object.
 		for (int i = 0; i < nodeList.size(); i++) {
 			buildTree(nodeList.get(i));
 		}
 
-		//STACKNODE FOR-LOOP
-		for (GNode s=stackNode;s!=null;s=(GNode)s.getNode(0)) {
+		//BUILD THE INHERITANCE TREE-------
+		//Goes through a stack of all nodes with the extends keyword and moves them in three to be a child of their correct parent.
+		for (GNode s=stackNode;s.getName()!="FirstStackNode";s=(GNode)s.getNode(0)) {
 		    GNode parent = findParentNode(root, (String)s.getProperty("parentString"));
 		    if (parent == null) {
-			((GNode)root.getNode(3)).add(s);
-			root.remove((Integer)s.getProperty("numberInRoot"));
-			s.setProperty("parent", (GNode)root.getNode(3));
+			System.out.println("NO PARENT FOUND IN THE TREE!");
 			continue;
 		    }
-		    parent.add(s);
+
+		    GNode thisNode = (GNode)root.getNode((Integer)s.getProperty("numberInRoot"));
+		    thisNode.setProperty("parent", parent);
+		    parent.add(thisNode);
 		    root.remove((Integer)s.getProperty("numberInRoot"));
-		    s.setProperty("parent", parent);
 		}
 
 		//BUILD THE HEADERS FOR THE TREE
-		for (int i=3;i<root.size();i++) {
+		for (int i=1;i<root.size();i++) {
 		    buildTreeHeaders((GNode)root.getNode(i));
 		}
-		    
+				    
 	}
 
 	public void buildTree(GNode node) {
-		
-		     //childCount keeps track of the location of the most recent child in the tree
-
 		    new Visitor() {
 		    	
 		    public void visitPackageDeclaration(GNode n){
@@ -116,36 +113,20 @@ public class Inheritance {
 				childCount++;
 				classNode.setProperty("javaAST", n);
 				
-				
 				visit(n);
-				/*
-				 * if(n.get(3) instanceof Node){ Node child = n.getNode(3); if
-				 * (child.hasName("Extension")){
-				 * System.out.println("This class has a parent"); } }
-				 */
 				return;
 			}
 			
 			public void visitExtension(GNode n) {
-			    childCount--;
-			    GNode thisNode = (GNode)root.getNode(childCount);
-			    String parent = n.getNode(0).getNode(0).getString(0);
-			    GNode parentNode = findParentNode(root, parent);
-			    if (parentNode == null) {
-				System.out.println("Did not find parent node for " + n.getLocation().toString());
-				thisNode.setProperty("parentString", parent);
-				thisNode.setProperty("numberInRoot", childCount);
-				childCount++;
-				thisNode.add(stackNode);
-				stackNode = thisNode;
-				return;
-			    }
-			    thisNode.setProperty("parent", parentNode);
-			    parentNode.add(thisNode);
-			    root.remove(childCount);
-			    childCount++;
+			    GNode thisNode = (GNode)root.getNode(childCount-1);
+			    String parentString = n.getNode(0).getNode(0).getString(0);
+			    GNode copiedNode = copyNode(thisNode);
+			    copiedNode.setProperty("numberInRoot", childCount-1);
+			    copiedNode.setProperty("parentString", parentString);
+			    copiedNode.add(stackNode);
+			    stackNode = copiedNode;
 			    return;
-			    }
+			}
 
 			public void visitClassBody(GNode n) {
 			    if (childCount > root.size()) {
@@ -166,15 +147,10 @@ public class Inheritance {
 				}
 			}
 		}.dispatch(node);
-		/* need to add the inheritance tree structure not the java ast tree. */
-		// root.add(node);
-		/* no need for return */
-		// return root;
 	}
 
 	private GNode findParentNode(GNode startNode, String name) {
-		// DOES A DEPTH-FIRST SEARCH THROUGH THE TREE
-		// RETURNS THE GNODE IF IT FINDS THE PARENT, RETURNS NULL IF IT DOESN'T
+		// Finds a node of a given name in the tree whose root is startNode.
 		if (startNode.getName().equals(name)) {
 			return startNode;
 		} else if (!startNode.hasProperty("type")) {
@@ -193,11 +169,16 @@ public class Inheritance {
 		}
 	}
 	private void buildTreeHeaders(GNode startNode) {
-		// DOES A DEPTH-FIRST SEARCH THROUGH THE TREE AND ADDS ALL HEADERS
-	    startNode.add(0, buildHeader((GNode)startNode.getProperty("javaAST"), (GNode)startNode.getProperty("parent")));
+	    //Builds the header for each node in the inheritance tree.
+	    if (startNode.size()<=0 || !startNode.getNode(0).getName().equals("HeaderDeclaration")) {
+		startNode.add(0, buildHeader((GNode)startNode.getProperty("javaAST"), (GNode)startNode.getProperty("parent"))); //this builds the header
+	    }
+
 	    if (startNode.size()<=1) {
 		return;
 	    }
+	    
+	    //If the node has any children, it builds the header for it's children.
 	    for (int i=1;i<startNode.size();i++) {
 		buildTreeHeaders((GNode)startNode.getNode(i));
 	    }
@@ -384,21 +365,6 @@ public class Inheritance {
 		return node;
 	}
 
-	private GNode createMethodWithModifier(String modifier, String returnType,
-			String[] args, String name) {
-		GNode basic = GNode.create(name);
-		basic.add(modifier);
-		basic.add(returnType);
-		if (args == null) {
-			return basic;
-		}
-
-		for (int i = 0; i < args.length; i++) {
-			basic.add(args[i]);
-		}
-		return basic;
-	}
-
 	private GNode createConstructor(String classname, String parameters[]) {
 		GNode constructor = GNode.create("ConstructorDeclaration");
 		GNode constructorParameters = GNode.create("Parameters");
@@ -535,7 +501,7 @@ public class Inheritance {
 						    inheritNode.getNode(j).getNode(4).set(0,inheritNode.getProperty("parent"));
 						}
 						if (searchName.equals(checkName)) {
-						    inheritNode.set(j,inheritNode.getNode(inheritNode.size()-1));			
+						    inheritNode.set(j, inheritNode.getNode(inheritNode.size()-1));
 						isOverwritten = true;			    			
 						    break;
 						}
