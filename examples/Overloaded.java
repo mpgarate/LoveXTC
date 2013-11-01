@@ -17,12 +17,10 @@
  * Foundation, 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301,
  * USA.
  */
-
+class A           { public String toString() { return "A"; } }
+class B extends A { public String toString() { return "B"; } }
+class C extends B { public String toString() { return "C"; } }
 public class Overloaded {
-
-  public static class A           { public String toString() { return "A"; } }
-  public static class B extends A { public String toString() { return "B"; } }
-  public static class C extends B { public String toString() { return "C"; } }
 
   public void m()           { System.out.println("m()        : ---"); }
   public void m(byte b)     { System.out.println("m(byte)    : " + b); }
