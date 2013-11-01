@@ -105,57 +105,63 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printCPPTree")) {
-      ASTModifier CppT = new ASTModifier((GNode)node);
-      CppT.dispatch((GNode)node);
-      runtime.console().format(CppT.getRoot()).pln().flush();
+      new ASTModifier().dispatch((GNode)node);
+      runtime.console().format(node).pln().flush();
     }
 
     if (runtime.test("translate")) {
-      /* a list of Java AST nodes */
+      /* List to hold Java AST nodes */
       LinkedList<GNode> nodeList = new LinkedList<GNode>();
-      /* the main file's AST is at index 0 */
+
+      /* Add input file to list at index 0 */
       nodeList.add((GNode)node);
-      /* calling the dependency to perform its duties */
+
+      /* Scan for dependencies  */
       LOGGER.info("Calling Dependency.java on " + node.getName());
       Dependency dep = new Dependency(nodeList);
       dep.makeAddressList();
+
+      /* Store the found dependencies as AST */
       nodeList = dep.makeNodeList();
-      /* now nodeList contain all the java files AST's */
+
+      /* Build inheritance tree */
       LOGGER.info("Building inheritance tree:");
-      //Build the Inheritance tree
       Inheritance inheritanceTree = new Inheritance(nodeList);
 
+      /* Write VTables to file 'output.h' */
       writeInheritanceAsCPP(inheritanceTree, nodeList);
 
+      /* Make modifications to AST needed for printing */
       LOGGER.info("Modifying AST:");
       for (GNode listNode : nodeList){
-        ASTModifier CppT = new ASTModifier(listNode);
-        CppT.dispatch(listNode);
+        new ASTModifier().dispatch(listNode);
         //runtime.console().format(listNode).pln().flush();
       }
+
+      /* Write each AST in the list to output.cc as CPP */
         writeTreeAsCPP(nodeList);
     }
   }
 
+  /* Write VTables to file 'output.h' */
   private void writeInheritanceAsCPP(Inheritance inheritanceTree, LinkedList<GNode> nodeList){
     Writer outH = null;
     try {
-
-        outH = new BufferedWriter(new OutputStreamWriter(
-                new FileOutputStream("output/output.h"), "utf-8"));
-        Printer pH = new Printer(outH);
-        
-        initOutputHFile(pH);
-        int count = 0;
-        for (GNode listNode : nodeList){
-          if (count > 0){
-            LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
-            GNode listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
-            new InheritancePrinter(pH).dispatch(listNodeTree);
-            //runtime.console().format(listNodeTree).pln().flush();
-          }
-          else count++;
+      outH = new BufferedWriter(new OutputStreamWriter(
+              new FileOutputStream("output/output.h"), "utf-8"));
+      Printer pH = new Printer(outH);
+      
+      initOutputHFile(pH);
+      int count = 0;
+      for (GNode listNode : nodeList){
+        if (count > 0){
+          LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
+          GNode listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
+          new InheritancePrinter(pH).dispatch(listNodeTree);
+          //runtime.console().format(listNodeTree).pln().flush();
         }
+        else count++;
+      }
 
     } catch (IOException ex){
       // report
@@ -164,6 +170,7 @@ public class Translator extends Tool {
     }
   }
 
+  /* Write each AST in the list to output.cc as CPP */
   private void writeTreeAsCPP(LinkedList<GNode> nodeList){
     Writer outCC = null;
 
@@ -185,7 +192,6 @@ public class Translator extends Tool {
       // report
     } finally {
        try {outCC.close();} catch (Exception ex) {}
-       try {mainCC.close();} catch (Exception ex) {}
     }
   }
 
