@@ -143,7 +143,8 @@ public class Translator extends Tool {
     }
   }
 
-  /* Write VTables to file 'output.h' */
+  /* Write VTables to file 'output.h'  */
+  /* This method must be called before ASTModifier runs. */
   private void writeInheritanceAsCPP(Inheritance inheritanceTree, LinkedList<GNode> nodeList){
     Writer outH = null;
     try {
@@ -171,6 +172,7 @@ public class Translator extends Tool {
   }
 
   /* Write each AST in the list to output.cc as CPP */
+  /* This method should be run last in the 'translate' sequence. */
   private void writeTreeAsCPP(LinkedList<GNode> nodeList){
     Writer outCC = null;
 
