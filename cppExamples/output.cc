@@ -3,6 +3,13 @@
 #include <sstream>
 
 
+#include <iostream>
+#include "java_lang.h"
+
+using namespace java::lang;
+using namespace subExamples;
+using namespace std;
+
 	/************************************************/
 	/********* Define Items for HelloWorld **********/
 	/************************************************/
@@ -56,4 +63,19 @@ namespace subExamples {
       return k;
   }
 
+}
+
+int main(void){
+
+	HelloWorld hw = new __HelloWorld();
+	cout << hw->__vptr->toString(hw)->data <<endl;
+
+	HelloUniverse hu = new __HelloUniverse();
+	cout << hu->__vptr->toString(hu)->data <<endl;
+
+	Object o = (Object)hu;
+	cout << o->__vptr->toString((Object)hu)->data <<endl;
+	cout << hu->__vptr->createWorld(hu) <<endl;
+
+	return 0;
 }

@@ -41,7 +41,7 @@ public class TestDriver{
         }
         catch(IOException e){
           System.out.println("IO Exception translating " + file.getPath());
-        }
+        }/* We won't test this yet
         try{
           Process compile = rt.exec("g++ output/java_lang.cc output/output.cc output/main.cc");
           printCommandStdOut(compile);
@@ -49,7 +49,7 @@ public class TestDriver{
         }
         catch(IOException e){
           System.out.println("IO Exception compiling " + file.getPath());
-        }
+        }*/
       }
     }
   }
@@ -74,7 +74,7 @@ public class TestDriver{
         while((line=input.readLine()) != null) {
           System.out.println(line);
         }
-        assert(false);
+        //assertTrue(false);
         System.exit(0);
       }
     }

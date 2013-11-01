@@ -170,16 +170,16 @@ public class Translator extends Tool {
                     new FileOutputStream("output/output.cc"), "utf-8"));
             Printer pCC = new Printer(outCC);
 
-            mainCC = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("output/main.cc"), "utf-8"));
-            Printer mCC = new Printer(mainCC);
+            //mainCC = new BufferedWriter(new OutputStreamWriter(
+            //        new FileOutputStream("output/main.cc"), "utf-8"));
+            //Printer mCC = new Printer(mainCC);
 
             initOutputCCFile(pCC);
-            initMainFile(mCC);
+            initMainFile(pCC);
 
-            LOGGER.info("Running CCCP on " + nodeList.getFirst().getLocation().toString());
-            new CCCP(mCC).dispatch(nodeList.getFirst());
-            nodeList.removeFirst();
+            //LOGGER.info("Running CCCP on " + nodeList.getFirst().getLocation().toString());
+            //new CCCP(pCC).dispatch(nodeList.getFirst());
+            //nodeList.removeFirst();
             for (GNode listNode : nodeList){
               LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
               new CCCP(pCC).dispatch(listNode);
