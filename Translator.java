@@ -91,11 +91,6 @@ public class Translator extends Tool {
       runtime.console().format(node).pln().flush();
     }
 
-    if (runtime.test("printJavaCode")) {
-      new JavaPrinter(runtime.console()).dispatch(node);
-      runtime.console().flush();
-    }
-
     if (runtime.test("printInheritance")) {
     	LinkedList<GNode> nodeList = new LinkedList<GNode>();
     	nodeList.add((GNode)node);
@@ -130,31 +125,7 @@ public class Translator extends Tool {
       //Build the Inheritance tree
       Inheritance inheritanceTree = new Inheritance(nodeList);
 
-        Writer outH = null;
-        try {
-
-            outH = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("output/output.h"), "utf-8"));
-            Printer pH = new Printer(outH);
-            
-            initOutputHFile(pH);
-            int count = 0;
-            for (GNode listNode : nodeList){
-              if (count > 0){
-                LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
-                GNode listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
-                new InheritancePrinter(pH).dispatch(listNodeTree);
-                //runtime.console().format(listNodeTree).pln().flush();
-              }
-              else count++;
-            }
-
-        } catch (IOException ex){
-          // report
-        } finally {
-           try {outH.close();} catch (Exception ex) {}
-        }
-
+      writeInheritanceAsCPP(inheritanceTree, nodeList);
 
       LOGGER.info("Modifying AST:");
       for (GNode listNode : nodeList){
@@ -162,54 +133,59 @@ public class Translator extends Tool {
         CppT.dispatch(listNode);
         //runtime.console().format(listNode).pln().flush();
       }
-        Writer outCC = null;
-        Writer mainCC = null;
+        writeTreeAsCPP(nodeList);
+    }
+  }
 
-        try {
-            outCC = new BufferedWriter(new OutputStreamWriter(
-                    new FileOutputStream("output/output.cc"), "utf-8"));
-            Printer pCC = new Printer(outCC);
+  private void writeInheritanceAsCPP(Inheritance inheritanceTree, LinkedList<GNode> nodeList){
+    Writer outH = null;
+    try {
 
-            //mainCC = new BufferedWriter(new OutputStreamWriter(
-            //        new FileOutputStream("output/main.cc"), "utf-8"));
-            //Printer mCC = new Printer(mainCC);
-
-            initOutputCCFile(pCC);
-            initMainFile(pCC);
-
-            //LOGGER.info("Running CCCP on " + nodeList.getFirst().getLocation().toString());
-            //new CCCP(pCC).dispatch(nodeList.getFirst());
-            //nodeList.removeFirst();
-            for (GNode listNode : nodeList){
-              LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
-              new CCCP(pCC).dispatch(listNode);
-            }
-
-        } catch (IOException ex){
-          // report
-        } finally {
-           try {outCC.close();} catch (Exception ex) {}
-           try {outH.close();} catch (Exception ex) {}
-           try {mainCC.close();} catch (Exception ex) {}
+        outH = new BufferedWriter(new OutputStreamWriter(
+                new FileOutputStream("output/output.h"), "utf-8"));
+        Printer pH = new Printer(outH);
+        
+        initOutputHFile(pH);
+        int count = 0;
+        for (GNode listNode : nodeList){
+          if (count > 0){
+            LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
+            GNode listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
+            new InheritancePrinter(pH).dispatch(listNodeTree);
+            //runtime.console().format(listNodeTree).pln().flush();
+          }
+          else count++;
         }
 
+    } catch (IOException ex){
+      // report
+    } finally {
+       try {outH.close();} catch (Exception ex) {}
     }
+  }
 
-    if (runtime.test("printCPP")) {
-      ASTModifier CppT = new ASTModifier((GNode)node);
-      CppT.dispatch((GNode)node);
-      Writer writer = null;
-      try {
-          writer = new BufferedWriter(new OutputStreamWriter(
-                  new FileOutputStream(CppT.getName() + ".cc"), "utf-8"));
-          Printer p = new Printer(writer);
-          new CCCP(p).dispatch((GNode)node);
-          // needs to be updated to have second printer: new CCCP(p).dispatch(CppT.getRoot());
-      } catch (IOException ex){
-        // report
-      } finally {
-         try {writer.close();} catch (Exception ex) {}
+  private void writeTreeAsCPP(LinkedList<GNode> nodeList){
+    Writer outCC = null;
+
+    try {
+      outCC = new BufferedWriter(new OutputStreamWriter(
+              new FileOutputStream("output/output.cc"), "utf-8"));
+      Printer pCC = new Printer(outCC);
+
+      initOutputCCFile(pCC);
+      initMainFile(pCC);
+
+      /* Print each GNode in the list into output.cc */
+      for (GNode listNode : nodeList){
+        LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
+        new CCCP(pCC).dispatch(listNode);
       }
+
+    } catch (IOException ex){
+      // report
+    } finally {
+       try {outCC.close();} catch (Exception ex) {}
+       try {mainCC.close();} catch (Exception ex) {}
     }
   }
 
