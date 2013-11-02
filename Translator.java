@@ -97,11 +97,8 @@ public class Translator extends Tool {
     	Dependency dep = new Dependency(nodeList);
     	dep.makeAddressList();
     	nodeList = dep.makeNodeList();
-    	for (int i=0; i<nodeList.size();i++){
-  	    System.out.println(" -> " + nodeList.get(i).getLocation().toString());
-      }
-    	Inheritance test = new Inheritance(nodeList);
-    	runtime.console().format(test.getRoot()).pln().flush();
+
+      printInheritanceNodes(nodeList);
     }
 
     if (runtime.test("printCPPTree")) {
@@ -123,12 +120,17 @@ public class Translator extends Tool {
 
       /* Store the found dependencies as AST */
       nodeList = dep.makeNodeList();
-
+      
       /* Build inheritance tree */
       LOGGER.info("Building inheritance tree:");
       Inheritance inheritanceTree = new Inheritance(nodeList);
 
+      /* Print for debugging */
+      //printInheritanceNodes(nodeList);
+      //runtime.console().format(listNode).pln().flush();
+
       /* Write VTables to file 'output.h' */
+      LOGGER.info("Writing VTables to output.h");
       writeInheritanceAsCPP(inheritanceTree, nodeList);
 
       /* Make modifications to AST needed for printing */
@@ -152,22 +154,19 @@ public class Translator extends Tool {
               new FileOutputStream("output/output.h"), "utf-8"));
       Printer pH = new Printer(outH);
       
+      LOGGER.info("calling initOutputHFile()");
       initOutputHFile(pH);
-      int count = 0;
       for (GNode listNode : nodeList){
-        if (count > 0){
-          LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
-          GNode listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
-          new InheritancePrinter(pH).dispatch(listNodeTree);
-          //runtime.console().format(listNodeTree).pln().flush();
-        }
-        else count++;
+        LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
+        GNode listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
+        new InheritancePrinter(pH).dispatch(listNodeTree);
+        //runtime.console().format(listNodeTree).pln().flush();
       }
 
     } catch (IOException ex){
-      // report
+      LOGGER.warning("IO Exception");
     } finally {
-       try {outH.close();} catch (Exception ex) {}
+       try {outH.close();} catch (Exception ex) {LOGGER.warning("IO Exception");}
     }
   }
 
@@ -220,6 +219,15 @@ public class Translator extends Tool {
     p.pln("");
   }
   
+
+
+  private void printInheritanceNodes(LinkedList<GNode> nodeList) {
+    for (int i=0; i<nodeList.size();i++){
+      System.out.println(" -> " + nodeList.get(i).getLocation().toString());
+    }
+    Inheritance test = new Inheritance(nodeList);
+    runtime.console().format(test.getRoot()).pln().flush();
+  }
   /**
    * Run the translator with the specified command line arguments.
    *

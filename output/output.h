@@ -6,6 +6,37 @@
 using namespace java::lang;
 using namespace std;
 namespace subExamples {
+struct __TranslateMe;
+struct __TranslateMe_VT;
+typedef __TranslateMe* TranslateMe;
+struct __TranslateMe {
+__TranslateMe_VT* __vptr;
+static __TranslateMe_VT __vtable;
+static String toString(TranslateMe);
+static int32_t hashCode(TranslateMe);
+static Class getClass(TranslateMe);
+static bool equals(TranslateMe, Object);
+static Class __class();
+};
+
+struct __TranslateMe_VT {
+Class __isa;
+String (*toString)(TranslateMe);
+int32_t (*hashCode)(TranslateMe);
+Class (*getClass)(TranslateMe);
+bool (*equals)(TranslateMe);
+__TranslateMe_VT()
+: __isa(__TranslateMe::__class()),
+toString((String(*)(TranslateMe)) &__Object::toString),
+hashCode((int32_t(*)(TranslateMe)) &__Object::hashCode),
+getClass((Class(*)(TranslateMe)) &__Object::getClass),
+equals((bool(*)(TranslateMe)) &__Object::equals){
+}
+};
+
+}
+
+namespace subExamples {
 struct __HelloWorld;
 struct __HelloWorld_VT;
 typedef __HelloWorld* HelloWorld;

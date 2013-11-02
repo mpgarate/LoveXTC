@@ -541,7 +541,7 @@ public class Inheritance {
 
 	// Parses a MethodDeclaration from JavaAST to a similar one in the
 	// InheritanceTree
-	private GNode handleMethodDeclaration(GNode inheritNode, GNode astNode,
+	private void handleMethodDeclaration(GNode inheritNode, GNode astNode,
 			boolean isVTable) {
 		String[] parameters = null, modifiers = null;
 		String classname = null;
@@ -552,6 +552,7 @@ public class Inheritance {
 		String name = null, returnType = null;
 		if (astNode.getString(3) != null) {
 			name = astNode.getString(3);
+			if (name.equals("main")) return;
 		}
 		classname = (String) inheritNode.getProperty("parent");
 		for (int i = 0; i < astNode.size(); i++) {
@@ -579,7 +580,6 @@ public class Inheritance {
 		}
 		inheritNode.add((createMethod(modifiers, name, parameters, returnType,
 				classname, isVTable)));
-		return inheritNode;
 	}
 
 	// Parses a ConstructorDeclaration from JavaAST to a similar one in the
