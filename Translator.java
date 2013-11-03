@@ -158,9 +158,11 @@ public class Translator extends Tool {
       initOutputHFile(pH);
       for (GNode listNode : nodeList){
         LOGGER.info("Running InheritancePrinter on " + listNode.getLocation().toString());
-        GNode listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
-        new InheritancePrinter(pH).dispatch(listNodeTree);
-        //runtime.console().format(listNodeTree).pln().flush();
+        LinkedList<GNode> listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
+        for (GNode node : listNodeTree) {
+          new InheritancePrinter(pH).dispatch(node);
+          runtime.console().format(node).pln().flush();
+        }
       }
 
     } catch (IOException ex){

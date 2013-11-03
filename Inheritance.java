@@ -52,10 +52,10 @@ public class Inheritance {
 	int childCount = 3; // When building the tree, keeps track of which child we're creating.
 
 	String packageName = null;
-	GNode targetNode;
+	LinkedList<GNode> returnList = new LinkedList<GNode>();
 
-        DataLayoutCreator dataLayout = new DataLayoutCreator();
-        VTableCreator vTable = new VTableCreator();
+   	DataLayoutCreator dataLayout = new DataLayoutCreator();
+   	VTableCreator vTable = new VTableCreator();
 
 	public Inheritance(LinkedList<GNode> nodeList) {
 		// Program starts here, we begin by creating Object and String class
@@ -105,8 +105,8 @@ public class Inheritance {
 		for (GNode s=stackNode;s.getName()!="FirstStackNode";s=(GNode)s.getNode(0)) {
 		    GNode parent = findParentNode(root, (String)s.getProperty("parentString"));
 		    if (parent == null) {
-			System.out.println("NO PARENT FOUND IN THE TREE!");
-			continue;
+				System.out.println("NO PARENT FOUND IN THE TREE!");
+				continue;
 		    }
 
 		    GNode thisNode = (GNode)root.getNode((Integer)s.getProperty("numberInRoot"));
@@ -155,7 +155,7 @@ public class Inheritance {
 
 			public void visitClassBody(GNode n) {
 			    if (childCount > root.size()) {
-				return;
+					return;
 			    }
 
 			    childCount--;
@@ -198,16 +198,16 @@ public class Inheritance {
 	private void buildTreeHeaders(GNode startNode) {
 	    //Builds the header for each node in the inheritance tree.
 	    if (startNode.size()<=0 || !startNode.getNode(0).getName().equals("HeaderDeclaration")) {
-		startNode.add(0, buildHeader((GNode)startNode.getProperty("javaAST"), (GNode)startNode.getProperty("parent"))); //this builds the header
+			startNode.add(0, buildHeader((GNode)startNode.getProperty("javaAST"), (GNode)startNode.getProperty("parent"))); //this builds the header
 	    }
 
 	    if (startNode.size()<=1) {
-		return;
+			return;
 	    }
 	    
 	    //If the node has any children, it builds the header for it's children.
 	    for (int i=1;i<startNode.size();i++) {
-		buildTreeHeaders((GNode)startNode.getNode(i));
+			buildTreeHeaders((GNode)startNode.getNode(i));
 	    }
 	    return;
 	}
@@ -230,30 +230,37 @@ public class Inheritance {
 	
     private GNode searchForNode(GNode node, String name) {
 		// DOES A DEPTH-FIRST SEARCH THROUGH THE TREE FOR A NODE OF SPECIFIC NAME
-	if (node.getNode(0).getString(1).equals(name)) {
-	    return node;
-	}
-	else if (node.size() == 1) {
-	    return null;
-	}
-	else {
-	    for (int i=1;i<node.size();i++) {
-		GNode foundNode = searchForNode((GNode)node.getNode(i), name);
-		if (foundNode != null) {
-		    return foundNode;
+		if (node.getNode(0).getString(1).equals(name)) {
+	    	return node;
 		}
-	    }
-	}
-	return null;
+		else if (node.size() == 1) {
+	    	return null;
+		}
+		else {
+	    	for (int i=1;i<node.size();i++) {
+				GNode foundNode = searchForNode((GNode)node.getNode(i), name);
+				if (foundNode != null) {
+		    		return foundNode;
+				}
+	    	}
+		}
+		return null;
     }
-	public GNode parseNodeToInheritance(GNode n){
+
+	public LinkedList<GNode> parseNodeToInheritance(GNode n){
+
 		new Visitor(){
 			public void visitPackageDeclaration(GNode n){
 				packageName = n.getNode(1).getString(0);
 			}
 			
 			public void visitClassDeclaration(GNode n){
-				targetNode = (GNode) n;
+				GNode targetNode = (GNode) n;
+				GNode classNode = searchForNode(root, targetNode.getString(1));
+				GNode returnNode = GNode.create(targetNode.getString(1));
+				returnNode.add((GNode)classNode.getNode(0));
+
+				returnList.add(returnNode);
 			}
 			
 			public void visit(GNode n) {
@@ -264,10 +271,7 @@ public class Inheritance {
 			}
 		}.dispatch(n);
 		
-		GNode classNode = searchForNode(root, targetNode.getString(1));
-		GNode returnNode = GNode.create(targetNode.getString(1));
-		returnNode.add((GNode)classNode.getNode(0));
-		return returnNode;
+		return returnList;
 	}
 
 	// Returns the parent node Data Layout for inheritance. If parent == null,
