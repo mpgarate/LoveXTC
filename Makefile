@@ -48,6 +48,9 @@ PACKAGE_LOC = xtc/oop
 SOURCE = \
 	   CCCP.java \
 	   Dependency.java \
+	   NodeHandler.java \
+	   VTableCreator.java \
+	   DataLayoutCreator.java \
 	   Inheritance.java \
      CTranslator.java \
      TestDriver.java \
