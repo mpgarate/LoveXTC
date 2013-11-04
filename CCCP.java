@@ -179,7 +179,14 @@ public class CCCP extends Visitor {
   }
   public void visitReturnStatement(GNode n){
     printer.p("return ");
-    visit(n);
+    if (n.getNode(0).getName().equals("StringLiteral")){
+      printer.p("new __String(");
+      visit(n);
+      printer.p(")");
+    }
+    else{
+      visit(n);
+    }
     printer.p(";").pln();
   }
 

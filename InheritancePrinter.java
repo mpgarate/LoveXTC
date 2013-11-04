@@ -39,11 +39,17 @@ public class InheritancePrinter extends Visitor {
   /***************************************************************/
 
   public void visitHeaderDeclaration(GNode n){
-
-  	printer.pln("namespace " + n.getString(0) + " {");
-  	className = n.getString(1);
-  	visit(n);
-  	printer.pln("}").pln();
+    packageName = n.getString(0); //null if no package
+    if (packageName != null){
+      printer.pln("namespace " + n.getString(0) + " {");
+      className = n.getString(1);
+      visit(n);
+      printer.pln("}").pln();
+    }
+    else{
+      className = n.getString(1);
+      visit(n);
+    }
   }
 
   public void visitDataLayout(GNode n){
