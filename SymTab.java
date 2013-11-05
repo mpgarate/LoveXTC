@@ -18,13 +18,7 @@ import xtc.lang.JavaPrinter;
 
 import java.util.StringTokenizer;
 import java.util.Iterator;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileWriter;
-import java.io.PrintWriter;
-import java.io.FileReader;
-import java.io.IOException;
-import java.io.Reader;
+
 
 public class SymTab {
 	SymbolTable table = new SymbolTable("SymRoot");
@@ -34,9 +28,6 @@ public class SymTab {
 	}
 
 	public void buildSymbols(GNode node){
-		table.enter(node);
-		System.out.println(table.current());
-
 		new Visitor() {
 
 			public void visitMethodDeclaration(GNode n){
