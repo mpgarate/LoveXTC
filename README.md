@@ -39,7 +39,7 @@ TODO:
 
 WHAT ARE WE DOING RIGHT NOW?
 * Adam:
-* Ahmad: Dependency finder
+* Ahmad: Symbol table
 * Bruno:
 * Carl:
 * Michael: CCCP
@@ -50,3 +50,4 @@ FILE STATUS
 * ASTModifier : manipulates tree for C++ output
 * CCCP.java: prints much of output.cc correctly
 * Translator.java: needs to be cleaned up
+* SymTab.java : should accept the linked list instead of a single node 
