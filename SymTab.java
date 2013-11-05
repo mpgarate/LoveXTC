@@ -21,12 +21,15 @@ import java.util.Iterator;
 
 
 public class SymTab {
+	// creating a new symbol table
 	SymbolTable table = new SymbolTable("SymRoot");
 
+	// constructor - accepting a GNode 
 	public SymTab(GNode node){
 		buildSymbols(node);
 	}
 
+	/* buildSymbols builds the symbol table as we traverse the ast node given to it*/
 	public void buildSymbols(GNode node){
 		new Visitor() {
 
