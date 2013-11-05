@@ -107,6 +107,7 @@ public class Translator extends Tool {
       new ASTModifier().dispatch((GNode)node);
       runtime.console().format(node).pln().flush();
     }
+    /* outputs a scope file which contains the symbol table/tree for a given node */
     if (runtime.test("symtab")) {
       SymTab tab = new SymTab((GNode)node);
       try{
