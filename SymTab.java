@@ -48,10 +48,12 @@ public class SymTab {
             }
             public void visitFieldDeclaration(GNode n) {
                                 
-                String name = n.getNode(2).getNode(0).getString(0);                                
                 String type = n.getNode(1).getNode(0).getString(0);
-                                
-                table.current().addDefinition(name, type);
+                /* this loop goes thru all the declarators and add them*/
+                for (int i = 0 ; i < n.getNode(2).size(); i++ ){
+                	String name = n.getNode(2).getNode(i).getString(0);
+                	table.current().addDefinition(name, type);
+                }               
                 visit(n);
             } 
 
