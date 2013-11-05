@@ -22,7 +22,7 @@ import java.util.Iterator;
 
 public class SymTab {
 	// creating a new symbol table
-	SymbolTable table = new SymbolTable("SymRoot");
+	SymbolTable table = new SymbolTable("Root");
 
 	// constructor - accepting a GNode 
 	public SymTab(GNode node){
@@ -47,13 +47,16 @@ public class SymTab {
             	visit(n);
             }
             public void visitFieldDeclaration(GNode n) {
-                                
-                String name = n.getNode(2).getNode(0).getString(0);                                
+                                                               
                 String type = n.getNode(1).getNode(0).getString(0);
-                                
-                table.current().addDefinition(name, type);
+                /* this loop goes thru all the declarators and add them*/
+                for (int i = 0 ; i < n.getNode(2).size(); i++ ){
+                	String name = n.getNode(2).getNode(i).getString(0);
+                	table.current().addDefinition(name, type);
+                }               
                 visit(n);
             } 
+
 
 			public void visit(GNode n) {
                 for (Object o : n) if (o instanceof GNode) dispatch((GNode)o);
