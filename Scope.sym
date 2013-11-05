@@ -1,0 +1,9 @@
+.Root = {
+  world = "int";
+  .createWorldScope(0) = {
+  };
+  .returnXScope(1) = {
+    a = "String";
+    x = "int";
+  };
+};
