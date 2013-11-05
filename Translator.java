@@ -7,6 +7,7 @@ import java.io.Writer;
 import java.io.BufferedWriter;
 import java.io.OutputStreamWriter;
 import java.io.FileOutputStream;
+import java.io.PrintWriter;
 
 import xtc.lang.JavaFiveParser;
 import xtc.lang.JavaPrinter;
@@ -61,6 +62,7 @@ public class Translator extends Tool {
       bool("printJavaCode", "printJavaCode", false, "Print Java code.").
       bool("printCPPTree", "printCPPTree", false, "Print the CPP AST Tree.").
       bool("translate", "translate", false, "translate java to cpp").
+      bool("symtab", "symtab", false, "create a symboltable and print it").
       bool("printInheritance", "printInheritance", false, "Print Basic Inheritance tree").
       bool("printCPP", "printCPP", false, "Print the AST as a CPP file.");
   }
@@ -105,6 +107,18 @@ public class Translator extends Tool {
       new ASTModifier().dispatch((GNode)node);
       runtime.console().format(node).pln().flush();
     }
+    if (runtime.test("symtab")) {
+      SymTab tab = new SymTab((GNode)node);
+      try{
+            PrintWriter fstream = new PrintWriter("Scope.sym");
+            Printer aScope = new Printer(fstream);
+            tab.table.root().dump(aScope);
+            aScope.flush();
+          }
+        catch(Exception e) {
+            System.err.println(e.getMessage());
+        }
+    }
 
     if (runtime.test("translate")) {
       /* List to hold Java AST nodes */
@@ -120,6 +134,9 @@ public class Translator extends Tool {
 
       /* Store the found dependencies as AST */
       nodeList = dep.makeNodeList();
+      for (int i=0; i<nodeList.size();i++){
+        System.out.println(" -> " + nodeList.get(i).getLocation().toString());
+      }
       
       /* Build inheritance tree */
       LOGGER.info("Building inheritance tree:");
