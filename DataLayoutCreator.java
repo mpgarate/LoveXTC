@@ -67,7 +67,8 @@ public class DataLayoutCreator extends NodeHandler {
 	    if (dataLayout.get(i) != null && dataLayout.get(i) instanceof Node) {
 				Node child = dataLayout.getNode(i);
 
-				if (child.hasName("ConstructorDeclaration")) { // removes the
+				if (child.hasName("ConstructorDeclaration")) {
+						// removes the
 				    // parent
 				    // constructor
 				    dataLayout.remove(i);
