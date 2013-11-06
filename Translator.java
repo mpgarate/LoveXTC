@@ -179,7 +179,7 @@ public class Translator extends Tool {
         LinkedList<GNode> listNodeTree = inheritanceTree.parseNodeToInheritance(listNode);
         for (GNode node : listNodeTree) {
           new InheritancePrinter(pH).dispatch(node);
-          runtime.console().format(node).pln().flush();
+          //runtime.console().format(node).pln().flush();
         }
       }
 
