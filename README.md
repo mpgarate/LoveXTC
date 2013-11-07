@@ -9,9 +9,15 @@ source setup.sh
 
 Convert a java file to C++ with:
 ```sh
+make love FILE=examples/TranslateMe.java
+```
+This is equivalent to running:
+```sh
 java xtc.oop.Translator -translate examples/TranslateMe.java
 ```
 This will write out C++ to  ```output/output.cc``` and ```output/output.h```
+
+Compile the output code with ```make compile``` and run it with ```make run```
 
 Print a java file's C++ AST with:
 ```sh
