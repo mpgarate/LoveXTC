@@ -122,7 +122,7 @@ public class InheritancePrinter extends Visitor {
     printer.pln("__" + className + "_VT()");
     printer.p(": ");
     visit(n);
-    printer.pln("{").pln("}");
+    printer.pln("{}");
   	printer.pln("};");
   	printer.pln();
   }

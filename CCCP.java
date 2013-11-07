@@ -41,6 +41,11 @@ public class CCCP extends Visitor {
   private String className;
   private String javaClassName;
 
+  /* Remember when we visit a constructor. We will check if this gets set,
+     and if not, one will be added manually. 
+  */
+  private boolean visitedConstructor;
+
 	public CCCP(Printer p){
     this.printer = p;
     printer.register(this);
@@ -95,6 +100,7 @@ public class CCCP extends Visitor {
     printer.incr();
     printlnUnlessNull("namespace " + packageName + " {", packageName);
     visit(n);
+    printFallbackConstructor();
 
     printClassMethod();
 
@@ -156,6 +162,7 @@ public class CCCP extends Visitor {
   }
 
   public void visitConstructorDeclaration(GNode n){
+    visitedConstructor = true;
     String constructorName = n.getString(2);
     /* TODO: Allow constructor to accept parameters */
     printer.p(className + "::" + constructorName + "()" );
@@ -346,6 +353,17 @@ public class CCCP extends Visitor {
       printer.pln("new __Class(__rt::literal(\"" + packageName + "." + javaClassName + "\"), (Class) __rt::null());");
       printer.pln("return k;");
       printer.pln("}");
+    }
+  }
+
+  private void printFallbackConstructor(){
+    if (!visitedConstructor){
+      printer.p(className + "::" + className + "()" );
+      printer.p(" : ");
+      printer.p("__vptr(&__vtable)");
+      printer.p("{");
+      printer.p("}");
+      printer.pln();
     }
   }
 

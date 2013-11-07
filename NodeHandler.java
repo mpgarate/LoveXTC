@@ -38,37 +38,39 @@ public class NodeHandler {
 				if (child.hasName("FieldDeclaration") && !isVTable) {
 					handleFieldDeclaration(inheritNode, (GNode) child);
 				} else if (child.hasName("MethodDeclaration")) {
-					handleMethodDeclaration(inheritNode, (GNode) child,
-						isVTable);
-		    // METHOD OVERWRITING
-					boolean isOverwritten = false;
-					for (int j = 0; j < inheritNode.size() - 1; j++) {
-						if (inheritNode.getNode(j).size() == 5) {
-							String searchName = (String) inheritNode.getNode(j).get(2);
-							String checkName = (String) inheritNode.getNode(inheritNode.size() - 1).get(2);
-							if (inheritNode.getNode(j).getNode(4).size() != 0) {
-				//Renames the parameters in a method to be the classname type
-								inheritNode.getNode(j).getNode(4).set(0,inheritNode.getProperty("parent"));
-							}
-							if (searchName.equals(checkName)) {
-								inheritNode.set(j, inheritNode.getNode(inheritNode.size()-1));
-								isOverwritten = true;
-								break;
+						handleMethodDeclaration(inheritNode, (GNode) child,
+							isVTable);
+			    // METHOD OVERWRITING
+						boolean isOverwritten = false;
+						for (int j = 0; j < inheritNode.size() - 1; j++) {
+							if (inheritNode.getNode(j).size() == 5) {
+								String searchName = (String) inheritNode.getNode(j).get(2);
+								String checkName = (String) inheritNode.getNode(inheritNode.size() - 1).get(2);
+								if (inheritNode.getNode(j).getNode(4).size() != 0) {
+					//Renames the parameters in a method to be the classname type
+									inheritNode.getNode(j).getNode(4).set(0,inheritNode.getProperty("parent"));
+								}
+								if (searchName.equals(checkName)) {
+									inheritNode.set(j, inheritNode.getNode(inheritNode.size()-1));
+									isOverwritten = true;
+									break;
+								}
 							}
 						}
+						if(isOverwritten){
+							inheritNode.remove(inheritNode.size() -1);
+						}
 					}
-					if(isOverwritten){
-						inheritNode.remove(inheritNode.size() -1);
-
-						/* Manually create a constructor */
-						String className = inheritNode.getProperty("parent").toString();
-						System.out.println("inheritNode name: " + className); //Debug
-						inheritNode.add(2,createConstructor(className, null));
-					}
-				} else if (child.hasName("ConstructorDeclaration") && !isVTable) {
+					else if (child.hasName("ConstructorDeclaration") && !isVTable) {
 					handleConstructorDeclaration(inheritNode, (GNode) child);
 				}
 			}
+		}
+
+		if (!isVTable){
+			/* Manually create a constructor */
+			String className = inheritNode.getProperty("parent").toString();
+			inheritNode.add(2,createConstructor(className, null));	
 		}
 		return inheritNode;
 	}

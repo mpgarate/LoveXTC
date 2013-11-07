@@ -41,13 +41,13 @@ public class VTableCreator extends NodeHandler {
 	String parent = astNode.getString(1);
 	vTable.setProperty("parent", parent);
 	for (int i = 0; i < astNode.size(); i++) {
-	    if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
-		GNode child = (GNode) astNode.getNode(i);
-		if (child.hasName("ClassBody")) {
-		    handleClassBody(vTable, child, true);
-		}
-	    }
-	}
+    if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
+		  GNode child = (GNode) astNode.getNode(i);
+  		if (child.hasName("ClassBody")) {
+  		    handleClassBody(vTable, child, true);
+  		}
+    }
+  }
 	return vTable;
     }
 
