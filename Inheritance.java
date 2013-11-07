@@ -52,7 +52,6 @@ public class Inheritance {
 	int childCount = 3; // When building the tree, keeps track of which child we're creating.
 
 	String packageName = null;
-	LinkedList<GNode> returnList = new LinkedList<GNode>();
 
    	DataLayoutCreator dataLayout = new DataLayoutCreator();
    	VTableCreator vTable = new VTableCreator();
@@ -248,7 +247,7 @@ public class Inheritance {
     }
 
 	public LinkedList<GNode> parseNodeToInheritance(GNode n){
-
+		final LinkedList<GNode> returnList = new LinkedList<GNode>();
 		new Visitor(){
 			public void visitPackageDeclaration(GNode n){
 				packageName = n.getNode(1).getString(0);
