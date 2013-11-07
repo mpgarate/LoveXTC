@@ -11,7 +11,7 @@ Convert a java file to C++ with:
 ```sh
 java xtc.oop.Translator -translate examples/TranslateMe.java
 ```
-This will write a C++ file to ```output/main.cc``` as well as the helpers ```output/output.cc``` and ```output/output.h```
+This will write out C++ to  ```output/output.cc``` and ```output/output.h```
 
 Print a java file's C++ AST with:
 ```sh
@@ -27,7 +27,7 @@ java -cp . TranslateMe
 To run converted code:
 ```
 cd output
-g++ java_lang.cc output.cc main.cc
+g++ java_lang.cc output.cc
 ./a.out
 ```
 
@@ -42,7 +42,7 @@ WHAT ARE WE DOING RIGHT NOW?
 * Ahmad: Symbol table
 * Bruno:
 * Carl:
-* Michael: CCCP
+* Michael: Wies Tests
 
 FILE STATUS
 * Dependency.java : working for HelloWorld.java and HelloUniverse.java inputs!
