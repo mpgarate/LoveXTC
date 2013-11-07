@@ -83,3 +83,9 @@ test:
 FILE = examples/TranslateMe.java
 love:
 	java xtc.oop.Translator -translate ${FILE}
+
+compile:
+	cd output && g++ output.h && g++ java_lang.cc output.cc
+
+run:
+	cd output && ./a.out
