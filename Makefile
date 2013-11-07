@@ -76,6 +76,10 @@ ifdef JAVA_DEV_ROOT
 include $(JAVA_DEV_ROOT)/Makerules
 endif
 
-.PHONY: junitTests test
+.PHONY: junitTests test love
 test:
 	java org.junit.runner.JUnitCore TestDriver
+
+FILE = examples/TranslateMe.java
+love:
+	java xtc.oop.Translator -translate ${FILE}
