@@ -357,7 +357,7 @@ public class CCCP extends Visitor {
   }
 
   private void printFallbackConstructor(){
-    if (!visitedConstructor){
+    if (!visitedConstructor && (packageName != null)){
       printer.p(className + "::" + className + "()" );
       printer.p(" : ");
       printer.p("__vptr(&__vtable)");
