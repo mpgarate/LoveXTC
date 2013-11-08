@@ -11,6 +11,7 @@ import java.io.PrintWriter;
 
 import xtc.lang.JavaFiveParser;
 import xtc.lang.JavaPrinter;
+import xtc.lang.JavaAstSimplifier;
 
 import xtc.parser.ParseException;
 import xtc.parser.Result;
@@ -22,6 +23,7 @@ import xtc.tree.Printer;
 
 import xtc.util.Tool;
 import java.util.LinkedList;
+import xtc.util.SymbolTable;
 
 import java.util.logging.Logger;
 import java.util.logging.Handler;
@@ -109,12 +111,24 @@ public class Translator extends Tool {
     }
     /* outputs a scope file which contains the symbol table/tree for a given node */
     if (runtime.test("symtab")) {
-      SymTab tab = new SymTab((GNode)node);
-      try{
-            PrintWriter fstream = new PrintWriter("Scope.sym");
-            Printer aScope = new Printer(fstream);
-            tab.table.root().dump(aScope);
-            aScope.flush();
+    SymbolTable table = new SymbolTable();
+
+    // do some simplifications on the AST
+    new JavaAstSimplifier().dispatch(node);
+    
+    // construct the symbol table
+    new SymTab(runtime, table).dispatch(node);
+
+    // alternatively, use xtc's functionality to build a symbol table
+    //new JavaExternalAnalyzer(runtime, table).dispatch(node);
+
+    // a more convenient way to print the symbol table
+    //table.current().dump(runtime.console());
+    try{
+          PrintWriter fstream = new PrintWriter("Scope.sym");
+          Printer aScope = new Printer(fstream);
+          table.current().dump(aScope);
+          aScope.flush();
           }
         catch(Exception e) {
             System.err.println(e.getMessage());
