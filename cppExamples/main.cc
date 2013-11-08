@@ -1,7 +1,7 @@
 /*
  * Object-Oriented Programming
  * Copyright (C) 2012 Robert Grimm
- * Modifications Copyright (C) 2013 Thomas Wies
+ * Modifications copyright (C) 2013 Thomas Wies
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -23,75 +23,46 @@
 #include "java_lang.h"
 
 using namespace java::lang;
-using namespace std;
 
 int main(void) {
   // Let's get started.
-  cout << "--------------------------------------------------------------"
-       << "----------------"
-       << endl;
+  std::cout << "--------------------------------------------------------------"
+            << "----------------"
+            << std::endl;
 
-  // Object o = new Object();
-  Object o = new __Object();
+  // int[] a = new int[5];
+  __rt::Array<int32_t>* a = new __rt::Array<int32_t>(5);
 
-  cout << "o.toString() : "
-       << o->__vptr->toString(o)->data // o.toString()
-       << endl;
+  // a[2]
+  __rt::checkNotNull(a);
+  std::cout << "a[2]  : " << (*a)[2] << std::endl;
 
-  // Class oClass = o.getClass();
-  Class oClass = o->__vptr->getClass(o);
+  // a[2] = 5;
+  __rt::checkNotNull(a);
+  (*a)[2] = 5;
 
-  cout << "oClass.getName()  : "
-       << oClass->__vptr->getName(oClass)->data // oClass.getName()
-       << endl
-       << "oClass.toString() : "
-       << oClass->__vptr->toString(oClass)->data // oClass.toString()
-       << endl;
+  // a[2]
+  __rt::checkNotNull(a);
+  __rt::checkIndex(a, 2);
+  std::cout << "a[2]  : " << a->__data[2] << std::endl;
 
-  // Class oClassClass = oClass.getClass();
-  Class oClassClass = oClass->__vptr->getClass(oClass);
+  // String[] ss = new String[5];
+  __rt::Array<String>* ss = new __rt::Array<String>(5);
 
-  cout << "oClassClass.getName()  : "
-       << oClassClass->__vptr->getName(oClassClass)->data // oClassClass.getName()
-       << endl
-       << "oClassClass.toString() : "
-       << oClassClass->__vptr->toString(oClassClass)->data // oClassClass.toString()
-       << endl;
+  // String s = "Hello";
+  String s = __rt::literal("Hello");
 
-  // if (oClass.equals(oClassClass)) { ... } else { ... }
-  if (oClass->__vptr->equals(oClass, (Object) oClassClass)) {
-    cout << "oClass.equals(oClassClass)" << endl;
-  } else {
-    cout << "! oClass.equals(oClassClass)" << endl;
-  }
+  // ss[2] = "Hello";
+  __rt::checkNotNull(ss);
+  __rt::checkStore(ss, s);
+  (*ss)[2] = s;
 
-  // if (oClass.equals(l.getSuperclass())) { ... } else { ... }
-  if (oClass->__vptr->equals(oClass, (Object) oClassClass->__vptr->getSuperclass(oClassClass))) {
-    cout << "oClass.equals(oClassClass.getSuperclass())" << endl;
-  } else {
-    cout << "! oClass.equals(oClassClass.getSuperclass())" << endl;
-  }
+  std::cout << "ss[2] : " << (*ss)[2] << std::endl;
 
-  // if (oClass.isInstance(o)) { ... } else { ... }
-  if (oClass->__vptr->isInstance(oClass, o)) {
-    cout << "o instanceof oClass" << endl;
-  } else {
-    cout << "! (o instanceof oClass)" << endl;
-  }
-
-  // if (oClassClass.isInstance(o)) { ... } else { ... }
-  if (oClassClass->__vptr->isInstance(oClassClass, o)) {
-    cout << "o instanceof oClassClass" << endl;
-  } else {
-    cout << "! (o instanceof oClassClass)" << endl;
-  }
-
-  // HACK: Calling java.lang.Object.toString on oClass via o's vptr
-  cout << o->__vptr->toString((Object) oClass)->data << endl;
 
   // Done.
-  cout << "--------------------------------------------------------------"
-       << "----------------"
-       << endl;
+  std::cout << "--------------------------------------------------------------"
+            << "----------------"
+            << std::endl;
   return 0;
 }
