@@ -43,12 +43,14 @@ public class TestTool{
   }
 
   public String runJavaFile(File file){
-    String directory = file.getPath().replace(".java","");
+    String className = file.getName().replace(".java","");
+    String directory = file.getPath().replace(".java","").replace(className,"");
     try{
       Process process = rt.exec("javac -cp " + directory + " " + file.getPath());
+      printCommandStdOut(process);
       printCommandStdErr(process);
 
-      Process process2 = rt.exec("cd " + directory + " && java -cp . " + file.getName());
+      Process process2 = rt.exec("java -cp " + directory + " " + className);
       printCommandStdOut(process2);
       printCommandStdErr(process2);
       return stdOutToString(process2);
