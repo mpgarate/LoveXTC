@@ -20,8 +20,7 @@ public class TestTool{
 
 
   /* Translate a file */
-  public void translateFile(String path){
-    File file = new File(path);
+  public void translateFile(File file){
     try{
       Process process = rt.exec("java xtc.oop.Translator -translate " + file.getPath());
       printCommandStdOut(process);
@@ -43,14 +42,15 @@ public class TestTool{
     }
   }
 
-  public String runJavaFile(String path){
-    String javaClassName = path.replace(".java","");
+  public String runJavaFile(File file){
+    String className = file.getName().replace(".java","");
+    String directory = file.getPath().replace(".java","").replace(className,"");
     try{
-      Process process = rt.exec("javac -cp . " + path); // + " && java " + javaClassName);
+      Process process = rt.exec("javac -cp " + directory + " " + file.getPath());
       printCommandStdOut(process);
       printCommandStdErr(process);
 
-      Process process2 = rt.exec("java -cp . " + javaClassName.replace("/","."));
+      Process process2 = rt.exec("java -cp " + directory + " " + className);
       printCommandStdOut(process2);
       printCommandStdErr(process2);
       return stdOutToString(process2);
