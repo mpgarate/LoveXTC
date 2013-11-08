@@ -118,7 +118,7 @@ public class Inheritance {
 		for (int i=1;i<root.size();i++) {
 		    buildTreeHeaders((GNode)root.getNode(i));
 		}
-				    
+		getNodeList();
 	}
 
 	public void buildTree(GNode node) {
@@ -172,6 +172,29 @@ public class Inheritance {
 				}
 			}
 		}.dispatch(node);
+	}
+
+	public LinkedList<GNode> getNodeList() {
+		LinkedList<GNode> nodeList = new LinkedList<GNode>();
+		if (root.size() < 2) {
+			return nodeList;
+		}
+
+		for (int i=3;i<root.size();i++) {
+			getNodeList(nodeList, (GNode)root.getNode(i));
+		}
+
+		return nodeList;
+	}
+
+	private void getNodeList(LinkedList<GNode> nodeList, GNode nodeToAdd) {
+		nodeList.add((GNode)nodeToAdd.getProperty("javaAST"));
+		if (nodeToAdd.size() < 2) {
+			return;
+		}
+		for (int i=1;i<nodeToAdd.size();i++) {
+			getNodeList(nodeList, (GNode)nodeToAdd.getNode(i));
+		}
 	}
 
 	private GNode findParentNode(GNode startNode, String name) {
