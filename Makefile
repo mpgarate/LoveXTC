@@ -54,10 +54,10 @@ SOURCE = \
 	   DataLayoutCreator.java \
 	   Inheritance.java \
      CTranslator.java \
-     TestDriver.java \
+     LoveTest/TestTool.java \
+     LoveTest/TestDriver.java \
      ASTModifier.java \
      LoveXTCLogger.java \
-     JavaPrinter.java \
      InheritancePrinter.java \
      Translator.java
 
@@ -78,7 +78,7 @@ endif
 
 .PHONY: junitTests test love
 test:
-	java org.junit.runner.JUnitCore TestDriver
+	make && java org.junit.runner.JUnitCore TestDriver
 
 FILE = examples/TranslateMe.java
 love:

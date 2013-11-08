@@ -7,55 +7,29 @@
 using namespace java::lang;
 using namespace std;
 
-using namespace subExamples;
+String __A::toString(A __this) {
+return new __String("A");
 
+}
+__A::__A() : __vptr(&__vtable){}
+__A_VT __A::__vtable;
+
+Class __A::__class() {
+static Class k =
+new __Class(__rt::literal("null.A"), (Class) __rt::null());
+return k;
+}
 int main(void){
-HelloWorld hw = new __HelloWorld();
-cout << hw->__vptr->toString(hw)->data <<endl;
-HelloUniverse hu = new __HelloUniverse();
-cout << hu->__vptr->toString(hu)->data <<endl;
-cout << hu->__vptr->createWorld(hu) <<endl;
+A a = new __A();
+cout << a->__vptr->toString(a)->data <<endl;
 
 return 0;
 }
-namespace subExamples {
-__HelloWorld::__HelloWorld() : __vptr(&__vtable), world(0) {}
+__Test1::__Test1() : __vptr(&__vtable){}
+__Test1_VT __Test1::__vtable;
 
-int32_t __HelloWorld::createWorld(HelloWorld __this) {
-__this->world = 1;
-return __this->world;
-
-}
-int32_t __HelloWorld::returnX(String a) {
-int32_t x = 5;
-return x;
-
-}
-__HelloWorld_VT __HelloWorld::__vtable;
-
-Class __HelloWorld::__class() {
+Class __Test1::__class() {
 static Class k =
-new __Class(__rt::literal("subExamples.HelloWorld"), (Class) __rt::null());
+new __Class(__rt::literal("null.A"), (Class) __rt::null());
 return k;
-}
-}
-namespace subExamples {
-__HelloUniverse::__HelloUniverse() : __vptr(&__vtable){}
-
-int32_t __HelloUniverse::returnX(String b) {
-int32_t x = 10;
-return x;
-
-}
-String __HelloUniverse::toString(HelloUniverse __this) {
-return new __String("x");
-
-}
-__HelloUniverse_VT __HelloUniverse::__vtable;
-
-Class __HelloUniverse::__class() {
-static Class k =
-new __Class(__rt::literal("subExamples.HelloUniverse"), (Class) __rt::null());
-return k;
-}
 }
