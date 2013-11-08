@@ -32,6 +32,7 @@ public class NodeHandler {
     // Parses the ClassBody node into children of the class root in the
     // InheritanceTree
 	protected GNode handleClassBody(GNode inheritNode, GNode astNode, boolean isVTable) {
+		boolean foundConstructor = false;
 		for (int i = 0; i < astNode.size(); i++) {
 			if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
 				Node child = astNode.getNode(i);
@@ -62,12 +63,13 @@ public class NodeHandler {
 						}
 					}
 					else if (child.hasName("ConstructorDeclaration") && !isVTable) {
+					foundConstructor = true;
 					handleConstructorDeclaration(inheritNode, (GNode) child);
 				}
 			}
 		}
 
-		if (!isVTable){
+		if (!isVTable && !foundConstructor){
 			/* Manually create a constructor */
 			String className = inheritNode.getProperty("parent").toString();
 			inheritNode.add(2,createConstructor(className, null));	
