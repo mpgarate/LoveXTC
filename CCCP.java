@@ -100,9 +100,10 @@ public class CCCP extends Visitor {
     printer.incr();
     printlnUnlessNull("namespace " + packageName + " {", packageName);
     visit(n);
-    printFallbackConstructor();
-
-    printClassMethod();
+    if (javaClassName != null) {
+      printFallbackConstructor();
+      printClassMethod(); 
+    }
 
     printlnUnlessNull("}",packageName); //Closing namespace
     printer.decr();
@@ -345,19 +346,17 @@ public class CCCP extends Visitor {
   }
 
   private void printClassMethod(){
-    if (javaClassName != null){
-      printer.pln(className + "_VT " + className + "::__vtable;");
-      printer.pln();
-      printer.pln("Class " + className + "::__class() {");
-      printer.pln("static Class k =");
-      printer.pln("new __Class(__rt::literal(\"" + packageName + "." + javaClassName + "\"), (Class) __rt::null());");
-      printer.pln("return k;");
-      printer.pln("}");
-    }
+    printer.pln(className + "_VT " + className + "::__vtable;");
+    printer.pln();
+    printer.pln("Class " + className + "::__class() {");
+    printer.pln("static Class k =");
+    printer.pln("new __Class(__rt::literal(\"" + packageName + "." + javaClassName + "\"), (Class) __rt::null());");
+    printer.pln("return k;");
+    printer.pln("}");
   }
 
   private void printFallbackConstructor(){
-    if (!visitedConstructor && (packageName != null)){
+    if (!visitedConstructor){
       printer.p(className + "::" + className + "()" );
       printer.p(" : ");
       printer.p("__vptr(&__vtable)");
