@@ -33,18 +33,20 @@ public class TestDriver{
     for (int i = 1; i < 22; i++){
       String path = "examples/wies-tests/Test" + i + ".java";
       System.out.println("Translating Wies Test" + i + ".java");
-      t.translateFile(path);
+      File file = new File(path);
+      t.translateFile(file);
       t.compileOutput();
       System.out.println("Running java file:");
-      System.out.println(t.runJavaFile(path));
+      System.out.println(t.runJavaFile(file));
     }
     for (int i = 100; i < 106; i++){
       String path = "examples/wies-tests/Test" + i + ".java";
       System.out.println("Translating Wies Test" + i + ".java");
-      t.translateFile(path);
+      File file = new File(path);
+      t.translateFile(file);
       t.compileOutput();
       System.out.println("Running java file:");
-      System.out.println(t.runJavaFile(path));
+      System.out.println(t.runJavaFile(file));
     }
   }
 }
