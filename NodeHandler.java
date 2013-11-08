@@ -33,6 +33,16 @@ public class NodeHandler {
     // InheritanceTree
 	protected GNode handleClassBody(GNode inheritNode, GNode astNode, boolean isVTable) {
 		boolean foundConstructor = false;
+		if (inheritNode.size() > 0) {
+			for (int k=0;k<inheritNode.size();k++) {
+				if (inheritNode.getNode(k).size() == 5 && inheritNode.getNode(k).getNode(4).size() != 0 && inheritNode.getNode(k).getString(3)=="Object") {
+				//Renames the parameters in a method to be the classname type
+					inheritNode.getNode(k).getNode(4).set(0,inheritNode.getProperty("parent"));
+					inheritNode.getNode(k).set(2, changeObjectMethodNames((GNode)inheritNode.getNode(k).getNode(4), inheritNode.getNode(k).getString(2)));
+				}
+			}
+		}
+
 		for (int i = 0; i < astNode.size(); i++) {
 			if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
 				Node child = astNode.getNode(i);
@@ -47,10 +57,6 @@ public class NodeHandler {
 							if (inheritNode.getNode(j).size() == 5) {
 								String searchName = (String) inheritNode.getNode(j).get(2);
 								String checkName = (String) inheritNode.getNode(inheritNode.size() - 1).get(2);
-								if (inheritNode.getNode(j).getNode(4).size() != 0) {
-					//Renames the parameters in a method to be the classname type
-									inheritNode.getNode(j).getNode(4).set(0,inheritNode.getProperty("parent"));
-								}
 								if (searchName.equals(checkName)) {
 									inheritNode.set(j, inheritNode.getNode(inheritNode.size()-1));
 									isOverwritten = true;
@@ -75,6 +81,24 @@ public class NodeHandler {
 			inheritNode.add(2,createConstructor(className, null));	
 		}
 		return inheritNode;
+	}
+
+	protected String changeObjectMethodNames(GNode parameters, String currentName) {
+		String newName = "";
+		for (int i=0;i<currentName.length();i++) {
+			if (currentName.charAt(i) == '_') {
+				break;
+			}
+			else {
+				newName = newName+currentName.charAt(i);
+			}
+		}
+
+		for (int i=0; i<parameters.size();i++) {
+			newName = newName+"_"+parameters.getString(i);
+		}
+
+		return newName;
 	}
 
     // Parses a FieldDeclaration from JavaAST to a similar one in the
@@ -211,15 +235,18 @@ public class NodeHandler {
 		}
 		methodDeclaration.add(modifierDeclaration);
 		methodDeclaration.add(returnType);
-		methodDeclaration.add(name);
-		if(className != null)
-			methodDeclaration.add(className);
-		
+
 		if (args != null) {
 			for (String arg : args) {
 				parameters.add(arg);
+				name = name+"_"+arg;
 			}
 		}
+
+		methodDeclaration.add(name);
+		if(className != null)
+			methodDeclaration.add(className);
+
 		methodDeclaration.add(parameters);
 		
 		return methodDeclaration;
