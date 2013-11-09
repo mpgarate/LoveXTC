@@ -94,10 +94,6 @@ public class NodeHandler {
 			}
 		}
 
-		for (int i=0; i<parameters.size();i++) {
-			newName = newName+"_"+parameters.getString(i);
-		}
-
 		return newName;
 	}
 
