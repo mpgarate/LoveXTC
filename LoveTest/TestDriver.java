@@ -32,7 +32,11 @@ public class TestDriver{
     File file = new File(path);
     t.translateFile(file);
     t.compileOutput();
-    System.out.println(t.runJavaFile(file));
+    String javaOut = t.runJavaFile(file);
+    System.out.println(javaOut);
+    String cppOut = t.runCPPOutput();
+    System.out.println(cppOut);
+    //t.compareOutputs(javaOut,cppOut);
   }
 
   @Test public void translateWiesMidtermExamples(){
@@ -42,8 +46,12 @@ public class TestDriver{
       File file = new File(path);
       t.translateFile(file);
       t.compileOutput();
-      System.out.println("Running java file:");
-      System.out.println(t.runJavaFile(file));
+      String javaOut = t.runJavaFile(file);
+      //System.out.println(javaOut);
+      String cppOut = t.runCPPOutput();
+      //System.out.println(cppOut);
+      //t.compareOutputs(javaOut,cppOut);
+      //assertTrue(javaOut.equals(cppOut));
     } /*
     for (int i = 100; i < 106; i++){
       String path = "examples/wies-tests/Test" + i + ".java";

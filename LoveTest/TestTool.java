@@ -65,22 +65,49 @@ public class TestTool{
     }
   }
 
+  public String runCPPOutput(){ 
+    System.out.println("Running CPP output file:");
+    System.out.println("-------------------------------------");
+
+    try{
+      Process process = rt.exec("./a.out");
+      String stdOut = printCommandStdOut(process);
+      printCommandStdErr(process);
+
+      System.out.println("-------------------------------------");
+      return stdOut;
+    }
+    catch(IOException e){
+      System.out.println("IO Exception trying to run the CPP file.");
+      return null;
+    }
+  }
+
+  public void compareOutputs(String a, String b){
+    assertTrue(a.equals(b));
+  }
+
+
+
 
   /***************************************************************/
   /*********************  Private Helpers  ***********************/
   /***************************************************************/
 
-  private void printCommandStdOut(Process pr){
+  private String printCommandStdOut(Process pr){
     BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
     String line=null;
+    StringBuilder sb = new StringBuilder();
     try{
       while((line=input.readLine()) != null) {
         System.out.println(line);
+        sb.append(line);
       }
     }
     catch(IOException e){
       System.out.println("IO Exception");
     }
+    return sb.toString();
   }
   private void printCommandStdErr(Process pr){
     BufferedReader input = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
