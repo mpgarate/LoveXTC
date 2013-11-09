@@ -23,14 +23,19 @@ public class TestDriver{
     assertTrue(1 == 1);
   }
 
-  @Test
-  public void twoEqualsTwo() {
+  @Test public void twoEqualsTwo() {
     assertTrue(2 == 2);
   }
+  @Test public void translateTranslateMe() {
+    String path = "examples/TranslateMe.java";
+    System.out.println("Translating TranslateMe.java");
+    File file = new File(path);
+    t.translateFile(file);
+    t.compileOutput();
+  }
 
-  @Test
-  public void translateWiesMidtermExamples(){
-    for (int i = 1; i < 22; i++){
+  @Test public void translateWiesMidtermExamples(){
+    for (int i = 1; i < 2; i++){ //This should go to 22
       String path = "examples/wies-tests/Test" + i + ".java";
       System.out.println("Translating Wies Test" + i + ".java");
       File file = new File(path);
@@ -40,7 +45,7 @@ public class TestDriver{
       System.out.println("-------------------------------------");
       System.out.println(t.runJavaFile(file));
       System.out.println("-------------------------------------");
-    }
+    } /*
     for (int i = 100; i < 106; i++){
       String path = "examples/wies-tests/Test" + i + ".java";
       System.out.println("Translating Wies Test" + i + ".java");
@@ -49,6 +54,6 @@ public class TestDriver{
       t.compileOutput();
       System.out.println("Running java file:");
       System.out.println(t.runJavaFile(file));
-    }
+    }*/
   }
 }
