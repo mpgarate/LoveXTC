@@ -33,15 +33,7 @@ public class NodeHandler {
     // InheritanceTree
 	protected GNode handleClassBody(GNode inheritNode, GNode astNode, boolean isVTable) {
 		boolean foundConstructor = false;
-		if (inheritNode.size() > 0) {
-			for (int k=0;k<inheritNode.size();k++) {
-				if (inheritNode.getNode(k).size() == 5 && inheritNode.getNode(k).getNode(4).size() != 0 && inheritNode.getNode(k).getString(3)=="Object") {
-				//Renames the parameters in a method to be the classname type
-					inheritNode.getNode(k).getNode(4).set(0,inheritNode.getProperty("parent"));
-					inheritNode.getNode(k).set(2, changeObjectMethodNames((GNode)inheritNode.getNode(k).getNode(4), inheritNode.getNode(k).getString(2)));
-				}
-			}
-		}
+
 
 		for (int i = 0; i < astNode.size(); i++) {
 			if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
@@ -51,6 +43,8 @@ public class NodeHandler {
 				} else if (child.hasName("MethodDeclaration")) {
 						handleMethodDeclaration(inheritNode, (GNode) child,
 							isVTable);
+						System.out.println("1");
+						checkForOverloading(inheritNode, (GNode)inheritNode.getNode(inheritNode.size()-1));
 			    // METHOD OVERWRITING
 						boolean isOverwritten = false;
 						for (int j = 0; j < inheritNode.size() - 1; j++) {
@@ -83,18 +77,32 @@ public class NodeHandler {
 		return inheritNode;
 	}
 
-	protected String changeObjectMethodNames(GNode parameters, String currentName) {
-		String newName = "";
-		for (int i=0;i<currentName.length();i++) {
-			if (currentName.charAt(i) == '_') {
-				break;
-			}
-			else {
-				newName = newName+currentName.charAt(i);
+	protected void checkForOverloading(GNode masterNode, GNode currentNode) {
+		if (masterNode.size() > 0) {
+			for (int i=0;i<masterNode.size();i++) {
+				if (masterNode.getNode(i).size() == 5) {
+					String masterString = masterNode.getNode(i).getString(2);
+					String currentString = currentNode.getString(2);
+					if (masterString.equals(currentString)) {
+						String newCurrentString = "";
+						if (currentNode.getNode(4).size() > 0) {
+							for (int j=0;j<currentNode.getNode(4).size();j++) {
+								newCurrentString = newCurrentString+"_"+currentNode.getNode(4).getString(j);
+							}
+						}
+						String newMasterString = "";
+						if (masterNode.getNode(i).getNode(4).size() > 0) {
+							for (int k=0;k<masterNode.getNode(i).getNode(4).size();k++) {
+								newMasterString = newMasterString+"_"+masterNode.getNode(i).getNode(4).getString(k);
+							}
+						}
+						currentNode.set(2, currentString);
+						masterNode.getNode(i).set(2, masterString);
+						break;
+					}
+				}
 			}
 		}
-
-		return newName;
 	}
 
     // Parses a FieldDeclaration from JavaAST to a similar one in the
@@ -235,7 +243,6 @@ public class NodeHandler {
 		if (args != null) {
 			for (String arg : args) {
 				parameters.add(arg);
-				//name = name+"_"+arg;
 			}
 		}
 
