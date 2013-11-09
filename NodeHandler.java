@@ -235,7 +235,7 @@ public class NodeHandler {
 		if (args != null) {
 			for (String arg : args) {
 				parameters.add(arg);
-				name = name+"_"+arg;
+				//name = name+"_"+arg;
 			}
 		}
 
