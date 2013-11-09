@@ -42,7 +42,10 @@ public class TestTool{
     }
   }
 
-  public String runJavaFile(File file){
+  public String runJavaFile(File file){ 
+    System.out.println("Running java file:");
+    System.out.println("-------------------------------------");
+
     String className = file.getName().replace(".java","");
     String directory = file.getPath().replace(".java","").replace(className,"");
     try{
@@ -53,6 +56,7 @@ public class TestTool{
       Process process2 = rt.exec("java -cp " + directory + " " + className);
       printCommandStdOut(process2);
       printCommandStdErr(process2);
+      System.out.println("-------------------------------------");
       return stdOutToString(process2);
     }
     catch(IOException e){
