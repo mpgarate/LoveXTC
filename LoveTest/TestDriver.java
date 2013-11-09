@@ -43,9 +43,7 @@ public class TestDriver{
       t.translateFile(file);
       t.compileOutput();
       System.out.println("Running java file:");
-      System.out.println("-------------------------------------");
       System.out.println(t.runJavaFile(file));
-      System.out.println("-------------------------------------");
     } /*
     for (int i = 100; i < 106; i++){
       String path = "examples/wies-tests/Test" + i + ".java";
