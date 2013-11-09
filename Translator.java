@@ -163,7 +163,7 @@ public class Translator extends Tool {
 
       /* Write VTables to file 'output.h' */
       LOGGER.info("Writing VTables to output.h");
-      writeInheritanceAsCPP(inheritanceTree, nodeList);
+      writeInheritanceAsCPP(inheritanceTree, inheritanceTree.getNodeList());
 
       /* Make modifications to AST needed for printing */
       LOGGER.info("Modifying AST:");

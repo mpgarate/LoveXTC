@@ -43,7 +43,6 @@ public class NodeHandler {
 				} else if (child.hasName("MethodDeclaration")) {
 						handleMethodDeclaration(inheritNode, (GNode) child,
 							isVTable);
-						System.out.println("1");
 						checkForOverloading(inheritNode, (GNode)inheritNode.getNode(inheritNode.size()-1));
 			    // METHOD OVERWRITING
 						boolean isOverwritten = false;
