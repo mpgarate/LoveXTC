@@ -32,6 +32,7 @@ public class TestDriver{
     File file = new File(path);
     t.translateFile(file);
     t.compileOutput();
+    System.out.println(t.runJavaFile(file));
   }
 
   @Test public void translateWiesMidtermExamples(){
