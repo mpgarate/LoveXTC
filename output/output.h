@@ -33,31 +33,31 @@ getClass((Class(*)(A)) &__Object::getClass),
 equals((bool(*)(A)) &__Object::equals){}
 };
 
-struct __Test2;
-struct __Test2_VT;
-typedef __Test2* Test2;
-struct __Test2 {
-__Test2_VT* __vptr;
-static __Test2_VT __vtable;
-__Test2();
-static String toString(Test2);
-static int32_t hashCode(Test2);
-static Class getClass(Test2);
-static bool equals(Test2, Object);
+struct __Test1;
+struct __Test1_VT;
+typedef __Test1* Test1;
+struct __Test1 {
+__Test1_VT* __vptr;
+static __Test1_VT __vtable;
+__Test1();
+static String toString(Test1);
+static int32_t hashCode(Test1);
+static Class getClass(Test1);
+static bool equals(Test1, Object);
 static Class __class();
 };
 
-struct __Test2_VT {
+struct __Test1_VT {
 Class __isa;
-String (*toString)(Test2);
-int32_t (*hashCode)(Test2);
-Class (*getClass)(Test2);
-bool (*equals)(Test2);
-__Test2_VT()
-: __isa(__Test2::__class()),
-toString((String(*)(Test2)) &__Object::toString),
-hashCode((int32_t(*)(Test2)) &__Object::hashCode),
-getClass((Class(*)(Test2)) &__Object::getClass),
-equals((bool(*)(Test2)) &__Object::equals){}
+String (*toString)(Test1);
+int32_t (*hashCode)(Test1);
+Class (*getClass)(Test1);
+bool (*equals)(Test1);
+__Test1_VT()
+: __isa(__Test1::__class()),
+toString((String(*)(Test1)) &__Object::toString),
+hashCode((int32_t(*)(Test1)) &__Object::hashCode),
+getClass((Class(*)(Test1)) &__Object::getClass),
+equals((bool(*)(Test1)) &__Object::equals){}
 };
 

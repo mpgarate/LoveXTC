@@ -21,15 +21,14 @@ return k;
 }
 int main(void){
 A a = new __A();
-Object o = a;
-cout << o->__vptr->toString(o)->data <<endl;
+cout << a->__vptr->toString(a)->data <<endl;
 
 return 0;
 }
-__Test2::__Test2() : __vptr(&__vtable){}
-__Test2_VT __Test2::__vtable;
+__Test1::__Test1() : __vptr(&__vtable){}
+__Test1_VT __Test1::__vtable;
 
-Class __Test2::__class() {
+Class __Test1::__class() {
 static Class k =
 new __Class(__rt::literal("null.A"), (Class) __rt::null());
 return k;

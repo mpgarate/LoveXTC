@@ -54,10 +54,10 @@ public class TestTool{
       printCommandStdErr(process);
 
       Process process2 = rt.exec("java -cp " + directory + " " + className);
-      printCommandStdOut(process2);
+      String stdOut = printCommandStdOut(process2);
       printCommandStdErr(process2);
       System.out.println("-------------------------------------");
-      return stdOutToString(process2);
+      return stdOut;
     }
     catch(IOException e){
       System.out.println("IO Exception trying to run the java file.");
@@ -84,7 +84,8 @@ public class TestTool{
   }
 
   public void compareOutputs(String a, String b){
-    assertTrue(a.equals(b));
+    //assertTrue(a.equals(b));
+    assertEquals("Outputs did not match.",a,b);
   }
 
 
@@ -125,19 +126,4 @@ public class TestTool{
       System.out.println("IO Exception");
     }
   }
-  private String stdOutToString(Process pr){
-    BufferedReader input = new BufferedReader(new InputStreamReader(pr.getInputStream()));
-    String line=null;
-    StringBuilder sb = new StringBuilder();
-    try{
-      while((line=input.readLine()) != null) {
-        sb.append(line);
-      }
-    }
-    catch(IOException e){
-      System.out.println("IO Exception");
-    }
-    return sb.toString();
-  }
-
 }

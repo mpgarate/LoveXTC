@@ -50,7 +50,7 @@ public class TestDriver{
       //System.out.println(javaOut);
       String cppOut = t.runCPPOutput();
       //System.out.println(cppOut);
-      //t.compareOutputs(javaOut,cppOut);
+      t.compareOutputs(javaOut,cppOut);
       //assertTrue(javaOut.equals(cppOut));
     } /*
     for (int i = 100; i < 106; i++){
