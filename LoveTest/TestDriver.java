@@ -36,7 +36,7 @@ public class TestDriver{
     System.out.println(javaOut);
     String cppOut = t.runCPPOutput();
     System.out.println(cppOut);
-    //t.compareOutputs(javaOut,cppOut);
+    t.compareOutputs(javaOut,cppOut);
   }
 
   @Test public void translateWiesMidtermExamples(){

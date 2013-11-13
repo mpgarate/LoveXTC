@@ -85,6 +85,17 @@ public class TestTool{
 
   public void compareOutputs(String a, String b){
     //assertTrue(a.equals(b));
+
+    int openA = a.indexOf("@");
+    String splitA = a.substring(openA);
+    int closeA = splitA.indexOf("\n");
+    a = a.replace(a.subSequence(openA,closeA), "@[xxxxxx]");
+
+    int openB = b.indexOf("@");
+    String splitB = b.substring(openB);
+    int closeB = splitB.indexOf("\n");
+    b = b.replace(b.subSequence(openB,closeB), "@[xxxxxx]");
+
     assertEquals("Outputs did not match.",a,b);
   }
 
@@ -101,9 +112,11 @@ public class TestTool{
     StringBuilder sb = new StringBuilder();
     try{
       while((line=input.readLine()) != null) {
+        sb.append("\n");
         System.out.println(line);
         sb.append(line);
       }
+        sb.append("\n");
     }
     catch(IOException e){
       System.out.println("IO Exception");
