@@ -28,34 +28,20 @@ public class TestDriver{
   }
   @Test public void translateTranslateMe() {
     String path = "examples/TranslateMe.java";
-    System.out.println("Translating TranslateMe.java");
-    File file = new File(path);
-    t.translateFile(file);
-    t.compileOutput();
-    String javaOut = t.runJavaFile(file);
-    String cppOut = t.runCPPOutput();
-    t.compareOutputs(javaOut,cppOut);
+    String name = "TranslateMe.java";
+    t.translateAndCompare(path, name);
   }
 
   @Test public void translateWiesMidtermExamples(){
     for (int i = 1; i < 2; i++){ //This should go to 22
       String path = "examples/wies-tests/Test" + i + ".java";
-      System.out.println("Translating Wies Test" + i + ".java");
-      File file = new File(path);
-      t.translateFile(file);
-      t.compileOutput();
-      String javaOut = t.runJavaFile(file);
-      String cppOut = t.runCPPOutput();
-      t.compareOutputs(javaOut,cppOut);
+      String name = "Wies Test" + i + ".java";
+      t.translateAndCompare(path, name);
     } /*
     for (int i = 100; i < 106; i++){
       String path = "examples/wies-tests/Test" + i + ".java";
-      System.out.println("Translating Wies Test" + i + ".java");
-      File file = new File(path);
-      t.translateFile(file);
-      t.compileOutput();
-      System.out.println("Running java file:");
-      System.out.println(t.runJavaFile(file));
+      String name = "Wies Test" + i + ".java";
+      t.translateAndCompare(path, name);
     }*/
   }
 }

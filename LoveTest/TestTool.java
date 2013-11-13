@@ -18,8 +18,14 @@ public class TestTool{
   /**********************  Public Tools  ************************/
   /***************************************************************/
 
-  public void translateAndCompare(String path){
-    
+  public void translateAndCompare(String path, String name){
+    System.out.println("Translating " + name);
+    File file = new File(path);
+    translateFile(file);
+    compileOutput();
+    String javaOut = runJavaFile(file);
+    String cppOut = runCPPOutput();
+    compareOutputs(javaOut,cppOut);
   }
 
   /* Translate a file */
