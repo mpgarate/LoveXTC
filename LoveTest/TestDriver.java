@@ -33,9 +33,7 @@ public class TestDriver{
     t.translateFile(file);
     t.compileOutput();
     String javaOut = t.runJavaFile(file);
-    System.out.println(javaOut);
     String cppOut = t.runCPPOutput();
-    System.out.println(cppOut);
     t.compareOutputs(javaOut,cppOut);
   }
 
@@ -47,11 +45,8 @@ public class TestDriver{
       t.translateFile(file);
       t.compileOutput();
       String javaOut = t.runJavaFile(file);
-      //System.out.println(javaOut);
       String cppOut = t.runCPPOutput();
-      //System.out.println(cppOut);
       t.compareOutputs(javaOut,cppOut);
-      //assertTrue(javaOut.equals(cppOut));
     } /*
     for (int i = 100; i < 106; i++){
       String path = "examples/wies-tests/Test" + i + ".java";

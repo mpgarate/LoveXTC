@@ -18,6 +18,9 @@ public class TestTool{
   /**********************  Public Tools  ************************/
   /***************************************************************/
 
+  public void translateAndCompare(String path){
+    
+  }
 
   /* Translate a file */
   public void translateFile(File file){
@@ -87,13 +90,11 @@ public class TestTool{
     int openA = 0;
     int closeA = 0;
 
-
     openA = a.indexOf("@");
     if (openA > 0){
       String splitA = a.substring(openA);
       closeA = openA + splitA.indexOf("\n");
       if ((openA > 0) && (closeA > 0)) {
-        //System.out.println("A::::: " + openA + " " + closeA);
         return a.replace(a.subSequence(openA,closeA), "@[xxxxxx]");
       }
     }
