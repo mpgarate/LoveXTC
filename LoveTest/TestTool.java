@@ -83,20 +83,51 @@ public class TestTool{
     }
   }
 
+  public String replaceMemoryAddress(String a){
+    int openA = 0;
+    int closeA = 0;
+
+
+    openA = a.indexOf("@");
+    if (openA > 0){
+      String splitA = a.substring(openA);
+      closeA = openA + splitA.indexOf("\n");
+      if ((openA > 0) && (closeA > 0)) {
+        //System.out.println("A::::: " + openA + " " + closeA);
+        return a.replace(a.subSequence(openA,closeA), "@[xxxxxx]");
+      }
+    }
+    return a;
+  }
+
   public void compareOutputs(String a, String b){
     //assertTrue(a.equals(b));
 
-    int openA = a.indexOf("@");
-    String splitA = a.substring(openA);
-    int closeA = splitA.indexOf("\n");
-    a = a.replace(a.subSequence(openA,closeA), "@[xxxxxx]");
+    int openA = 0;
+    int closeA = 0;
+    int openB = 0;
+    int closeB = 0;
 
-    int openB = b.indexOf("@");
-    String splitB = b.substring(openB);
-    int closeB = splitB.indexOf("\n");
-    b = b.replace(b.subSequence(openB,closeB), "@[xxxxxx]");
 
-    assertEquals("Outputs did not match.",a,b);
+    openA = a.indexOf("@");
+    if (openA > 0){
+      String splitA = a.substring(openA);
+      closeA = openA + splitA.indexOf("\n");
+      if ((openA > 0) && (closeA > 0)) {
+        //System.out.println("A::::: " + openA + " " + closeA);
+        a = a.replace(a.subSequence(openA,closeA), "@[xxxxxx]");
+      }
+    }
+    openB = b.indexOf("@");
+    if (openB > 0) {
+      String splitB = b.substring(openB);
+      closeB = openB + splitB.indexOf("\n");
+      if ((openB > 0) && (closeB > 0)) {
+        //System.out.println("B::::: " + openB + " " + closeB);
+        b = b.replace(b.subSequence(openB,closeB), "@[xxxxxx]");
+      }
+    }
+    //assertEquals("Outputs did not match.",a,b);
   }
 
 
