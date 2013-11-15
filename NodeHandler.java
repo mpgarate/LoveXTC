@@ -37,9 +37,12 @@ public class NodeHandler {
 
 		if (inheritNode.size() > 0) {
 			for (int k=0;k<inheritNode.size();k++) {
-				if (inheritNode.getNode(k).size() == 5 && inheritNode.getNode(k).getNode(4).size() != 0 && inheritNode.getNode(k).getString(3)=="Object") {
-			//Renames the parameters in a method to be the classname type
-					inheritNode.getNode(k).getNode(4).set(0,inheritNode.getProperty("parent"));
+				if (inheritNode.getNode(k).hasProperty("typeIsMethod")) {
+					inheritNode.getNode(k).set(5, "null");
+					if (inheritNode.getNode(k).getNode(4).size() != 0 && inheritNode.getNode(k).getString(3)=="Object") {
+						//Renames the parameters in a method to be the classname type
+						inheritNode.getNode(k).getNode(4).set(0,inheritNode.getProperty("parent"));
+					}
 				}
 			}
 		}		
@@ -55,9 +58,10 @@ public class NodeHandler {
 			    // METHOD OVERWRITING
 						boolean isOverwritten = false;
 						for (int j = 0; j < inheritNode.size() - 1; j++) {
-							if (inheritNode.getNode(j).size() == 5) {
+							if (inheritNode.getNode(j).size()==7) {
 								if (nodeEquals((GNode)inheritNode.getNode(j), (GNode)inheritNode.getNode(inheritNode.size()-1), true)) {
 									inheritNode.set(j, inheritNode.getNode(inheritNode.size()-1));
+									inheritNode.getNode(j).set(5, "Overwritten");
 									isOverwritten = true;
 									break;
 								}
@@ -65,6 +69,9 @@ public class NodeHandler {
 						}
 						if(isOverwritten){
 							inheritNode.remove(inheritNode.size() -1);
+						}
+						else {
+							inheritNode.getNode(inheritNode.size()-1).set(5, "New");
 						}
 						checkForOverloading(inheritNode, (GNode)inheritNode.getNode(inheritNode.size()-1), nodesToOverload);
 					}
@@ -97,8 +104,18 @@ public class NodeHandler {
 			boolean temp = true;
 			for (int i=0;i<node1.size();i++) {
 				if (methodOverwriting && i==3) {
+					continue;
+				}
+
+				if (methodOverwriting && i==4 && (node1.getNode(i).size()==0 || node2.getNode(i).size() == 0)) {
+					continue;
+				}
+
+				if (methodOverwriting && i>4) {
 					return true;
 				}
+
+
 
 				if (node1.get(i) instanceof String && node2.get(i) instanceof String) {
 					temp = node1.getString(i).equals(node2.getString(i));
@@ -126,20 +143,29 @@ public class NodeHandler {
 	protected void checkForOverloading(GNode masterNode, GNode currentNode, GNode nodesToOverload) {
 		if (masterNode.size() > 0) {
 			for (int i=0;i<masterNode.size()-1;i++) {
-				if (masterNode.getNode(i).size() == 5) {
+				if (masterNode.getNode(i).hasProperty("typeIsMethod")) {
 					String masterString = masterNode.getNode(i).getString(2);
 					String currentString = currentNode.getString(2);
 					if (masterString.equals(currentString)) {
 						boolean addCurrentNode = true;
+						boolean addMasterNode = true;
 						if (nodesToOverload.size() > 0) {
 							for (int j=0;j<nodesToOverload.size();j++) {
 								if (currentNode.equals(nodesToOverload.getNode(j))) {
 									addCurrentNode = false;
 								}
+								if (masterNode.getNode(i).equals(nodesToOverload.getNode(j))) {
+									addMasterNode = false;
+								}
 							}
 						}
 						if (addCurrentNode) {
+							currentNode.set(6, "Overloaded");
 							nodesToOverload.add(currentNode);
+						}
+						if (addMasterNode) {
+							masterNode.getNode(i).set(6, "Overloaded");
+							nodesToOverload.add(masterNode.getNode(i));
 						}
 						break;
 					}
@@ -212,12 +238,6 @@ public class NodeHandler {
 					Node param = child;
 					if (param.size() > 0)
 						parameters = new String[param.size()];
-					else if (param.size()==0) {
-						//Adds a parameter of the class to the method declaration when there's
-						//no parameters specified.
-						parameters = new String[1];
-						parameters[0] = classname;
-					}
 					for (int j = 0; j < param.size(); j++) {
 						if (param.get(j) != null
 							&& param.get(j) instanceof Node) {
@@ -294,6 +314,8 @@ public class NodeHandler {
 			methodDeclaration = GNode.create("DataLayoutMethodDeclaration");
 		}
 
+		methodDeclaration.setProperty("typeIsMethod", "yes");
+
 		GNode modifierDeclaration = GNode.create("Modifiers");
 		GNode parameters = GNode.create("Parameters");
 		
@@ -317,6 +339,10 @@ public class NodeHandler {
 
 		methodDeclaration.add(parameters);
 		
+		//For overwritten and overloaded specification
+		methodDeclaration.add("null");
+		methodDeclaration.add("null");
+
 		return methodDeclaration;
 	}
 
