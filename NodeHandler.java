@@ -37,7 +37,7 @@ public class NodeHandler {
 
 		if (inheritNode.size() > 0) {
 			for (int k=0;k<inheritNode.size();k++) {
-				if (inheritNode.getNode(k).hasProperty("typeIsMethod")) {
+				if (inheritNode.getNode(k).size()==7) {
 					inheritNode.getNode(k).set(5, "null");
 					if (inheritNode.getNode(k).getNode(4).size() != 0 && inheritNode.getNode(k).getString(3)=="Object") {
 						//Renames the parameters in a method to be the classname type
@@ -314,7 +314,7 @@ public class NodeHandler {
 			methodDeclaration = GNode.create("DataLayoutMethodDeclaration");
 		}
 
-		methodDeclaration.setProperty("typeIsMethod", "yes");
+		methodDeclaration.setProperty("typeIsMethod", true);
 
 		GNode modifierDeclaration = GNode.create("Modifiers");
 		GNode parameters = GNode.create("Parameters");
