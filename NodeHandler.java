@@ -66,9 +66,7 @@ public class NodeHandler {
 						if(isOverwritten){
 							inheritNode.remove(inheritNode.size() -1);
 						}
-						if (isVTable) {
-							checkForOverloading(inheritNode, (GNode)inheritNode.getNode(inheritNode.size()-1), nodesToOverload);
-						}
+						checkForOverloading(inheritNode, (GNode)inheritNode.getNode(inheritNode.size()-1), nodesToOverload);
 					}
 					else if (child.hasName("ConstructorDeclaration") && !isVTable) {
 					foundConstructor = true;
@@ -82,9 +80,7 @@ public class NodeHandler {
 			String className = inheritNode.getProperty("parent").toString();
 			inheritNode.add(2,createConstructor(className, null));	
 		}
-		if (isVTable) {
-			executeOverloading(nodesToOverload);
-		}
+		executeOverloading(nodesToOverload);
 		return inheritNode;
 	}
 
