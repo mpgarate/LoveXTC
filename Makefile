@@ -76,7 +76,7 @@ ifdef JAVA_DEV_ROOT
 include $(JAVA_DEV_ROOT)/Makerules
 endif
 
-.PHONY: junitTests test love
+.PHONY: junitTests test love run clean
 test:
 	make && java org.junit.runner.JUnitCore TestDriver
 
@@ -89,3 +89,6 @@ compile:
 
 run:
 	cd output && ./a.out
+
+cleanup:
+	cd output && rm a.out output.*
