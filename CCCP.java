@@ -120,6 +120,9 @@ public class CCCP extends Visitor {
     }
     else {
     printer.p(n.getNode(2));
+    if (n.getNode(2).hasName("VoidType")){
+      printer.p("void");
+    }
     printer.p(" ");
     // NEED: formal parameters
     printer.p(className + "::" + methodName);
@@ -221,6 +224,22 @@ public class CCCP extends Visitor {
       printer.p("->data");
     }
 
+  }
+  public void visitCoutAdditiveExpression(GNode n){
+    if (n.getNode(0).hasName("visitCoutAdditiveExpression")){
+      visit(n);
+    }
+    else {
+      printer.p(n.getNode(0));
+    }
+    printer.p(" << ");
+    printer.p(n.getNode(2));
+    // FIX ME: if (!(n.getNode(2) is primitive)) using symboltable
+    if (n.getNode(2).hasName("PrimaryIdentifier")){
+      printer.p("->__vptr->toString(");
+      printer.p(n.getNode(2));
+      printer.p(")->data");
+    }
   }
 
   public void visitExpression(GNode n) {
