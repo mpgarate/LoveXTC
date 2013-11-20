@@ -114,7 +114,8 @@ public class Translator extends Tool {
     SymbolTable table = new SymbolTable();
 
     // do some simplifications on the AST
-    new JavaAstSimplifier().dispatch(node);
+    //new JavaAstSimplifier().dispatch(node);
+    new ASTModifier().dispatch((GNode)node);
     
     // construct the symbol table
     new SymTab(runtime, table).dispatch(node);
@@ -165,15 +166,19 @@ public class Translator extends Tool {
       LOGGER.info("Writing VTables to output.h");
       writeInheritanceAsCPP(inheritanceTree, inheritanceTree.getNodeList());
 
+      SymbolTable table = new SymbolTable();
       /* Make modifications to AST needed for printing */
       LOGGER.info("Modifying AST:");
       for (GNode listNode : nodeList){
-        new ASTModifier().dispatch(listNode);
+        
         //runtime.console().format(listNode).pln().flush();
+        LOGGER.info("Building the Symbol Table:");
+        new SymTab(runtime, table).dispatch(listNode);
+        new ASTModifier().dispatch(listNode);
       }
 
       /* Write each AST in the list to output.cc as CPP */
-        writeTreeAsCPP(nodeList);
+        writeTreeAsCPP(nodeList, table);
     }
   }
 
@@ -206,7 +211,7 @@ public class Translator extends Tool {
 
   /* Write each AST in the list to output.cc as CPP */
   /* This method should be run last in the 'translate' sequence. */
-  private void writeTreeAsCPP(LinkedList<GNode> nodeList){
+  private void writeTreeAsCPP(LinkedList<GNode> nodeList, SymbolTable table){
     Writer outCC = null;
 
     try {
@@ -220,7 +225,7 @@ public class Translator extends Tool {
       /* Print each GNode in the list into output.cc */
       for (GNode listNode : nodeList){
         LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
-        new CCCP(pCC).dispatch(listNode);
+        new CCCP(pCC, table).dispatch(listNode);
       }
 
     } catch (IOException ex){

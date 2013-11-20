@@ -23,7 +23,6 @@ import xtc.type.*;
 public class SymTab extends Visitor {
   final private SymbolTable table;
   final private Runtime runtime;
-  boolean pack = true;
 
   public SymTab(final Runtime runtime, final SymbolTable table) {
     this.runtime = runtime;
@@ -31,10 +30,8 @@ public class SymTab extends Visitor {
   }
       
   public void visitCompilationUnit(GNode n) {
-    if (null == n.get(0)){
-      pack = false;
+    if (null == n.get(0))
       visitPackageDeclaration(null);
-    }
     else
       dispatch(n.getNode(0));
 
@@ -50,11 +47,14 @@ public class SymTab extends Visitor {
   }
 
   public void visitPackageDeclaration(final GNode n) {
-    String canonicalName = null == n ? "" : (String) dispatch(n.getNode(1));
+    /*String canonicalName = null == n ? "" : (String) dispatch(n.getNode(1));
+    //PackageT result = JavaEntities.canonicalNameToPackage(table, canonicalName);
+    table.enter(JavaEntities.packageNameToScopeName(canonicalName));*/
+    if (! (n==null)){
+      String canonicalName = null == n ? "" : (String) dispatch(n.getNode(1));
     //PackageT result = JavaEntities.canonicalNameToPackage(table, canonicalName);
     table.enter(JavaEntities.packageNameToScopeName(canonicalName));
-    if (pack){
-        table.mark(n);
+      table.mark(n);
     }
   }
   

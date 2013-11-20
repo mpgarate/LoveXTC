@@ -4,12 +4,14 @@ the Soviet Union. */
 package xtc.oop;
 
 import java.lang.*;
+import xtc.lang.JavaEntities;
 
 /* Imports based on src/xtc/lang/CPrinter.java */
 import java.util.Iterator;
-
+import xtc.Constants;
 import java.util.LinkedList;
 import xtc.tree.LineMarker;
+import xtc.tree.Attribute;
 import xtc.tree.Node;
 import xtc.tree.GNode;
 import xtc.tree.Pragma;
@@ -17,9 +19,13 @@ import xtc.tree.Printer;
 import xtc.tree.SourceIdentity;
 import xtc.tree.Token;
 import xtc.tree.Visitor;
+import xtc.util.SymbolTable;
+import xtc.util.SymbolTable.Scope;
+import xtc.type.*;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
 public class CCCP extends Visitor {
+    final private SymbolTable table;
   private static final boolean VERBOSE = false;
   LinkedList<String> classFields = new LinkedList<String>();
 	/* We should base this file on src/xtc/lang/CPrinter.java */
@@ -46,8 +52,9 @@ public class CCCP extends Visitor {
   */
   private boolean visitedConstructor;
 
-	public CCCP(Printer p){
+	public CCCP(Printer p, SymbolTable table){
     this.printer = p;
+    this.table = table;
     printer.register(this);
 	}
 
@@ -68,22 +75,39 @@ public class CCCP extends Visitor {
 
 	public void visitCompilationUnit(GNode n) {
     v("/* Visiting translation unit for " + n.getLocation().toString() + " */");
-    visit(n);
+    //visit(n);
+    if (null == n.get(0))
+      visitPackageDeclaration(null);
+    else
+      dispatch(n.getNode(0));
+
+    table.enter(n);
+    
+    for (int i = 1; i < n.size(); i++) {
+      GNode child = n.getGeneric(i);
+      dispatch(child);
+    }
+
+    table.setScope(table.root());
   }
 
 	public void visitClassDeclaration(GNode n) {
     v("/* visiting class declaration */");
+    table.enter(n);
     className = n.getString(1);
     visit(n);
+    table.exit();
   }
 
   /* TRICKY need to have the namespace scope */
   public void visitPackageDeclaration(GNode n) {
     v("/* visiting package declaration */");
-
-    GNode qid  = n.getGeneric(1);
-    int   size = qid.size();
-    packageName = fold(qid,size);
+    if (! (n == null)){
+      table.enter(n);
+      GNode qid  = n.getGeneric(1);
+      int   size = qid.size();
+      packageName = fold(qid,size);
+    }
 
   }
   public void visitImportDeclaration(GNode n) {
@@ -111,6 +135,7 @@ public class CCCP extends Visitor {
 
   public void visitMethodDeclaration(GNode n){
     v("/* visiting method declaration */");
+    table.enter(n);
     String methodName = n.getString(3);
     if (methodName.equals("main")) {
       printer.pln("int main(void){");
@@ -140,6 +165,7 @@ public class CCCP extends Visitor {
     printer.p(n.getNode(7));
     printer.pln("}");
   }
+  table.exit();
   }
   /** Visit the specified type. */
   public void visitType(GNode n) {
@@ -160,9 +186,11 @@ public class CCCP extends Visitor {
 
   public void visitBlock(GNode n){
     v("/* visiting block */");
+    table.enter(n);
     visit(n);
     printer.decr();
     printer.pln();
+    table.exit();
   }
 
   public void visitConstructorDeclaration(GNode n){
@@ -251,8 +279,16 @@ public class CCCP extends Visitor {
   public void visitPrimaryIdentifier(GNode n) {
     //if this is a field, prepend "__this->"
     String variableName = n.getString(0);
-    if (classFields.contains(variableName)){
+    /*if (classFields.contains(variableName)){
       printer.p("__this->" + variableName);
+    }*/
+    if (table.current().isDefined(variableName)) {
+      Type type = (Type) table.current().lookup(variableName);
+      if (JavaEntities.isFieldT(type))
+        printer.p("__this->" + variableName);
+      else {
+        printer.p(variableName);
+      }
     }
     else{
         printer.p(variableName);
