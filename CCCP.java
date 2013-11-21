@@ -262,8 +262,15 @@ public class CCCP extends Visitor {
     }
     printer.p(" << ");
     printer.p(n.getNode(2));
-    // FIX ME: if (!(n.getNode(2) is primitive)) using symboltable
-    if (n.getNode(2).hasName("PrimaryIdentifier")){
+    boolean primT = false;
+    String variableName = n.getNode(2).getString(0);
+    if (table.current().isDefined(variableName)) {
+      Type type = (Type) table.current().lookup(variableName);
+      if (!type.hasAlias()){
+        primT = true;
+      }
+    }
+    if ((!primT) && n.getNode(2).hasName("PrimaryIdentifier")){
       printer.p("->__vptr->toString(");
       printer.p(n.getNode(2));
       printer.p(")->data");
