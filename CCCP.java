@@ -271,6 +271,7 @@ public class CCCP extends Visitor {
 
   }
   public void visitCoutAdditiveExpression(GNode n){
+    String variableName = n.getNode(2).getString(0);
     if (n.getNode(0).hasName("visitCoutAdditiveExpression")){
       visit(n);
     }
@@ -278,15 +279,40 @@ public class CCCP extends Visitor {
       printer.p(n.getNode(0));
     }
     printer.p(" << ");
-    printer.p(n.getNode(2));
     boolean primT = false;
-    String variableName = n.getNode(2).getString(0);
+    boolean castAsInt = false;
+
+/*
+    new Visitor(){
+      public void visitPrimaryIdentifier(GNode n){
+        String identifierName = n.getString(0);
+        if (table.current().isDefined(identifierName)){
+          Type type = (Type) table.current().lookup(identifierName);
+          String typeAsString = type.toString();
+          if (typeAsString.contains("(byte,")){
+            //Translator.LOGGER.warning("WE GOT A BYTE!");
+            n.set(0,"(byte)" + identifierName);
+          }
+        }
+      }
+      public void visit(Node n) {
+        for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+      }
+    }.dispatch(n);
+*/
+
     if (table.current().isDefined(variableName)) {
       Type type = (Type) table.current().lookup(variableName);
       if (!type.hasAlias()){
         primT = true;
       }
+      String typeAsString = type.toString();
+      if (typeAsString.contains("(byte,")){
+        castAsInt = true;
+      }
     }
+    if (castAsInt) printer.p("(int)");
+    printer.p(n.getNode(2));
     if ((!primT) && n.getNode(2).hasName("PrimaryIdentifier")){
       printer.p("->__vptr->toString(");
       printer.p(n.getNode(2));
@@ -308,8 +334,9 @@ public class CCCP extends Visitor {
     }*/
     if (table.current().isDefined(variableName)) {
       Type type = (Type) table.current().lookup(variableName);
-      if (JavaEntities.isFieldT(type))
+      if (JavaEntities.isFieldT(type)){
         printer.p("__this->" + variableName);
+      }
       else {
         printer.p(variableName);
       }
@@ -338,7 +365,12 @@ public class CCCP extends Visitor {
 
   public void visitNewClassExpression(GNode n){
     String className = fold((GNode)n.getNode(2), n.getNode(2).size());
-    printer.p("new __" + className + "(");
+    if (className.equals("Exception")){
+      printer.p("new " + className + "(");
+    }
+    else{
+      printer.p("new __" + className + "(");
+    }
     printer.p(n.getNode(3));      
     printer.p(")");
   }

@@ -11,7 +11,7 @@ handleConstructorDeclaration
 createConstructor
 createMethod
 createDataFieldEntry
-convertType
+convertMethodNameType
 */
 
 package xtc.oop;
@@ -183,7 +183,9 @@ public class NodeHandler {
 			String newNodeString = nodesToOverload.getNode(i).getString(2);
 			if (nodesToOverload.getNode(i).getNode(4).size() > 0) {
 				for (int j=0;j<nodesToOverload.getNode(i).getNode(4).size();j++) {
-					newNodeString = newNodeString+"_"+nodesToOverload.getNode(i).getNode(4).getString(j);
+					String typeToAppend = nodesToOverload.getNode(i).getNode(4).getString(j);
+					typeToAppend = typeToAppend.replace(" ", "_");
+					newNodeString = newNodeString+"_"+typeToAppend;
 				}
 				nodesToOverload.getNode(i).set(2, newNodeString);
 			}
@@ -198,7 +200,7 @@ public class NodeHandler {
 			if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
 				Node child = astNode.getNode(i);
 		if (child.hasName("Type")) { // Gets the field type
-			type = convertType(((GNode) child.get(0)).getString(0));
+			type = convertMethodNameType(((GNode) child.get(0)).getString(0));
 		} else if (child.hasName("Declarators")) {
 			GNode dec = (GNode) child.getNode(0);
 			name = dec.getString(0);
@@ -232,7 +234,7 @@ public class NodeHandler {
 			if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
 				Node child = astNode.getNode(i);
 				if (child.hasName("Type")) {
-					returnType = convertType(((GNode) child.get(0))
+					returnType = convertMethodNameType(((GNode) child.get(0))
 						.getString(0));
 				} else if (child.hasName("FormalParameters")) {
 					Node param = child;
@@ -243,7 +245,7 @@ public class NodeHandler {
 							&& param.get(j) instanceof Node) {
 							Node paramChild = param.getNode(j);
 						if (paramChild.hasName("FormalParameter")) {
-							parameters[j] = convertType(paramChild
+							parameters[j] = convertMethodNameType(paramChild
 								.getNode(1).getNode(0).getString(0));
 						}
 					}
@@ -275,7 +277,7 @@ public class NodeHandler {
 							&& param.get(j) instanceof Node) {
 							Node paramChild = param.getNode(j);
 						if (paramChild.hasName("FormalParameter")) {
-							parameters[j] = convertType(paramChild
+							parameters[j] = convertMethodNameType(paramChild
 								.getNode(1).getNode(0).getString(0));
 						}
 					}
@@ -338,8 +340,9 @@ public class NodeHandler {
 		}
 
 		methodDeclaration.add(name);
-		if(className != null)
+		if(className != null){
 			methodDeclaration.add(className);
+		}
 
 		methodDeclaration.add(parameters);
 		
@@ -372,16 +375,12 @@ public class NodeHandler {
 	}
 
 	    // Converts the java type to the corresponding C++ Type
-	protected String convertType(String javaType) {
+	protected String convertMethodNameType(String javaType) {
 		String cppType = javaType;
 		if (javaType.equals("int")){
 			cppType = "int32_t";
 		}
-		else if (javaType.equals("byte")){
-			cppType = "unsigned char";
-		}
 		return cppType;
 	}
-
 	    //End Helper Methods
 }

@@ -248,6 +248,7 @@ public class Translator extends Tool {
     p.pln("");
     p.pln("using namespace java::lang;");
     p.pln("using namespace std;");
+    p.pln("typedef unsigned char byte;");
   }
   private void initMainFile(Printer p){
     p.pln("#include <iostream>");
