@@ -374,8 +374,12 @@ public class NodeHandler {
 	    // Converts the java type to the corresponding C++ Type
 	protected String convertType(String javaType) {
 		String cppType = javaType;
-		if (javaType.equals("int"))
+		if (javaType.equals("int")){
 			cppType = "int32_t";
+		}
+		else if (javaType.equals("byte")){
+			cppType = "unsigned char";
+		}
 		return cppType;
 	}
 

@@ -45,6 +45,9 @@ public class ASTModifier extends Visitor {
     if(n.getString(0).equals("int")){
       n.set(0,"int32_t");
     }
+    else if(n.getString(0).equals("byte")){
+      n.set(0,"unsigned char");
+    }
   }
 
 	public void visitClassDeclaration(GNode n) {
