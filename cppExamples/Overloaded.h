@@ -6,6 +6,8 @@
 using namespace java::lang;
 using namespace std;
 
+typedef unsigned char byte;
+
 namespace def {
 
 	struct __A;
@@ -134,7 +136,7 @@ namespace def {
   		static Class getClass(Overloaded);
   		static String toString(Overloaded);
   		static void m(Overloaded);
-  		static void m_char(char);
+  		static void m_byte(byte);
   		static void m_short(short);
   		static void m_int32_t(int32_t);
   		static void m_long(long);
@@ -158,7 +160,7 @@ namespace def {
       Class (*getClass)(Overloaded);
       String (*toString)(Overloaded);
       void (*m)(Overloaded);
-      void (*m_char)(char);
+      void (*m_byte)(byte);
       void (*m_short)(short);
       void (*m_int32_t)(int32_t);
   	  void (*m_long)(long);
@@ -179,7 +181,7 @@ namespace def {
         getClass((Class(*)(Overloaded)) &__Object::getClass),
         toString((String(*)(Overloaded)) &__Object::toString),
         m(&__Overloaded::m),
-        m_char(&__Overloaded::m_char),
+        m_byte(&__Overloaded::m_byte),
         m_short(&__Overloaded::m_short),
         m_int32_t(&__Overloaded::m_int32_t),
         m_long(&__Overloaded::m_long),
