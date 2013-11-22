@@ -32,6 +32,7 @@ namespace subExamples {
 
 	struct __HelloWorld_VT {
       Class __isa;
+      void (*__delete)(__HelloWorld*);
       int32_t (*hashCode)(HelloWorld);
       bool (*equals)(HelloWorld, Object);
       Class (*getClass)(HelloWorld);
@@ -41,6 +42,7 @@ namespace subExamples {
 
       __HelloWorld_VT()
       : __isa(__HelloWorld::__class()),
+        __delete(&__rt::__delete<__HelloWorld>),
         hashCode((int32_t(*)(HelloWorld)) &__Object::hashCode),
         equals((bool(*)(HelloWorld,Object)) &__Object::equals),
         getClass((Class(*)(HelloWorld)) &__Object::getClass),
@@ -77,6 +79,7 @@ namespace subExamples {
 
     struct __HelloUniverse_VT {
       Class __isa;
+      void (*__delete)(__HelloUniverse*);
       int32_t (*hashCode)(HelloUniverse);
       bool (*equals)(HelloUniverse, Object);
       Class (*getClass)(HelloUniverse);
@@ -86,6 +89,7 @@ namespace subExamples {
 
       __HelloUniverse_VT()
       : __isa(__HelloUniverse::__class()),
+        __delete(&__rt::__delete<__HelloUniverse>),
         hashCode((int32_t(*)(HelloUniverse)) &__Object::hashCode),
         equals((bool(*)(HelloUniverse, Object)) &__Object::equals),
         getClass((Class(*)(HelloUniverse)) &__Object::getClass),

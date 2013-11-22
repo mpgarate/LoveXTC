@@ -118,7 +118,6 @@ public class Inheritance {
 		for (int i=1;i<root.size();i++) {
 		    buildTreeHeaders((GNode)root.getNode(i));
 		}
-		getNodeList();
 	}
 
 	public void buildTree(GNode node) {
@@ -249,6 +248,40 @@ public class Inheritance {
 		return root;
 	}
 
+	public String getParentOfNode(String childName) {
+		for (int i=1;i<root.size();i++) {
+			if (root.getNode(i).getName().equals(childName)) {
+				return root.getName();
+			}
+			else {
+				String temp = getParentOfNode(childName, (GNode)root.getNode(i));
+				if (temp != null) {
+					return temp;
+				}
+			}
+		}
+		return "No Parent Found";
+	}
+
+	private String getParentOfNode(String childName, GNode node) {
+		if (node.size()<1) {
+			return null;
+		}
+
+		for (int i=1;i<node.size();i++) {
+			if (node.getNode(i).getName().equals(childName)) {
+				return node.getName();
+			}
+			else {
+				String temp = getParentOfNode(childName, (GNode)node.getNode(i));
+				if (temp != null) {
+					return temp;
+				}
+			}
+		}
+		return null;
+	}
+
 	
     private GNode searchForNode(GNode node, String name) {
 		// DOES A DEPTH-FIRST SEARCH THROUGH THE TREE FOR A NODE OF SPECIFIC NAME
@@ -325,18 +358,23 @@ public class Inheritance {
 	}
 
     private GNode copyNode(GNode oldNode) {
-	GNode newNode = GNode.create(oldNode.getName());
-	if (oldNode.size() > 0) {
-	    for (int i=0;i<oldNode.size();i++) {
-		if (oldNode.get(i) instanceof String) {
-		    newNode.add(oldNode.get(i));
-		}
-		else {		    
-		    newNode.add(copyNode((GNode)oldNode.get(i)));
-		}
-	    }
-	}
-	return newNode;
-    }
 
+    	
+
+		GNode newNode = GNode.create(oldNode.getName());
+		if (oldNode.hasProperty("typeOfNode")) {
+			newNode.setProperty("typeOfNode", oldNode.getProperty("typeOfNode"));
+		}
+		if (oldNode.size() > 0) {
+	    	for (int i=0;i<oldNode.size();i++) {
+				if (oldNode.get(i) instanceof String) {
+		    		newNode.add(oldNode.get(i));
+				}
+				else {		    
+		    		newNode.add(copyNode((GNode)oldNode.get(i)));
+				}
+	    	}
+		}
+		return newNode;
+    }
 }
