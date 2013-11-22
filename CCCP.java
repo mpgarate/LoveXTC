@@ -338,7 +338,12 @@ public class CCCP extends Visitor {
 
   public void visitNewClassExpression(GNode n){
     String className = fold((GNode)n.getNode(2), n.getNode(2).size());
-    printer.p("new __" + className + "(");
+    if (className.equals("Exception")){
+      printer.p("new " + className + "(");
+    }
+    else{
+      printer.p("new __" + className + "(");
+    }
     printer.p(n.getNode(3));      
     printer.p(")");
   }
