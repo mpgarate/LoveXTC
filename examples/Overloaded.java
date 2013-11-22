@@ -27,7 +27,6 @@ public class Overloaded {
   public void m(short s)    { System.out.println("m(short)   : " + s); }
   public void m(int i)      { System.out.println("m(int)     : " + i); }
   public void m(long l)     { System.out.println("m(long)    : " + l); }
-  public void m(Integer i)  { System.out.println("m(Integer) : " + i); }
   public void m(Object o)   { System.out.println("m(Object)  : " + o); }
   public void m(String s)   { System.out.println("m(String)  : " + s); }
   public void m(A a)        { System.out.println("m(A)       : " + a); }
