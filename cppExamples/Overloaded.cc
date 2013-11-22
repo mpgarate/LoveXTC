@@ -67,8 +67,8 @@ namespace def {
 	void __Overloaded::m(Overloaded __this) {
 				cout << "m()        : ---" <<endl;;
     }
-    void __Overloaded::m_char(char c) {
-				cout << "m(char)    : " << c <<endl;;
+    void __Overloaded::m_byte(byte c) {
+				cout << "m(byte)    : " << (int)c <<endl;;
     }
     void __Overloaded::m_short(short s) {
 				cout << "m(short)   : " << s <<endl;;
@@ -123,7 +123,7 @@ namespace def {
 int main(void){
 
 	Overloaded o = new __Overloaded();
-	unsigned char n1 = 1, n2 = 2;
+	byte n1 = 1, n2 = 2;
 	short s = 5;
 	long l1 = 123456789;
 	A a = new __A();
@@ -131,7 +131,7 @@ int main(void){
 	C c = new __C();
 
 	o->__vptr->m(o);
-	o->__vptr->m_char(n1);
+	o->__vptr->m_byte(n1);
 	o->__vptr->m_int32_t(n1+n2);
 	o->__vptr->m_short(s);
 	o->__vptr->m_long(l1);
