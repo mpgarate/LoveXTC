@@ -36,7 +36,7 @@ import java.util.logging.ConsoleHandler;
  * A translator from (a subset of) Java to (a subset of) C++.
  */
 public class Translator extends Tool {
-  private final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
+  public final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
 
   /** Create a new translator. */
   public Translator() {
