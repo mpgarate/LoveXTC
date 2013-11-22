@@ -106,6 +106,7 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printCPPTree")) {
+      new OverloadingASTModifier().dispatch((GNode)node);
       new ASTModifier().dispatch((GNode)node);
       runtime.console().format(node).pln().flush();
     }
@@ -170,7 +171,7 @@ public class Translator extends Tool {
       /* Make modifications to AST needed for printing */
       LOGGER.info("Modifying AST:");
       for (GNode listNode : nodeList){
-        
+        new OverloadingASTModifier().dispatch(listNode);
         //runtime.console().format(listNode).pln().flush();
         LOGGER.info("Building the Symbol Table:");
         new SymTab(runtime, table).dispatch(listNode);

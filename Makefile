@@ -47,6 +47,7 @@ PACKAGE_LOC = xtc/oop
 
 SOURCE = \
 	   CCCP.java \
+	   OverloadingASTModifier.java \
 	   SymTab.java \
 	   Dependency.java \
 	   NodeHandler.java \
