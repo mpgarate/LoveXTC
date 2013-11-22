@@ -30,8 +30,25 @@ int main(void) {
             << "----------------"
             << std::endl;
 
+  // Object o = new Object();
+  Object o = new __Object();
+
+  std::cout << "o.toString() : "
+            << o->__vptr->toString(o) // o.toString()
+            << std::endl;
+
+  // Class oClass = o.getClass();
+  Class oClass = o->__vptr->getClass(o);
+
+  std::cout << "oClass.getName()  : "
+            << oClass->__vptr->getName(oClass) // oClass.getName()
+            << std::endl
+            << "oClass.toString() : "
+            << oClass->__vptr->toString(oClass) // oClass.toString()
+            << std::endl;
+
   // int[] a = new int[5];
-  __rt::Array<int32_t>* a = new __rt::Array<int32_t>(5);
+  __rt::Ptr<__rt::Array<int32_t> > a = new __rt::Array<int32_t>(5);
 
   // a[2]
   __rt::checkNotNull(a);
@@ -43,11 +60,10 @@ int main(void) {
 
   // a[2]
   __rt::checkNotNull(a);
-  __rt::checkIndex(a, 2);
   std::cout << "a[2]  : " << a->__data[2] << std::endl;
 
   // String[] ss = new String[5];
-  __rt::Array<String>* ss = new __rt::Array<String>(5);
+  __rt::Ptr<__rt::Array<String> > ss = new __rt::Array<String>(5);
 
   // String s = "Hello";
   String s = __rt::literal("Hello");
@@ -55,9 +71,9 @@ int main(void) {
   // ss[2] = "Hello";
   __rt::checkNotNull(ss);
   __rt::checkStore(ss, s);
-  (*ss)[2] = s;
+  (*ss)[3] = s;
 
-  std::cout << "ss[2] : " << (*ss)[2] << std::endl;
+  std::cout << "ss[3] : " << (*ss)[3] << std::endl;
 
 
   // Done.

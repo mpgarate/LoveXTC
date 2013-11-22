@@ -234,6 +234,23 @@ public class CCCP extends Visitor {
     printer.pln(";");
   }
 
+  public void visitCallExpression(GNode n){
+    printer.p(n.getNode(0));
+    printer.p("->__vptr->");
+    printer.p(n.getString(2) + "(");
+    printer.p(n.getNode(3));
+    printer.p(")");
+  }
+
+  public void visitArguments(GNode n){
+    for (int i = 0; i < n.size() ; i++){
+      printer.p(n.getNode(i));
+      if (! (i==n.size()-1)){
+        printer.p(",");
+      }
+    }
+  }  
+
   public void visitCoutExpression(GNode n){
     printer.p("cout << ");
     visit(n);
@@ -348,7 +365,12 @@ public class CCCP extends Visitor {
 
   public void visitNewClassExpression(GNode n){
     String className = fold((GNode)n.getNode(2), n.getNode(2).size());
-    printer.p("new __" + className + "(");
+    if (className.equals("Exception")){
+      printer.p("new " + className + "(");
+    }
+    else{
+      printer.p("new __" + className + "(");
+    }
     printer.p(n.getNode(3));      
     printer.p(")");
   }
