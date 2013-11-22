@@ -325,6 +325,10 @@ public class NodeHandler {
 			}
 		}
 		methodDeclaration.add(modifierDeclaration);
+
+		if (returnType==null) {
+			returnType="void";
+		}
 		methodDeclaration.add(returnType);
 
 		if (args != null) {
