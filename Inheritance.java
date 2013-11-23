@@ -248,15 +248,15 @@ public class Inheritance {
 		return root;
 	}
 
-	public LinkedList<GNode> getVTableForNode(String name) {
+	public LinkedList<String> getVTableForNode(String name) {
 		GNode node = searchForNode(root, name);
-		LinkedList<GNode> vTableList = new LinkedList<GNode>();
+		LinkedList<String> vTableList = new LinkedList<String>();
 		if (node==null) {
-			vTableList.add(GNode.create("Didn't find a node with that name"));
+			vTableList.add("Didn't find a node with that name");
 			return vTableList;
 		}
 		for (int i=0;i<node.getNode(0).getNode(3).size();i++) {
-			vTableList.add((GNode)node.getNode(0).getNode(3).getNode(i));
+			vTableList.add(node.getNode(0).getNode(3).getNode(i).getString(2));
 		}
 		return vTableList;
 	}
