@@ -179,7 +179,7 @@ public class Translator extends Tool {
       }
 
       /* Write each AST in the list to output.cc as CPP */
-        writeTreeAsCPP(nodeList, table);
+        writeTreeAsCPP(nodeList, table, inheritanceTree);
     }
   }
 
@@ -212,7 +212,7 @@ public class Translator extends Tool {
 
   /* Write each AST in the list to output.cc as CPP */
   /* This method should be run last in the 'translate' sequence. */
-  private void writeTreeAsCPP(LinkedList<GNode> nodeList, SymbolTable table){
+  private void writeTreeAsCPP(LinkedList<GNode> nodeList, SymbolTable table, Inheritance inh){
     Writer outCC = null;
 
     try {
@@ -226,7 +226,7 @@ public class Translator extends Tool {
       /* Print each GNode in the list into output.cc */
       for (GNode listNode : nodeList){
         LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
-        new CCCP(pCC, table).dispatch(listNode);
+        new CCCP(pCC, table, inh).dispatch(listNode);
       }
 
     } catch (IOException ex){

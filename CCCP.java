@@ -26,6 +26,7 @@ import xtc.type.*;
 
 public class CCCP extends Visitor {
     final private SymbolTable table;
+    Inheritance inheritanceTree;
   private static final boolean VERBOSE = false;
   LinkedList<String> classFields = new LinkedList<String>();
 	/* We should base this file on src/xtc/lang/CPrinter.java */
@@ -52,10 +53,12 @@ public class CCCP extends Visitor {
   */
   private boolean visitedConstructor;
 
-	public CCCP(Printer p, SymbolTable table){
+	public CCCP(Printer p, SymbolTable table, Inheritance inh){
     this.printer = p;
     this.table = table;
     printer.register(this);
+    this.inheritanceTree = inh;
+
 	}
 
 
@@ -240,6 +243,8 @@ public class CCCP extends Visitor {
     printer.p(n.getString(2) + "(");
     printer.p(n.getNode(3));
     printer.p(")");
+    /*LinkedList<GNode> methods = inheritanceTree.getVTableForNode(javaClassName);
+    printer.p(methods.toString());*/
   }
 
   public void visitArguments(GNode n){
@@ -250,6 +255,17 @@ public class CCCP extends Visitor {
       }
     }
   }  
+
+  public void visitAdditiveExpression(GNode n){
+    if (n.getNode(0).hasName("visitAdditiveExpression")){
+      visit(n);
+    }
+    else {
+      printer.p(n.getNode(0));
+    }
+    printer.p(n.getString(1));
+    printer.p(n.getNode(2));
+  } 
 
   public void visitCoutExpression(GNode n){
     printer.p("cout << ");
@@ -281,25 +297,6 @@ public class CCCP extends Visitor {
     printer.p(" << ");
     boolean primT = false;
     boolean castAsInt = false;
-
-/*
-    new Visitor(){
-      public void visitPrimaryIdentifier(GNode n){
-        String identifierName = n.getString(0);
-        if (table.current().isDefined(identifierName)){
-          Type type = (Type) table.current().lookup(identifierName);
-          String typeAsString = type.toString();
-          if (typeAsString.contains("(byte,")){
-            //Translator.LOGGER.warning("WE GOT A BYTE!");
-            n.set(0,"(byte)" + identifierName);
-          }
-        }
-      }
-      public void visit(Node n) {
-        for (Object o : n) if (o instanceof Node) dispatch((Node) o);
-      }
-    }.dispatch(n);
-*/
 
     if (table.current().isDefined(variableName)) {
       Type type = (Type) table.current().lookup(variableName);
