@@ -282,25 +282,6 @@ public class CCCP extends Visitor {
     boolean primT = false;
     boolean castAsInt = false;
 
-/*
-    new Visitor(){
-      public void visitPrimaryIdentifier(GNode n){
-        String identifierName = n.getString(0);
-        if (table.current().isDefined(identifierName)){
-          Type type = (Type) table.current().lookup(identifierName);
-          String typeAsString = type.toString();
-          if (typeAsString.contains("(byte,")){
-            //Translator.LOGGER.warning("WE GOT A BYTE!");
-            n.set(0,"(byte)" + identifierName);
-          }
-        }
-      }
-      public void visit(Node n) {
-        for (Object o : n) if (o instanceof Node) dispatch((Node) o);
-      }
-    }.dispatch(n);
-*/
-
     if (table.current().isDefined(variableName)) {
       Type type = (Type) table.current().lookup(variableName);
       if (!type.hasAlias()){
