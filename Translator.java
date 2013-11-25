@@ -176,6 +176,7 @@ public class Translator extends Tool {
         LOGGER.info("Building the Symbol Table:");
         new SymTab(runtime, table).dispatch(listNode);
         new ASTModifier().dispatch(listNode);
+        new Overloader(table, inheritanceTree);
       }
 
       /* Write each AST in the list to output.cc as CPP */
