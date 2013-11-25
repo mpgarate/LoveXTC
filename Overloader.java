@@ -99,6 +99,15 @@ public class Overloader extends Visitor {
   }
 
   public void visitCallExpression(GNode n){
+    if (n.getNode(0) != null){
+      String variableName = n.getNode(0).getString(0);
+      String nameOfClass;
+      if (table.current().isDefined(variableName)) {
+      Type type = (Type) table.current().lookup(variableName);
+      nameOfClass = type.toAlias().getName();
+      Translator.LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
+      }
+    }
     /*LinkedList<String> methods = inheritanceTree.getVTableForNode(javaClassName);
     printer.p(methods.toString());
     String parent = inheritanceTree.getParentOfNode("C");
