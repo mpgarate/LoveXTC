@@ -107,7 +107,7 @@ public class NodeHandler {
 					continue;
 				}
 
-				if (methodOverwriting && i==4 && (node1.getNode(i).size()==0 || node2.getNode(i).size() == 0)) {
+				if (methodOverwriting && i==4 && (node1.getNode(i).size()==0 && node2.getNode(i).size() == node1.getNode(i).size())) {
 					continue;
 				}
 
