@@ -58,6 +58,7 @@ SOURCE = \
      LoveTest/TestTool.java \
      LoveTest/TestDriver.java \
      ASTModifier.java \
+     Overloader.java \
      LoveXTCLogger.java \
      InheritancePrinter.java \
      Translator.java
