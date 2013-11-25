@@ -20,6 +20,7 @@ public class TestTool{
 
   public void translateAndCompare(String path, String name){
     System.out.println("Translating " + name);
+    cleanup();
     File file = new File(path);
     translateFile(file);
     compileOutput();
@@ -42,7 +43,7 @@ public class TestTool{
 
   public void compileOutput(){
     try{
-      Process process = rt.exec("g++ output/java_lang.cc output/output.cc");
+      Process process = rt.exec("make compile");
       printCommandStdOut(process);
       printCommandStdErr(process);
     }
@@ -79,7 +80,7 @@ public class TestTool{
     System.out.println("-------------------------------------");
 
     try{
-      Process process = rt.exec("./a.out");
+      Process process = rt.exec("output/a.out");
       String stdOut = printCommandStdOut(process);
       printCommandStdErr(process);
 
@@ -115,6 +116,18 @@ public class TestTool{
     assertEquals("Outputs did not match.",a,b);
   }
 
+  public void cleanup(){
+    System.out.println("Cleaning up.");
+
+    try{
+      Process process = rt.exec("make cleanup");
+      String stdOut = printCommandStdOut(process);
+      printCommandStdErr(process);
+    }
+    catch(IOException e){
+      System.out.println("IO Exception trying cleanup.");
+    }
+  }
 
 
 

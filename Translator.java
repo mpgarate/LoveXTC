@@ -106,8 +106,22 @@ public class Translator extends Tool {
     }
 
     if (runtime.test("printCPPTree")) {
+      LinkedList<GNode> nodeList = new LinkedList<GNode>();
+      nodeList.add((GNode)node);
+      Dependency dep = new Dependency(nodeList);
+      dep.makeAddressList();
+
+      /* Store the found dependencies as AST */
+      nodeList = dep.makeNodeList();
+      for (int i=0; i<nodeList.size();i++){
+        System.out.println(" -> " + nodeList.get(i).getLocation().toString());
+      }
+      Inheritance inheritanceTree = new Inheritance(nodeList);
+      SymbolTable table = new SymbolTable();
       new OverloadingASTModifier().dispatch((GNode)node);
+      new SymTab(runtime, table).dispatch(node);
       new ASTModifier().dispatch((GNode)node);
+      new Overloader(table, inheritanceTree).dispatch(node);
       runtime.console().format(node).pln().flush();
     }
     /* outputs a scope file which contains the symbol table/tree for a given node */
@@ -176,6 +190,7 @@ public class Translator extends Tool {
         LOGGER.info("Building the Symbol Table:");
         new SymTab(runtime, table).dispatch(listNode);
         new ASTModifier().dispatch(listNode);
+        new Overloader(table, inheritanceTree).dispatch(listNode);
       }
 
       /* Write each AST in the list to output.cc as CPP */

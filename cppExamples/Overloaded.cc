@@ -6,10 +6,10 @@
 #include "java_lang.h"
 
 using namespace java::lang;
-using namespace def;
+
 using namespace std;
 
-namespace def {
+
 
 	__A::__A() : __vptr(&__vtable) {}
 
@@ -25,8 +25,8 @@ namespace def {
       return k;
   }
 
-}
-namespace def {
+
+
 
 	__B::__B() : __vptr(&__vtable) {}
 
@@ -42,8 +42,8 @@ namespace def {
       return k;
   }
 
-}
-namespace def {
+
+
 
 	__C::__C() : __vptr(&__vtable) {}
 
@@ -59,15 +59,15 @@ namespace def {
       return k;
   }
 
-}
-namespace def {
+
+
 
 	__Overloaded::__Overloaded() : __vptr(&__vtable) {}
 
 	void __Overloaded::m(Overloaded __this) {
 				cout << "m()        : ---" <<endl;;
     }
-    void __Overloaded::m_byte(byte c) {
+    void __Overloaded::m_byte(unsigned char c) {
 				cout << "m(byte)    : " << (int)c <<endl;;
     }
     void __Overloaded::m_short(short s) {
@@ -118,12 +118,12 @@ namespace def {
       return k;
   }
 
-}
+
 
 int main(void){
 
 	Overloaded o = new __Overloaded();
-	byte n1 = 1, n2 = 2;
+	unsigned char n1 = 1, n2 = 2;
 	short s = 5;
 	long l1 = 123456789;
 	A a = new __A();

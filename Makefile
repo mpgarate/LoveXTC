@@ -58,6 +58,7 @@ SOURCE = \
      LoveTest/TestTool.java \
      LoveTest/TestDriver.java \
      ASTModifier.java \
+     Overloader.java \
      LoveXTCLogger.java \
      InheritancePrinter.java \
      Translator.java
@@ -86,10 +87,10 @@ love:
 	java xtc.oop.Translator -translate ${FILE}
 
 compile:
-	cd output && g++ output.h && g++ java_lang.cc output.cc
+	cd output && g++ java_lang.cc output.cc
 
 run:
 	cd output && ./a.out
 
 cleanup:
-	cd output && rm a.out output.*
+	cd output && rm -f a.out output.*

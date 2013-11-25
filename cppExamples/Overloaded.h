@@ -8,7 +8,7 @@ using namespace std;
 
 typedef unsigned char byte;
 
-namespace def {
+
 
 	struct __A;
 	struct __A_VT;
@@ -44,8 +44,8 @@ namespace def {
         toString(&__A::toString){
       }
     };
-}
-namespace def {
+
+
 
 	struct __B;
 	struct __B_VT;
@@ -81,8 +81,8 @@ namespace def {
         toString(&__B::toString){
       }
     };
-}
-namespace def {
+
+
 
 	struct __C;
 	struct __C_VT;
@@ -118,8 +118,8 @@ namespace def {
         toString(&__C::toString){
       }
     };
-}
-namespace def {
+
+
 
 	struct __Overloaded;
 	struct __Overloaded_VT;
@@ -195,4 +195,3 @@ namespace def {
         m_C_C(&__Overloaded::m_C_C){
       }
     };
-}
