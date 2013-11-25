@@ -39,6 +39,8 @@ public class Overloaded {
   public static void main(String[] args) {
     Overloaded o = new Overloaded();
     byte n1 = 1, n2 = 2;
+    short s = 5;
+    long l1 = 123456789;
     A a = new A();
     B b = new B();
     C c = new C();
@@ -47,7 +49,7 @@ public class Overloaded {
     o.m(n1);
     o.m(n1 + n2);
     o.m(new Object());
-    o.m(new Exception());
+    //o.m(new Exception());
     o.m("String");
     o.m(a);
     o.m(b);
