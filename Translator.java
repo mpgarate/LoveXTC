@@ -118,10 +118,11 @@ public class Translator extends Tool {
       }
       Inheritance inheritanceTree = new Inheritance(nodeList);
       SymbolTable table = new SymbolTable();
-      new OverloadingASTModifier().dispatch((GNode)node);
+      OverloadingASTModifier oModifier = new OverloadingASTModifier();
+      oModifier.dispatch((GNode)node);
       new SymTab(runtime, table).dispatch(node);
       new ASTModifier().dispatch((GNode)node);
-      new Overloader(table, inheritanceTree).dispatch(node);
+      new Overloader(table, inheritanceTree, oModifier.getOverloadedList()).dispatch(node);
       runtime.console().format(node).pln().flush();
     }
     /* outputs a scope file which contains the symbol table/tree for a given node */
@@ -193,7 +194,7 @@ public class Translator extends Tool {
         LOGGER.info("Building the Symbol Table:");
         new SymTab(runtime, table).dispatch(listNode);
         new ASTModifier().dispatch(listNode);
-        new Overloader(table, inheritanceTree).dispatch(listNode);
+        new Overloader(table, inheritanceTree, overloadedNames).dispatch(listNode);
       }
 
       /* Write each AST in the list to output.cc as CPP */

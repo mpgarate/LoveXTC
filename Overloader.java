@@ -31,12 +31,13 @@ public class Overloader extends Visitor {
  
   private String className;
   private String javaClassName;
+  private LinkedList<String> overloadedNames;
 
 
-	public Overloader(SymbolTable table, Inheritance inh){
+	public Overloader(SymbolTable table, Inheritance inh, LinkedList<String> oNames){
     this.table = table;
     this.inheritanceTree = inh;
-
+    this.overloadedNames = oNames;
 	}
 
 	public void visitCompilationUnit(GNode n) {
@@ -99,6 +100,20 @@ public class Overloader extends Visitor {
   }
 
   public void visitCallExpression(GNode n){
+    boolean overloaded = false;
+
+    for (String o : overloadedNames) { //Detects if there's overloading
+      if (o.equals(n.getString(2))) {
+        overloaded=true;
+        break;
+      }
+    }
+
+    //If there's no overloading going on, we don't need to do anything.
+    if (overloaded==false) {
+      return;
+    }
+
     if (n.getNode(0) != null){
       String variableName = n.getNode(0).getString(0);
       String nameOfClass;
