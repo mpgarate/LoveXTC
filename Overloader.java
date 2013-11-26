@@ -120,7 +120,7 @@ public class Overloader extends Visitor {
       if (table.current().isDefined(variableName)) {
       Type type = (Type) table.current().lookup(variableName);
       nameOfClass = type.toAlias().getName();
-      Translator.LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
+      //Translator.LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
       }
     }
     /*LinkedList<String> methods = inheritanceTree.getVTableForNode(javaClassName);

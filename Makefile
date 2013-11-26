@@ -46,7 +46,6 @@ PACKAGE     = xtc.oop
 PACKAGE_LOC = xtc/oop
 
 SOURCE = \
-	   CCCP.java \
 	   OverloadingASTModifier.java \
 	   SymTab.java \
 	   Dependency.java \
@@ -54,13 +53,14 @@ SOURCE = \
 	   VTableCreator.java \
 	   DataLayoutCreator.java \
 	   Inheritance.java \
+	   CCCP.java \
      CTranslator.java \
      LoveTest/TestTool.java \
      LoveTest/TestDriver.java \
      ASTModifier.java \
-     Overloader.java \
      LoveXTCLogger.java \
      InheritancePrinter.java \
+     Overloader.java \
      Translator.java
 
 JNI_SOURCE =
