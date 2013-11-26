@@ -37,7 +37,7 @@ public class NodeHandler {
 
 		if (inheritNode.size() > 0) {
 			for (int k=0;k<inheritNode.size();k++) {
-				if (inheritNode.getNode(k).size()==7) {
+				if (inheritNode.getNode(k).hasProperty("typeOfNode") && inheritNode.getNode(k).getProperty("typeOfNode").equals("method")) {
 					inheritNode.getNode(k).set(5, "null");
 					if (inheritNode.getNode(k).getNode(4).size() != 0 && inheritNode.getNode(k).getString(3)=="Object") {
 						//Renames the parameters in a method to be the classname type
@@ -58,7 +58,7 @@ public class NodeHandler {
 			    // METHOD OVERWRITING
 						boolean isOverwritten = false;
 						for (int j = 0; j < inheritNode.size() - 1; j++) {
-							if (inheritNode.getNode(j).size()==7) {
+							if (inheritNode.getNode(j).hasProperty("typeOfNode") && inheritNode.getNode(j).getProperty("typeOfNode").equals("method")) {
 								if (nodeEquals((GNode)inheritNode.getNode(j), (GNode)inheritNode.getNode(inheritNode.size()-1), true)) {
 									inheritNode.set(j, inheritNode.getNode(inheritNode.size()-1));
 									inheritNode.getNode(j).set(5, "Overwritten");
@@ -143,7 +143,7 @@ public class NodeHandler {
 	protected void checkForOverloading(GNode masterNode, GNode currentNode, GNode nodesToOverload) {
 		if (masterNode.size() > 0) {
 			for (int i=0;i<masterNode.size()-1;i++) {
-				if (masterNode.getNode(i).hasProperty("typeIsMethod")) {
+				if (masterNode.getNode(i).hasProperty("typeOfNode") && masterNode.getNode(i).getProperty("typeOfNode").equals("method")) {
 					String masterString = masterNode.getNode(i).getString(2);
 					String currentString = currentNode.getString(2);
 					if (masterString.equals(currentString)) {
@@ -316,7 +316,7 @@ public class NodeHandler {
 			methodDeclaration = GNode.create("DataLayoutMethodDeclaration");
 		}
 
-		methodDeclaration.setProperty("typeIsMethod", true);
+		methodDeclaration.setProperty("typeOfNode", "method");
 
 		GNode modifierDeclaration = GNode.create("Modifiers");
 		GNode parameters = GNode.create("Parameters");
