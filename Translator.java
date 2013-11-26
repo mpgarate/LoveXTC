@@ -185,7 +185,10 @@ public class Translator extends Tool {
       /* Make modifications to AST needed for printing */
       LOGGER.info("Modifying AST:");
       for (GNode listNode : nodeList){
-        new OverloadingASTModifier().dispatch(listNode);
+        OverloadingASTModifier oModifier = new OverloadingASTModifier();
+        oModifier.dispatch(listNode);
+        LinkedList<String> overloadedNames = oModifier.getOverloadedList();
+
         //runtime.console().format(listNode).pln().flush();
         LOGGER.info("Building the Symbol Table:");
         new SymTab(runtime, table).dispatch(listNode);

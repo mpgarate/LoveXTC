@@ -25,6 +25,7 @@ public class OverloadingASTModifier extends Visitor {
 	public String className;
 	private LinkedList<GNode> methodList = new LinkedList<GNode>();
 	private LinkedList<String> parameterList = new LinkedList<String>();
+	private LinkedList<String> overloadedList = new LinkedList<String>();
 	private Boolean ready = false;
 
 	public OverloadingASTModifier() {
@@ -33,6 +34,10 @@ public class OverloadingASTModifier extends Visitor {
 
 	public String getName() {
 		return className;
+	}
+
+	public LinkedList<String> getOverloadedList() {
+		return overloadedList;
 	}
 
 	public void visitClassBody(GNode n) {
@@ -89,6 +94,9 @@ public class OverloadingASTModifier extends Visitor {
 	protected void executeOverloading(GNode overload) {
 		
       	String newNodeString = overload.getString(3);
+
+      	addElementToOverloadedList(newNodeString);
+
       	if (overload.getNode(4).size() > 0) {
       		ready=true;
         	visit(overload.getNode(4));
@@ -99,5 +107,15 @@ public class OverloadingASTModifier extends Visitor {
        		parameterList = new LinkedList<String>();
       	}
       	overload.set(3, newNodeString);
+    }
+
+    protected void addElementToOverloadedList(String a) {
+    	for (int i=0;i<overloadedList.size();i++) {
+    		if (overloadedList.get(i).equals(a)) {
+    			return;
+    		}
+    	}
+    	overloadedList.add(a);
+    	return;
     }
 }
