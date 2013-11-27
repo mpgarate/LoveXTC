@@ -165,14 +165,16 @@ public class Overloader extends Visitor {
         Translator.LOGGER.info("ALERT: NO METHOD FOUND. Ideal method " + actual_method);
         Translator.LOGGER.info("ALERT: Looking for someother suitable method");
         /* WARNING: DOING THIS JUST FOR THIS EXAMPLE */
-        String parent = inheritanceTree.getParentOfNode(argumentList.get(0));
-        Translator.LOGGER.info("ALERT: parent of " + argumentList.get(0) + "is" + parent);
-        actual_method = n.getString(2);
-        actual_method = actual_method + "_" + parent;
-        if (methods.contains(actual_method)){
-        n.set(2,actual_method);
-        // lets change the arguments by adding the parent as a cast
-        changeArguments((GNode)n.getNode(3), parent);
+        if (argumentList.size() > 0){
+          String parent = inheritanceTree.getParentOfNode(argumentList.get(0));
+          Translator.LOGGER.info("ALERT: parent of " + argumentList.get(0) + "is" + parent);
+          actual_method = n.getString(2);
+          actual_method = actual_method + "_" + parent;
+          if (methods.contains(actual_method)){
+          n.set(2,actual_method);
+          // lets change the arguments by adding the parent as a cast
+          changeArguments((GNode)n.getNode(3), parent);
+          }
         }
       }
     }

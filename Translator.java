@@ -122,7 +122,7 @@ public class Translator extends Tool {
       oModifier.dispatch((GNode)node);
       new SymTab(runtime, table).dispatch(node);
       new ASTModifier().dispatch((GNode)node);
-      new Overloader(table, inheritanceTree, oModifier.getOverloadedList()).dispatch(node);
+      //new Overloader(table, inheritanceTree, oModifier.getOverloadedList()).dispatch(node);
       runtime.console().format(node).pln().flush();
     }
     /* outputs a scope file which contains the symbol table/tree for a given node */
