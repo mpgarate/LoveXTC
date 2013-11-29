@@ -38,11 +38,18 @@ namespace __rt {
     size_t* counter;
 
   public:
+    typedef T value_type;
+
     template<typename U>
     friend class Ptr;
 
     Ptr(T* addr = 0) : addr(addr), counter(new size_t(1)) {
       TRACE(addr);
+    }
+
+    Ptr(const Ptr& other) : addr(other.addr), counter(other.counter) {
+      TRACE(addr);
+      ++(*counter);
     }
 
     template<typename U>

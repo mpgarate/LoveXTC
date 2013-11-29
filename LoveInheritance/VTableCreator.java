@@ -13,7 +13,7 @@ getStringVTable
 getClassVTable
 */
 
-package xtc.oop;
+package xtc.oop.LoveInheritance;
 
 import xtc.tree.GNode;
 import xtc.tree.Node;

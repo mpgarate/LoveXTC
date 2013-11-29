@@ -21,11 +21,21 @@ import xtc.util.SymbolTable.Scope;
 import xtc.type.*;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
+import java.util.logging.Logger;
+
 public class Overloader extends Visitor {
-    final private SymbolTable table;
-    Inheritance inheritanceTree;
+  public final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
+  final private SymbolTable table;
+  Inheritance inheritanceTree;
   private static final boolean VERBOSE = false;
-  LinkedList<String> temp = new LinkedList<String>();
+
+  /* making a linked list of primitive types for personal purposes
+     and a methos which return if a string is primitive or not
+     may or maynot be useful*/
+  LinkedList<String> primTypes = new LinkedList<String>();
+  public boolean isPrim(String s){
+    return primTypes.contains(s);
+  }
 
 
  
@@ -38,6 +48,14 @@ public class Overloader extends Visitor {
     this.table = table;
     this.inheritanceTree = inh;
     this.overloadedNames = oNames;
+    primTypes.add("int");
+    primTypes.add("byte");
+    primTypes.add("long");
+    primTypes.add("boolean");
+    primTypes.add("double");
+    primTypes.add("float");
+    primTypes.add("short");
+    primTypes.add("char");
 	}
 
 	public void visitCompilationUnit(GNode n) {
@@ -99,12 +117,16 @@ public class Overloader extends Visitor {
     visit(n);
   }
 
+  /* main work for overloading starts at this point
+     basically first we find if a method is overloaded or not.
+     if yes, then we visit the arguments to determine the correct name of method*/
   public void visitCallExpression(GNode n){
     boolean overloaded = false;
 
     for (String o : overloadedNames) { //Detects if there's overloading
       if (o.equals(n.getString(2))) {
         overloaded=true;
+        LOGGER.info("Overloading happening for method " + o);
         break;
       }
     }
@@ -113,40 +135,166 @@ public class Overloader extends Visitor {
     if (overloaded==false) {
       return;
     }
-
+    // name of class is the class name incase of static methods
+    String nameOfClass = className;
+    // else it is the class of the primary identifier 
     if (n.getNode(0) != null){
       String variableName = n.getNode(0).getString(0);
-      String nameOfClass;
       if (table.current().isDefined(variableName)) {
       Type type = (Type) table.current().lookup(variableName);
       nameOfClass = type.toAlias().getName();
-      //Translator.LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
+      LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
       }
     }
-    /*LinkedList<String> methods = inheritanceTree.getVTableForNode(javaClassName);
-    printer.p(methods.toString());
-    String parent = inheritanceTree.getParentOfNode("C");
-    printer.p(parent);*/
+    /* if method is overloaded the change the method name in the node 
+      else do nothing*/
+    if (overloaded){
+      LinkedList<String> argumentList = new LinkedList<String>();
+      String actual_method = n.getString(2);
+      LinkedList<String> methods = inheritanceTree.getVTableForNode(nameOfClass);
+      argumentList = visitArguments((GNode)n.getNode(3));
+      LOGGER.info("ideal method is = " + actual_method);
+      for (int i = 0; i < argumentList.size(); i++){
+        actual_method = actual_method + "_" + argumentList.get(i);
+      }
+      /* if the method name just found is legal then we change the name
+         else we look for a more suitable method */
+      if (methods.contains(actual_method)){
+        n.set(2,actual_method);
+      }
+      /* FIXME: have a more robust way of finding out the suitable method
+         For now i am just making it work for this example */
+      else{
+        LOGGER.info("ALERT: NO METHOD FOUND. Ideal method " + actual_method);
+        LOGGER.info("ALERT: Looking for someother suitable method");
+        /* WARNING: DOING THIS JUST FOR THIS EXAMPLE */
+        if (argumentList.size() > 0){
+          String parent = inheritanceTree.getParentOfNode(argumentList.get(0));
+          LOGGER.info("ALERT: parent of " + argumentList.get(0) + "is" + parent);
+          actual_method = n.getString(2);
+          actual_method = actual_method + "_" + parent;
+          if (methods.contains(actual_method)){
+          n.set(2,actual_method);
+          // lets change the arguments by adding the parent as a cast
+          changeArguments((GNode)n.getNode(3), parent);
+          }
+        }
+      }
+    }
+  }
+  /* This method puts the right casting in front of the right primary identifier.
+     We will not need to put the implicit casting after implementing smart pointers.
+     But for now we have to put the implicit casting ourselves.
+     */
+  public void changeArguments(GNode n, String cast){
+    for (int i = 0; i < n.size() ; i++){
+      if (n.getNode(i).hasName("PrimaryIdentifier")){
+        String name = n.getNode(i).getString(0);
+        String nameOfClass = "";
+        if (table.current().isDefined(name)) {
+          Type type = (Type) table.current().lookup(name);
+          if (type.hasAlias()){
+          nameOfClass = type.toAlias().getName();
+          }
+          else {
+          WrappedT wtype = (WrappedT) table.current().lookup(name);
+          nameOfClass = wtype.getType().toString();
+          }
+        }
+        String parent = inheritanceTree.getParentOfNode(nameOfClass);
+        LOGGER.info("name = "+name+ " parent = "+parent+ " cast = "+cast);
+        if (parent.equals(cast)){
+          LOGGER.info("INFO: Applying casting inside the right identifier");
+          String newname = "("+cast+")" + name;
+          n.getNode(i).set(0, newname);
+        }
+      }
+    }
   }
 
-  public void visitArguments(GNode n){
-    
+  public LinkedList<String> visitArguments(GNode n){
+    LinkedList<String> answer = new LinkedList<String>();
+    if (n.size() == 0){
+      return answer;
+    }
+    for (int i = 0; i < n.size() ; i++){
+      if (n.getNode(i).hasName("AdditiveExpression")){
+        answer.add(visitAdditiveExpression((GNode)n.getNode(i)));
+      }
+      if (n.getNode(i).hasName("NewClassExpression")){
+        answer.add(visitNewClassExpression((GNode)n.getNode(i)));
+      }
+      if (n.getNode(i).hasName("PrimaryIdentifier")){
+        answer.add(visitPrimaryIdentifier((GNode)n.getNode(i)));
+      }
+      if (n.getNode(i).hasName("CastExpression")){
+        answer.add(visitCastExpression((GNode)n.getNode(i)));
+      }
+      if (n.getNode(i).hasName("StringLiteral")){
+        answer.add(visitStringLiteral((GNode)n.getNode(i)));
+      }
+    }
+    return answer;
   }  
 
-  public void visitAdditiveExpression(GNode n){
-    
+  public String visitAdditiveExpression(GNode n){
+    String answer = "";
+    LinkedList<String> type = new LinkedList<String>();
+    for (int i = 0; i < n.size(); i++){
+      if (!(n.get(i) instanceof String) && n.getNode(i).hasName("PrimaryIdentifier")){
+        type.add(visitPrimaryIdentifier((GNode)n.getNode(i)));
+      }
+    }
+    /* FIXME: we have to follow java specification to figure out the dominant type
+       For now i am just making my own*/
+    if (isPrim(type.get(0))){
+      if (type.contains("long")){
+        answer = "long";
+      }
+      else if (type.contains("double")){
+        answer = "double";
+      }
+      else{
+        answer = "int32_t";
+      }
+    }
+    else {
+      LOGGER.info("ALERT: ADDING SOMETHING THAT IS NOT PRIMITIVE");
+    }
+
+    return answer;
   } 
 
   
-  public void visitPrimaryIdentifier(GNode n) {
-    
+  public String visitPrimaryIdentifier(GNode n) {
+    String variableName = n.getString(0);
+    String nameOfClass = "";
+    if (table.current().isDefined(variableName)) {
+      Type type = (Type) table.current().lookup(variableName);
+      if (type.hasAlias()){
+        nameOfClass = type.toAlias().getName();
+      }
+      else {
+        WrappedT wtype = (WrappedT) table.current().lookup(variableName);
+        nameOfClass = wtype.getType().toString();
+      }
+    }
+    LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
+    return nameOfClass;
   } 
 
   
 
-  public void visitNewClassExpression(GNode n){
-    
+  public String visitNewClassExpression(GNode n){
+    return n.getNode(2).getString(0);
   }
+  public String visitCastExpression(GNode n){
+    return n.getNode(0).getNode(0).getString(0);
+  }
+  public String visitStringLiteral(GNode n){
+    return "String";
+  }
+
 
 
 

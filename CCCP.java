@@ -152,7 +152,7 @@ public class CCCP extends Visitor {
       printer.p("void");
     }
     printer.p(" ");
-    // NEED: formal parameters
+
     printer.p(className + "::" + methodName);
     if (n.getNode(4).size() !=0) {
       //printer.p("(").p(n.getNode(4)).p(") {");
@@ -242,6 +242,9 @@ public class CCCP extends Visitor {
     printer.p("->__vptr->");
     printer.p(n.getString(2) + "(");
     printer.p(n.getNode(3));
+    if (n.getNode(3).size() == 0){
+      printer.p(n.getNode(0));
+    }
     printer.p(")");
     /*LinkedList<GNode> methods = inheritanceTree.getVTableForNode(javaClassName);
     printer.p(methods.toString());*/
@@ -249,7 +252,14 @@ public class CCCP extends Visitor {
 
   public void visitArguments(GNode n){
     for (int i = 0; i < n.size() ; i++){
-      printer.p(n.getNode(i));
+      if (n.getNode(i).hasName("StringLiteral")){
+        printer.p("new __String(");
+        printer.p(n.getNode(i));
+        printer.p(")");
+      }
+      else{
+        printer.p(n.getNode(i));
+      }
       if (! (i==n.size()-1)){
         printer.p(",");
       }
@@ -344,7 +354,18 @@ public class CCCP extends Visitor {
   } 
 
   public void visitDeclarators(GNode n){
-	  visit(n);
+    if (n.size() == 1) {
+      visit(n);
+    }
+	  else {
+      for (int i = 0; i < n.size(); i++) {
+        printer.p(n.getNode(i));
+        if (! (i == n.size()-1)){
+          printer.p(",");
+        }
+      }
+    }
+
   }
   public void visitDeclarator(GNode n){
     printer.p(" " + n.getString(0) + " = ");

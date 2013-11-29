@@ -14,7 +14,7 @@ getClassDataLayout
 
 */
 
-package xtc.oop;
+package xtc.oop.LoveInheritance;
 
 import xtc.tree.GNode;
 

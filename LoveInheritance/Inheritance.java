@@ -18,7 +18,7 @@ getParentVTable: returns a copy of the parent's vTable for a given node.
 copyNode: returns a copy of a node and all it's children and children's children, etc.  Note this won't copy any properties you've placed on the nodes.
 */
 
-package xtc.oop;
+package xtc.oop.LoveInheritance;
 
 import xtc.tree.GNode;
 
