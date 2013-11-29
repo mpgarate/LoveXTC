@@ -31,6 +31,11 @@ public class TestDriver{
     String name = "TranslateMe.java";
     t.translateAndCompare(path, name);
   }
+  @Test public void translateOverloaded() {
+    String path = "examples/Overloaded.java";
+    String name = "Overloaded.java";
+    t.translateAndCompare(path, name);
+  }
 
   @Test public void translateWiesMidtermExamples(){
     for (int i = 1; i < 2; i++){ //This should go to 22
