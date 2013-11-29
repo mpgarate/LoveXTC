@@ -81,7 +81,7 @@ endif
 test:
 	make && java org.junit.runner.JUnitCore TestDriver
 
-FILE = examples/Overloaded.java
+FILE = examples/Derived.java
 love:
 	java xtc.oop.Translator -translate ${FILE}
 
