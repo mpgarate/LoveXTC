@@ -54,7 +54,6 @@ SOURCE = \
 	   LoveInheritance/DataLayoutCreator.java \
 	   LoveInheritance/Inheritance.java \
 	   CCCP.java \
-     CTranslator.java \
      LoveTest/TestTool.java \
      LoveTest/TestDriver.java \
      ASTModifier.java \
