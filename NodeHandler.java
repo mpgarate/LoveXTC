@@ -4,6 +4,8 @@ NOTE: NodeHandler is meant to be accessed only from VTableCreator or DataLayoutC
 
 Methods provided in this class:
 handleClassBody
+checkForOverloading: checks to see if method is overloaded and if so adds it to a list of nodes
+executeOverloading: runs through the list of nodes provided by checkForOverloading and changes method names.
 handleFieldDeclaration
 handleMethodDeclaration
 handleConstructorDeclaration
@@ -25,7 +27,7 @@ import xtc.util.Tool;
 import static org.junit.Assert.*;
 
 public class NodeHandler {
-
+	String className = "";
 	public NodeHandler() {
 	}
 
@@ -33,8 +35,10 @@ public class NodeHandler {
     // InheritanceTree
 	protected GNode handleClassBody(GNode inheritNode, GNode astNode, boolean isVTable) {
 		boolean foundConstructor = false;
-			GNode nodesToOverload = GNode.create("NodesToOverload");
+		GNode nodesToOverload = GNode.create("NodesToOverload");
+		className = inheritNode.getProperty("parent").toString();
 
+		//Resetting of parent methods
 		if (inheritNode.size() > 0) {
 			for (int k=0;k<inheritNode.size();k++) {
 				if (inheritNode.getNode(k).hasProperty("typeOfNode") && inheritNode.getNode(k).getProperty("typeOfNode").equals("method")) {
@@ -45,7 +49,7 @@ public class NodeHandler {
 					}
 				}
 			}
-		}		
+		}
 
 		for (int i = 0; i < astNode.size(); i++) {
 			if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
@@ -53,13 +57,19 @@ public class NodeHandler {
 				if (child.hasName("FieldDeclaration") && !isVTable) {
 					handleFieldDeclaration(inheritNode, (GNode) child);
 				} else if (child.hasName("MethodDeclaration")) {
-						handleMethodDeclaration(inheritNode, (GNode) child,
+						boolean added = handleMethodDeclaration(inheritNode, (GNode) child,
 							isVTable);
+						if (!added) { continue; }
 			    // METHOD OVERWRITING
 						boolean isOverwritten = false;
 						for (int j = 0; j < inheritNode.size() - 1; j++) {
 							if (inheritNode.getNode(j).hasProperty("typeOfNode") && inheritNode.getNode(j).getProperty("typeOfNode").equals("method")) {
 								if (nodeEquals((GNode)inheritNode.getNode(j), (GNode)inheritNode.getNode(inheritNode.size()-1), true)) {
+									//For already overloaded methods that are being overwritten, automatically overloads the new method.
+									if (inheritNode.getNode(j).getString(6).equals("Overloaded")) {
+										nodesToOverload.add(inheritNode.getNode(inheritNode.size()-1));
+										inheritNode.getNode(inheritNode.size()-1).set(6, "Overloaded");
+									}
 									inheritNode.set(j, inheritNode.getNode(inheritNode.size()-1));
 									inheritNode.getNode(j).set(5, "Overwritten");
 									isOverwritten = true;
@@ -72,8 +82,8 @@ public class NodeHandler {
 						}
 						else {
 							inheritNode.getNode(inheritNode.size()-1).set(5, "New");
+							checkForOverloading(inheritNode, (GNode)inheritNode.getNode(inheritNode.size()-1), nodesToOverload);
 						}
-						checkForOverloading(inheritNode, (GNode)inheritNode.getNode(inheritNode.size()-1), nodesToOverload);
 					}
 					else if (child.hasName("ConstructorDeclaration") && !isVTable) {
 					foundConstructor = true;
@@ -91,9 +101,26 @@ public class NodeHandler {
 		return inheritNode;
 	}
 
+	//Gets the original method name from an overloaded method name.
+	private String getOriginalMethodName(String s) {
+		String returnString = "";
+		for (int i=0;i<s.length();i++) {
+			if (s.charAt(i)=='_') {
+				break;
+			}
+			else {
+				returnString+=s.charAt(i);
+			}
+		}
+		return returnString;
+	}
+
 	//Traverses two subtrees rooted by node1 and node2 and returns if they are equal or not.
 	//Set methodOverwriting to true the first time you call this recursive function if you are checking to see if node2 overwrites node1.
 	private boolean nodeEquals(GNode node1, GNode node2, boolean methodOverwriting) {
+
+		boolean temp = true;
+
 		if (!node1.getName().equals(node2.getName())) {
 			return false;
 		}
@@ -101,42 +128,58 @@ public class NodeHandler {
 			return false;
 		}
 		else {
-			boolean temp = true;
 			for (int i=0;i<node1.size();i++) {
+
+				//Special-case to compare method names where one has been overloaded.
+				if (methodOverwriting && i==2) {
+					if (getOriginalMethodName(node1.getString(2)).equals(getOriginalMethodName(node2.getString(2)))) {
+						continue;
+					}
+				}
+
+				//Special case to not compare class names that call two methods.
 				if (methodOverwriting && i==3) {
 					continue;
 				}
 
-				if (methodOverwriting && i==4 && (node1.getNode(i).size()==0 && node2.getNode(i).size() == node1.getNode(i).size())) {
-					continue;
+				//Special case to not compare parameters if there is only one that is of the className type.
+				if (methodOverwriting && i==4) {
+					if ((node1.getNode(i).size()==0 && node2.getNode(i).size() == 0)) {
+						continue;
+					}
+					else if (node1.getNode(i).size()==0 && node2.getNode(i).size()==1) {
+						if (node2.getNode(i).getString(0).equals(className)) {
+							continue;
+						}
+					}
+					else if ((node2.getNode(i).size()==0 && node1.getNode(i).size()==1)) {
+						if (node1.getNode(i).getString(0).equals(className)) {
+							continue;
+						}
+					}
 				}
 
+				//Special-case to not compare overloaded or overwritten specification
 				if (methodOverwriting && i>4) {
-					return true;
+					break;
 				}
-
-
 
 				if (node1.get(i) instanceof String && node2.get(i) instanceof String) {
 					temp = node1.getString(i).equals(node2.getString(i));
 				}
 				else if (node1.get(i) instanceof Node && node2.get(i) instanceof Node) {
-					if (!node1.getName().equals(node2.getName())) {
-						return false;
-					}
 					temp = nodeEquals((GNode)node1.getNode(i), (GNode)node2.getNode(i), false);
 				}
 				else {
-					return false;
+					temp = false;
 				}
 
 				if (temp == false) {
-					return false;
+					break;
 				}
 			}
 		}
-
-		return true;
+		return temp;
 	}
 
 	//Runs through each node that is a child of masterNode and compares it to currentNode.  If they have the same name, then switch the names of the two to be the appropriate overloaded names.
@@ -215,8 +258,8 @@ public class NodeHandler {
 	}
 
 	    // Parses a MethodDeclaration from JavaAST to a similar one in the
-	    // InheritanceTree
-	protected void handleMethodDeclaration(GNode inheritNode, GNode astNode,
+	    // InheritanceTree, returns true if it adds a method, false if it doesn't.
+	protected boolean handleMethodDeclaration(GNode inheritNode, GNode astNode,
 		boolean isVTable) {
 		String[] parameters = null, modifiers = null;
 		String classname = null;
@@ -227,7 +270,7 @@ public class NodeHandler {
 		String name = null, returnType = null;
 		if (astNode.getString(3) != null) {
 			name = astNode.getString(3);
-			if (name.equals("main")) return;
+			if (name.equals("main")) return false;
 		}
 		classname = (String) inheritNode.getProperty("parent");
 		for (int i = 0; i < astNode.size(); i++) {
@@ -253,8 +296,13 @@ public class NodeHandler {
 			}
 		}
 	}
+	//Do not add static methods to the vTable
+	if (modifiers != null && modifiers.length>0 && modifiers[0].equals("static") && isVTable) {
+		return false;
+	}
 	inheritNode.add((createMethod(modifiers, name, parameters, returnType,
 		classname, isVTable)));
+	return true;
 	}
 
 	    // Parses a ConstructorDeclaration from JavaAST to a similar one in the

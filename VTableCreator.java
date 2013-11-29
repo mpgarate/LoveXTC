@@ -55,15 +55,14 @@ public class VTableCreator extends NodeHandler {
 	// Create the VTable here for Object Class
 	boolean isVTable = true;
 	GNode objectVTable = GNode.create("VTable");
-	String arg[] = { "__Object" };
+	String arg[] = { "Object" };
 	objectVTable.add(createMethod(null, "__isa", null, "Class", "Object", isVTable));
-	objectVTable.add(createMethod(null, "toString", arg, "String", "Object", isVTable));
 	objectVTable.add(createMethod(null, "hashCode", arg, "int32_t",
 				      "Object", isVTable));
-	objectVTable.add(createMethod(null, "getClass", arg, "Class", "Object", isVTable));
 	objectVTable.add(createMethod(null, "equals", new String[] { "Object",
 				"Object" }, "bool", "Object", isVTable));
-
+	objectVTable.add(createMethod(null, "getClass", arg, "Class", "Object", isVTable));
+	objectVTable.add(createMethod(null, "toString", arg, "String", "Object", isVTable));
 	return objectVTable;
     }
 
@@ -71,9 +70,9 @@ public class VTableCreator extends NodeHandler {
 	boolean isVTable = true;
 	GNode stringVTable = setObjectVTable();
 	stringVTable.add(createMethod(null, "length",
-				      new String[] { "__Object" }, "int32_t", "String",isVTable));
+				      new String[] { "Object" }, "int32_t", "String",isVTable));
 	stringVTable.add(createMethod(null, "charAt",
-				      new String[] { "__Object" }, "int32_t", "String",isVTable));
+				      new String[] { "Object" }, "int32_t", "String",isVTable));
 	return stringVTable;
     }
 
@@ -81,11 +80,11 @@ public class VTableCreator extends NodeHandler {
 	boolean isVTable = true;
 	GNode classVTable = setObjectVTable();
 	classVTable.add(createMethod(null, "getName",
-				     new String[] { "__Class" }, "String", "Class",isVTable));
+				     new String[] { "Class" }, "String", "Class",isVTable));
 	classVTable.add(createMethod(null, "getSuperclass",
-				     new String[] { "__Class" }, "Class", "Class",isVTable));
+				     new String[] { "Class" }, "Class", "Class",isVTable));
 	classVTable.add(createMethod(null, "isInstance", new String[] {
-		    "__Class", "__Object" }, "bool", "Class",isVTable));
+		    "Class", "Object" }, "bool", "Class",isVTable));
 
 	return classVTable;
     }

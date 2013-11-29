@@ -96,16 +96,17 @@ public class DataLayoutCreator extends NodeHandler {
 		objectDataLayout.add(createDataFieldEntry("static", "__Object_VT",
 					"vtable", null));
 		objectDataLayout.add(createConstructor("Object", null));
-		String arg[] = { "__Object" };
+		String arg[] = { "Object" };
 		String modifier[] = { "static" };
-		objectDataLayout.add(createMethod(modifier, "toString", arg, "String",
-					"Object", isVTable));
 		objectDataLayout.add(createMethod(modifier, "hashCode", arg, "int32_t",
-					"Object",isVTable));
-		objectDataLayout.add(createMethod(modifier, "getClass", arg, "Class",
 					"Object",isVTable));
 		objectDataLayout.add(createMethod(modifier, "equals", new String[] {
 					"Object", "Object" }, "bool", "Object",isVTable));
+		objectDataLayout.add(createMethod(modifier, "getClass", arg, "Class",
+					"Object",isVTable));
+		objectDataLayout.add(createMethod(modifier, "toString", arg, "String",
+					"Object", isVTable));
+
 		objectDataLayout.add(createMethod(modifier, "__class", null, "Class",
 					"Object",isVTable));
 		return objectDataLayout;
@@ -120,22 +121,22 @@ public class DataLayoutCreator extends NodeHandler {
 		stringDataLayout.add(createDataFieldEntry("static", "__String_VT",
 					"vtable", null));
 		stringDataLayout.add(createConstructor("String", null));
-		String arg[] = { "__String" };
+		String arg[] = { "String" };
 		String modifier[] = { "static" };
-		stringDataLayout.add(createMethod(modifier, "toString", arg, "String",
-					"String",isVTable));
 		stringDataLayout.add(createMethod(modifier, "hashCode", arg, "int32_t",
 					"String",isVTable));
+		stringDataLayout.add(createMethod(modifier, "equals", new String[] {
+					"String", "Object" }, "bool", "String",isVTable));
 		stringDataLayout.add(createMethod(modifier, "getClass", arg, "Class",
 					"String",isVTable));
-		stringDataLayout.add(createMethod(modifier, "equals", new String[] {
-					"__String", "__Object" }, "bool", "String",isVTable));
+		stringDataLayout.add(createMethod(modifier, "toString", arg, "String",
+					"String",isVTable));
 		stringDataLayout.add(createMethod(modifier, "__class", null, "Class",
 					"String",isVTable));
 		stringDataLayout.add(createMethod(new String[] { "static" }, "length",
-					new String[] { "__String" }, "int32_t", "String",isVTable));
+					new String[] { "String" }, "int32_t", "String",isVTable));
 		stringDataLayout.add(createMethod(new String[] { "static" }, "charAt",
-					new String[] { "__String", "int32_t" }, "int32_t", "String",isVTable));
+					new String[] { "String", "int32_t" }, "int32_t", "String",isVTable));
 		return stringDataLayout;
   }
 
@@ -151,10 +152,10 @@ public class DataLayoutCreator extends NodeHandler {
 					"vtable", null));
 		classDataLayout.add(createConstructor("Class", new String[] { "name",
 					"parent" }));
-		String arg[] = { "__Object" };
+		String arg[] = { "Object" };
 		String modifier[] = { "static" };
 		classDataLayout.add(createMethod(modifier, "toString", arg, "String",
-					"Class",isVTable));
+					"String",isVTable));
 		classDataLayout.add(createMethod(modifier, "getName", null, "String",
 					"Class",isVTable));
 		classDataLayout.add(createMethod(modifier, "getSuperclass", null,
