@@ -1,5 +1,4 @@
-package xtc.oop.LoveInheritance;
-
+package xtc.oop;
 import java.lang.*;
 
 /* Imports based on src/xtc/lang/CPrinter.java */

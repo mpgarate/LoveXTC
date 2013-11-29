@@ -15,9 +15,7 @@ createMethod
 createDataFieldEntry
 convertMethodNameType
 */
-
-package xtc.oop.LoveInheritance;
-
+package xtc.oop;
 import xtc.tree.GNode;
 import xtc.tree.Node;
 import xtc.tree.Visitor;
