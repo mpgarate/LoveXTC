@@ -21,9 +21,12 @@ import xtc.util.SymbolTable.Scope;
 import xtc.type.*;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
+import java.util.logging.Logger;
+
 public class Overloader extends Visitor {
-    final private SymbolTable table;
-    Inheritance inheritanceTree;
+  public final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
+  final private SymbolTable table;
+  Inheritance inheritanceTree;
   private static final boolean VERBOSE = false;
 
   /* making a linked list of primitive types for personal purposes
@@ -123,7 +126,7 @@ public class Overloader extends Visitor {
     for (String o : overloadedNames) { //Detects if there's overloading
       if (o.equals(n.getString(2))) {
         overloaded=true;
-        Translator.LOGGER.info("Overloading happening for method " + o);
+        LOGGER.info("Overloading happening for method " + o);
         break;
       }
     }
@@ -140,7 +143,7 @@ public class Overloader extends Visitor {
       if (table.current().isDefined(variableName)) {
       Type type = (Type) table.current().lookup(variableName);
       nameOfClass = type.toAlias().getName();
-      Translator.LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
+      LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
       }
     }
     /* if method is overloaded the change the method name in the node 
@@ -150,7 +153,7 @@ public class Overloader extends Visitor {
       String actual_method = n.getString(2);
       LinkedList<String> methods = inheritanceTree.getVTableForNode(nameOfClass);
       argumentList = visitArguments((GNode)n.getNode(3));
-      Translator.LOGGER.info("ideal method is = " + actual_method);
+      LOGGER.info("ideal method is = " + actual_method);
       for (int i = 0; i < argumentList.size(); i++){
         actual_method = actual_method + "_" + argumentList.get(i);
       }
@@ -162,12 +165,12 @@ public class Overloader extends Visitor {
       /* FIXME: have a more robust way of finding out the suitable method
          For now i am just making it work for this example */
       else{
-        Translator.LOGGER.info("ALERT: NO METHOD FOUND. Ideal method " + actual_method);
-        Translator.LOGGER.info("ALERT: Looking for someother suitable method");
+        LOGGER.info("ALERT: NO METHOD FOUND. Ideal method " + actual_method);
+        LOGGER.info("ALERT: Looking for someother suitable method");
         /* WARNING: DOING THIS JUST FOR THIS EXAMPLE */
         if (argumentList.size() > 0){
           String parent = inheritanceTree.getParentOfNode(argumentList.get(0));
-          Translator.LOGGER.info("ALERT: parent of " + argumentList.get(0) + "is" + parent);
+          LOGGER.info("ALERT: parent of " + argumentList.get(0) + "is" + parent);
           actual_method = n.getString(2);
           actual_method = actual_method + "_" + parent;
           if (methods.contains(actual_method)){
@@ -199,9 +202,9 @@ public class Overloader extends Visitor {
           }
         }
         String parent = inheritanceTree.getParentOfNode(nameOfClass);
-        Translator.LOGGER.info("name = "+name+ " parent = "+parent+ " cast = "+cast);
+        LOGGER.info("name = "+name+ " parent = "+parent+ " cast = "+cast);
         if (parent.equals(cast)){
-          Translator.LOGGER.info("INFO: Applying casting inside the right identifier");
+          LOGGER.info("INFO: Applying casting inside the right identifier");
           String newname = "("+cast+")" + name;
           n.getNode(i).set(0, newname);
         }
@@ -256,7 +259,7 @@ public class Overloader extends Visitor {
       }
     }
     else {
-      Translator.LOGGER.info("ALERT: ADDING SOMETHING THAT IS NOT PRIMITIVE");
+      LOGGER.info("ALERT: ADDING SOMETHING THAT IS NOT PRIMITIVE");
     }
 
     return answer;
@@ -276,7 +279,7 @@ public class Overloader extends Visitor {
         nameOfClass = wtype.getType().toString();
       }
     }
-    Translator.LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
+    LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
     return nameOfClass;
   } 
 

@@ -49,17 +49,17 @@ SOURCE = \
 	   OverloadingASTModifier.java \
 	   SymTab.java \
 	   Dependency.java \
-	   NodeHandler.java \
-	   VTableCreator.java \
-	   DataLayoutCreator.java \
-	   Inheritance.java \
+	   LoveInheritance/NodeHandler.java \
+	   LoveInheritance/VTableCreator.java \
+	   LoveInheritance/DataLayoutCreator.java \
+	   LoveInheritance/Inheritance.java \
 	   CCCP.java \
      CTranslator.java \
      LoveTest/TestTool.java \
      LoveTest/TestDriver.java \
      ASTModifier.java \
      LoveXTCLogger.java \
-     InheritancePrinter.java \
+     LoveInheritance/InheritancePrinter.java \
      Overloader.java \
      Translator.java
 
