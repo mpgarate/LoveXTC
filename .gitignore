@@ -20,3 +20,5 @@
 
 # Log files
 *.log
+
+output/
