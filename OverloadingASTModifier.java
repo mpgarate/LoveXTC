@@ -40,13 +40,18 @@ public class OverloadingASTModifier extends Visitor {
 		return overloadedList;
 	}
 
+	public void visitCompilationUnit(GNode n) {
+		visit(n);
+		
+		for (int i=0;i<methodList.size();i++) {
+			executeOverloading((GNode)methodList.get(i));
+		}
+	}
+
 	public void visitClassBody(GNode n) {
 		visit(n);
 
 		sortList();
-		for (int i=0;i<methodList.size();i++) {
-			executeOverloading((GNode)methodList.get(i));
-		}
 	}
 
 	//Removes elements from the list that aren't overloaded.
@@ -71,9 +76,10 @@ public class OverloadingASTModifier extends Visitor {
 	public void visitMethodDeclaration(GNode n) {
 		if (n.size()>3 && n.get(3) instanceof String) {
 			methodList.add(n); //creates a list with all the method nodes.
+			System.out.println("Size of method list increased to: "+methodList.size());
 		}
 
-		visit(n);
+		//visit(n);
 	}
 
 	public void visitQualifiedIdentifier(GNode n) {
@@ -109,6 +115,7 @@ public class OverloadingASTModifier extends Visitor {
        		}
        		parameterList = new LinkedList<String>();
       	}
+      	System.out.println(overload.toString());
       	overload.set(3, newNodeString);
     }
 
