@@ -265,6 +265,7 @@ public class NodeHandler {
 		boolean isVTable) {
 		String[] parameters = null, modifiers = null;
 		String classname = null;
+		boolean addToTree = true;
 		if (!isVTable) {
 			modifiers = new String[1];
 			modifiers[0] = "static";
@@ -278,19 +279,17 @@ public class NodeHandler {
 		for (int i = 0; i < astNode.size(); i++) {
 			if (astNode.get(i) != null && astNode.get(i) instanceof Node) {
 				Node child = astNode.getNode(i);
-				if (child.hasName("Modifiers")) {
+				if (child.hasName("Modifiers") && isVTable) {
 					Node mod = child;
 					if (mod.size()>0) {
-						modifiers = new String[mod.size()];
-					}
-					for (int k=0;k<mod.size();k++) {
-						if (mod.get(k) != null && mod.get(k) instanceof Node) {
-							Node modChild = mod.getNode(k);
-							if (modChild.hasName("Modifier")) {
-								modifiers[k]=modChild.getString(0);
+						for (int k=0;k<mod.size();k++) {
+							if (mod.get(k) != null && mod.get(k) instanceof Node) {
+								Node modChild = mod.getNode(k);
+								if (modChild.hasName("Modifier") && modChild.getString(0).equals("static")) {
+									addToTree = false;
+								}
 							}
 						}
-
 					}
 				}
 				else if (child.hasName("Type")) {
@@ -313,17 +312,11 @@ public class NodeHandler {
 			}
 		}
 	}
-	//Do not add static methods to the vTable
-	if (modifiers != null && modifiers.length>0 && isVTable) {
-		for (int i=0;i<modifiers.length;i++) {
-			if (modifiers[i].equals("static")) {
-				return false;
-			}
-		}
+
+	if (addToTree) {
+		inheritNode.add((createMethod(modifiers, name, parameters, returnType, classname, isVTable)));
 	}
-	inheritNode.add((createMethod(modifiers, name, parameters, returnType,
-		classname, isVTable)));
-	return true;
+	return addToTree;
 	}
 
 	    // Parses a ConstructorDeclaration from JavaAST to a similar one in the
