@@ -76,7 +76,6 @@ public class OverloadingASTModifier extends Visitor {
 	public void visitMethodDeclaration(GNode n) {
 		if (n.size()>3 && n.get(3) instanceof String) {
 			methodList.add(n); //creates a list with all the method nodes.
-			System.out.println("Size of method list increased to: "+methodList.size());
 		}
 
 		//visit(n);
@@ -115,7 +114,6 @@ public class OverloadingASTModifier extends Visitor {
        		}
        		parameterList = new LinkedList<String>();
       	}
-      	System.out.println(overload.toString());
       	overload.set(3, newNodeString);
     }
 
