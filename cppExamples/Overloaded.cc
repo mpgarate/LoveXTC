@@ -139,9 +139,9 @@ int main(void){
 	o->__vptr->m_String(new __String("String"));
 	o->__vptr->m_A(a);
 	o->__vptr->m_B(b);
-	o->__vptr->m_B((B)c);
+	o->__vptr->m_B(c);
 	o->__vptr->m_A_A(a,a);
-	o->__vptr->m_A_B((A)b,b);
+	o->__vptr->m_A_B(b,b);
 	o->__vptr->m_C_C(c,c);
 
 	return 0;
