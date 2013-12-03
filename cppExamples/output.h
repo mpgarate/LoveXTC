@@ -11,11 +11,10 @@ namespace subExamples {
 	struct __HelloWorld;
 	struct __HelloWorld_VT;
 
-	typedef __HelloWorld* HelloWorld;
+	typedef __rt::Ptr<__HelloWorld> HelloWorld;
 
 	struct __HelloWorld {
 		__HelloWorld_VT* __vptr;
-		int32_t world;
 
 		__HelloWorld();
 
@@ -23,6 +22,7 @@ namespace subExamples {
   	static bool equals(HelloWorld, Object);
   	static Class getClass(HelloWorld);
   	static String toString(HelloWorld);
+    int32_t world;
   	static int32_t createWorld(HelloWorld);
   	static int32_t returnX(String);
   	static Class __class();
@@ -57,11 +57,11 @@ namespace subExamples {
   struct __HelloUniverse;
   struct __HelloUniverse_VT;
 
-  typedef __HelloUniverse* HelloUniverse;
+  typedef __rt::Ptr<__HelloUniverse> HelloUniverse;
 
     struct __HelloUniverse {
     	__HelloUniverse_VT* __vptr;
-    	int32_t world;
+
 
     	__HelloUniverse();
 
@@ -69,6 +69,7 @@ namespace subExamples {
     	static bool equals(HelloUniverse, Object);
     	static Class getClass(HelloUniverse);
     	static String toString(HelloUniverse);
+      int32_t world;
     	static int32_t createWorld(HelloUniverse);
     	static int32_t returnX(String);
     	static Class __class();

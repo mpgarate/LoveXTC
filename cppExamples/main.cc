@@ -30,6 +30,8 @@ int main(void) {
             << "----------------"
             << std::endl;
 
+  std::cout.flush();
+
   // Object o = new Object();
   Object o = new __Object();
 
@@ -75,6 +77,12 @@ int main(void) {
 
   std::cout << "ss[3] : " << (*ss)[3] << std::endl;
 
+
+  // Object o2 = s;
+  Object o2 = s;
+
+  // s = (String) o2;
+  s = __rt::java_cast<String>(o2);
 
   // Done.
   std::cout << "--------------------------------------------------------------"

@@ -13,7 +13,7 @@ namespace def {
 	struct __Base;
 	struct __Base_VT;
 
-	typedef __Base* Base;
+	typedef __rt::Ptr<__Base> Base;
 
 	struct __Base {
 		__Base_VT* __vptr;
@@ -34,6 +34,7 @@ namespace def {
 
 	struct __Base_VT {
       Class __isa;
+      void (*__delete)(__Base*);
       int32_t (*hashCode)(Base);
       bool (*equals)(Base, Object);
       Class (*getClass)(Base);
@@ -44,6 +45,7 @@ namespace def {
 
       __Base_VT()
       : __isa(__Base::__class()),
+        __delete(&__rt::__delete<__Base>),
         hashCode((int32_t(*)(Base)) &__Object::hashCode),
         equals((bool(*)(Base,Object)) &__Object::equals),
         getClass((Class(*)(Base)) &__Object::getClass),
@@ -58,7 +60,7 @@ namespace def {
 	struct __Derived;
 	struct __Derived_VT;
 
-	typedef __Derived* Derived;
+	typedef __rt::Ptr<__Derived> Derived;
 
 	struct __Derived {
 		__Derived_VT* __vptr;
@@ -79,6 +81,7 @@ namespace def {
 
 	struct __Derived_VT {
       Class __isa;
+      void (*__delete)(__Derived*);
       int32_t (*hashCode)(Derived);
       bool (*equals)(Derived, Object);
       Class (*getClass)(Derived);
@@ -89,6 +92,7 @@ namespace def {
 
       __Derived_VT()
       : __isa(__Derived::__class()),
+        __delete(&__rt::__delete<__Derived>),
         hashCode((int32_t(*)(Derived)) &__Object::hashCode),
         equals((bool(*)(Derived,Object)) &__Object::equals),
         getClass((Class(*)(Derived)) &__Object::getClass),

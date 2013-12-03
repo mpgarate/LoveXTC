@@ -22,7 +22,7 @@
 
 #include <cstring>
 
-#if 1
+#if 0
 #include <iostream>
 #define TRACE(s) \
   std::cout << __FUNCTION__ << ":" << __LINE__ << ":" << s << std::endl

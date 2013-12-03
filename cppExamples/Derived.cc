@@ -60,10 +60,12 @@ namespace def {
 
 int main(void){
 
-	Base b = (Base)new __Derived();
+	// NOT CORRECT. I HAVE ASKED THE PROF. ABOUT THIS
+	// THE CORRECT OUTPUT SHOULD BE Base b = new __Derived();
+	Derived d = new __Derived();
+	Base b = d;
 	
 	b->__vptr->m_Object(new __Object());
-	//b->__vptr->m_String(new __String("Hello")); this is wrong because m_String is static
 	b->m_String(new __String("Hello"));
 	b->__vptr->m_class(b->__vptr->getClass(b));
 
