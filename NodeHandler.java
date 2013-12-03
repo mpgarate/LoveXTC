@@ -128,6 +128,10 @@ public class NodeHandler {
 		else {
 			for (int i=0;i<node1.size();i++) {
 
+				if (methodOverwriting && i==0) {
+					continue;
+				}
+
 				//Special-case to compare method names where one has been overloaded.
 				if (methodOverwriting && i==2) {
 					if (getOriginalMethodName(node1.getString(2)).equals(getOriginalMethodName(node2.getString(2)))) {
