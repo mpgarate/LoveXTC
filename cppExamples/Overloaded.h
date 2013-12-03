@@ -13,7 +13,7 @@ typedef unsigned char byte;
 	struct __A;
 	struct __A_VT;
 
-	typedef __A* A;
+	typedef __rt::Ptr<__A> A;
 
 	struct __A {
 		__A_VT* __vptr;
@@ -31,6 +31,7 @@ typedef unsigned char byte;
 
 	struct __A_VT {
       Class __isa;
+      void (*__delete)(__A*);
       int32_t (*hashCode)(A);
       bool (*equals)(A, Object);
       Class (*getClass)(A);
@@ -38,6 +39,7 @@ typedef unsigned char byte;
 
       __A_VT()
       : __isa(__A::__class()),
+      __delete(&__rt::__delete<__A>),
         hashCode((int32_t(*)(A)) &__Object::hashCode),
         equals((bool(*)(A,Object)) &__Object::equals),
         getClass((Class(*)(A)) &__Object::getClass),
@@ -50,7 +52,7 @@ typedef unsigned char byte;
 	struct __B;
 	struct __B_VT;
 
-	typedef __B* B;
+	typedef __rt::Ptr<__B> B;
 
 	struct __B {
 		__B_VT* __vptr;
@@ -68,6 +70,7 @@ typedef unsigned char byte;
 
 	struct __B_VT {
       Class __isa;
+      void (*__delete)(__B*);
       int32_t (*hashCode)(B);
       bool (*equals)(B, Object);
       Class (*getClass)(B);
@@ -75,6 +78,7 @@ typedef unsigned char byte;
 
       __B_VT()
       : __isa(__B::__class()),
+      __delete(&__rt::__delete<__B>),
         hashCode((int32_t(*)(B)) &__Object::hashCode),
         equals((bool(*)(B,Object)) &__Object::equals),
         getClass((Class(*)(B)) &__Object::getClass),
@@ -87,7 +91,7 @@ typedef unsigned char byte;
 	struct __C;
 	struct __C_VT;
 
-	typedef __C* C;
+	typedef __rt::Ptr<__C> C;
 
 	struct __C {
 		__C_VT* __vptr;
@@ -105,6 +109,7 @@ typedef unsigned char byte;
 
 	struct __C_VT {
       Class __isa;
+      void (*__delete)(__C*);
       int32_t (*hashCode)(C);
       bool (*equals)(C, Object);
       Class (*getClass)(C);
@@ -112,6 +117,7 @@ typedef unsigned char byte;
 
       __C_VT()
       : __isa(__C::__class()),
+        __delete(&__rt::__delete<__C>),
         hashCode((int32_t(*)(C)) &__Object::hashCode),
         equals((bool(*)(C,Object)) &__Object::equals),
         getClass((Class(*)(C)) &__Object::getClass),
@@ -124,7 +130,7 @@ typedef unsigned char byte;
 	struct __Overloaded;
 	struct __Overloaded_VT;
 
-	typedef __Overloaded* Overloaded;
+	typedef __rt::Ptr<__Overloaded> Overloaded;
 
 	struct __Overloaded {
 		__Overloaded_VT* __vptr;
@@ -155,6 +161,7 @@ typedef unsigned char byte;
 
 	struct __Overloaded_VT {
       Class __isa;
+      void (*__delete)(__Overloaded*);
       int32_t (*hashCode)(Overloaded);
       bool (*equals)(Overloaded, Object);
       Class (*getClass)(Overloaded);
@@ -176,6 +183,7 @@ typedef unsigned char byte;
 
       __Overloaded_VT()
       : __isa(__Overloaded::__class()),
+        __delete(&__rt::__delete<__Overloaded>),
         hashCode((int32_t(*)(Overloaded)) &__Object::hashCode),
         equals((bool(*)(Overloaded,Object)) &__Object::equals),
         getClass((Class(*)(Overloaded)) &__Object::getClass),

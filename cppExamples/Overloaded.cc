@@ -80,32 +80,32 @@ using namespace std;
 				cout << "m(long)    : " << l <<endl;;
     }
     void __Overloaded::m_Object(Object o) {
-				cout << "m(Object)  : " << o->__vptr->toString(o)->data <<endl;;
+				cout << "m(Object)  : " << o->__vptr->toString(o) <<endl;;
     }
     void __Overloaded::m_String(String s) {
-				cout << "m(String)  : " << s->__vptr->toString(s)->data <<endl;;
+				cout << "m(String)  : " << s->__vptr->toString(s) <<endl;;
     }
     void __Overloaded::m_A(A a) {
-				cout << "m(A)       : " << a->__vptr->toString(a)->data <<endl;;
+				cout << "m(A)       : " << a->__vptr->toString(a) <<endl;;
     }
     void __Overloaded::m_B(B b) {
-				cout << "m(B)       : " << b->__vptr->toString(b)->data <<endl;;
+				cout << "m(B)       : " << b->__vptr->toString(b) <<endl;;
     }
     void __Overloaded::m_A_A(A a1, A a2) {
-				cout << "m(A,A)     : " << a1->__vptr->toString(a1)->data << ", " << 
-						a2->__vptr->toString(a2)->data <<endl;;
+				cout << "m(A,A)     : " << a1->__vptr->toString(a1) << ", " << 
+						a2->__vptr->toString(a2) <<endl;;
     }
     void __Overloaded::m_A_B(A a1, B b2) {
-				cout << "m(A,B)     : " << a1->__vptr->toString(a1)->data << ", " << 
-						b2->__vptr->toString(b2)->data <<endl;;
+				cout << "m(A,B)     : " << a1->__vptr->toString(a1) << ", " << 
+						b2->__vptr->toString(b2) <<endl;;
     }
     void __Overloaded::m_B_A(B b1, A a2) {
-				cout << "m(B,A)     : " << b1->__vptr->toString(b1)->data << ", " << 
-						a2->__vptr->toString(a2)->data <<endl;;
+				cout << "m(B,A)     : " << b1->__vptr->toString(b1) << ", " << 
+						a2->__vptr->toString(a2) <<endl;;
     }
     void __Overloaded::m_C_C(C c1, C c2) {
-				cout << "m(C,C)     : " << c1->__vptr->toString(c1)->data << ", " << 
-						c2->__vptr->toString(c2)->data <<endl;;
+				cout << "m(C,C)     : " << c1->__vptr->toString(c1) << ", " << 
+						c2->__vptr->toString(c2) <<endl;;
     }
 
 
