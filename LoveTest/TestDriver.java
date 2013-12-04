@@ -18,14 +18,7 @@ public class TestDriver{
   @After public void tearDown() {
     // Nothing to do.
   }
-
-  @Test public void oneEqulalsOne() {
-    assertTrue(1 == 1);
-  }
-
-  @Test public void twoEqualsTwo() {
-    assertTrue(2 == 2);
-  }
+  
   @Test public void translateTranslateMe() {
     String path = "examples/TranslateMe.java";
     String name = "TranslateMe.java";
