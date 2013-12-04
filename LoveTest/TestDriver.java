@@ -31,7 +31,7 @@ public class TestDriver{
   }
 
   @Test public void translateWiesMidtermExamples(){
-    for (int i = 1; i < 2; i++){ //This should go to 22
+    for (int i = 1; i < 3; i++){ //This should go to 22
       String path = "examples/wies-tests/Test" + i + ".java";
       String name = "Wies Test" + i + ".java";
       t.translateAndCompare(path, name);
