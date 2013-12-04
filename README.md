@@ -7,6 +7,8 @@ At the beginning of every XTC session, run in the XTC root:
 source setup.sh
 ```
 
+Compile all code with ```make```
+
 Convert a java file to C++ with:
 ```sh
 make love FILE=examples/TranslateMe.java
@@ -19,10 +21,7 @@ This will write out C++ to  ```output/output.cc``` and ```output/output.h```
 
 Compile the output code with ```make compile``` and run it with ```make run```
 
-Print a java file's C++ AST with:
-```sh
-java xtc.oop.Translator -printCPPTree examples/TranslateMe.java
-```
+Run our test suite with ```make test```
 
 If you want to run our example java programs on their own, run the following in the examples folder:
 ```sh
@@ -30,14 +29,17 @@ javac -cp . TranslateMe.java
 java -cp . TranslateMe
 ```
 
-To run converted code:
+To compile & run converted code manually, without make:
 ```
 cd output
 g++ java_lang.cc output.cc
 ./a.out
 ```
 
-Run the test suite and compile all code with ```make```
+Print a java file's C++ AST with:
+```sh
+java xtc.oop.Translator -printCPPTree examples/TranslateMe.java
+```
 
 TODO:
 
