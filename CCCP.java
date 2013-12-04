@@ -127,10 +127,10 @@ public class CCCP extends Visitor {
     printer.incr();
     printlnUnlessNull("namespace " + packageName + " {", packageName);
     visit(n);
-    if (javaClassName != null) {
+    if (visitedConstructor == false) {
       printFallbackConstructor();
-      printClassMethod(); 
     }
+    printClassMethod(); 
 
     printlnUnlessNull("}",packageName); //Closing namespace
     printer.decr();
