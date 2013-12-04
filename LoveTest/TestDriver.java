@@ -29,17 +29,33 @@ public class TestDriver{
     String name = "Overloaded.java";
     t.translateAndCompare(path, name);
   }
-
+/*
   @Test public void translateWiesMidtermExamples(){
     for (int i = 1; i < 3; i++){ //This should go to 22
       String path = "examples/wies-tests/Test" + i + ".java";
       String name = "Wies Test" + i + ".java";
       t.translateAndCompare(path, name);
-    } /*
+    } 
     for (int i = 100; i < 106; i++){
       String path = "examples/wies-tests/Test" + i + ".java";
       String name = "Wies Test" + i + ".java";
       t.translateAndCompare(path, name);
-    }*/
+    }
+  }
+*/
+  @Test public void translateWies1(){
+    String path = "examples/wies-tests/Test" + 5 + ".java";
+    String name = "Wies Test" + 5 + ".java";
+    t.translateAndCompare(path, name);
+  }
+  @Test public void translateWies2(){
+    String path = "examples/wies-tests/Test" + 5 + ".java";
+    String name = "Wies Test" + 5 + ".java";
+    t.translateAndCompare(path, name);
+  }
+  @Test public void translateWies5(){
+    String path = "examples/wies-tests/Test" + 5 + ".java";
+    String name = "Wies Test" + 5 + ".java";
+    t.translateAndCompare(path, name);
   }
 }
