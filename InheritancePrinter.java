@@ -91,8 +91,8 @@ public class InheritancePrinter extends Visitor {
   	printer.pln("Class __isa;");
 
   	new Visitor(){
-  		public void visitDataLayoutMethodDeclaration(GNode n){
-  			if(!(n.getString(2).equals("__class"))){
+  		public void visitVTableMethodDeclaration(GNode n){
+  			if(!(n.getString(2).equals("__isa"))){
           if (n.getString(1) != null) {
   				  printer.p(n.getString(1) + " (*");
           }
@@ -111,14 +111,10 @@ public class InheritancePrinter extends Visitor {
   			}
   		}
 
-      /*public void visitParameters(GNode n){
-        if (n.size() > 0) printer.p(n.getString(0));
-      }*/
-
 		  public void visit(Node n) {
 	    for (Object o : n) if (o instanceof Node) dispatch((Node) o);
 	  }
-  	}.dispatch(dataLayout);
+  	}.dispatch(n);
     printer.pln("__" + className + "_VT()");
     printer.p(": ");
     visit(n);
