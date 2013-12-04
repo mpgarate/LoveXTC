@@ -1,7 +1,7 @@
 /*
  * Object-Oriented Programming
  * Copyright (C) 2012 Robert Grimm
- * Modifications Copyright (C) 2013 Thomas Wies
+ * Modifications copyright (C) 2013 Thomas Wies
  *
  * This program is free software; you can redistribute it and/or
  * modify it under the terms of the GNU General Public License
@@ -26,11 +26,12 @@ namespace java {
   namespace lang {
 
     // java.lang.Object()
-    __Object::__Object() : __vptr(&__vtable) {}
+    __Object::__Object() : __vptr(&__vtable) {
+    }
 
     // java.lang.Object.hashCode()
     int32_t __Object::hashCode(Object __this) {
-      return (int32_t)(intptr_t) __this;
+      return (int32_t)(intptr_t)__this.raw();
     }
 
     // java.lang.Object.equals(Object)
@@ -50,14 +51,14 @@ namespace java {
 
       std::ostringstream sout;
       sout << k->__vptr->getName(k)->data
-           << '@' << std::hex << (uintptr_t) __this;
+           << '@' << std::hex << (uintptr_t)__this.raw();
       return new __String(sout.str());
     }
 
     // Internal accessor for java.lang.Object's class.
     Class __Object::__class() {
       static Class k =
-        new __Class(__rt::literal("java.lang.Object"), (Class) __rt::null());
+        new __Class(__rt::literal("java.lang.Object"), __rt::null());
       return k;
     }
 
@@ -95,7 +96,7 @@ namespace java {
       if (! k->__vptr->isInstance(k, o)) return false;
 
       // Do the actual comparison.
-      String other = (String)o; // Downcast.
+      String other = o; // Implicit downcast.
       return __this->data.compare(other->data) == 0;
     }
 
@@ -112,7 +113,7 @@ namespace java {
     // java.lang.String.charAt()
     char __String::charAt(String __this, int32_t idx) {
       if (0 > idx || idx >= __this->data.length()) {
-        // FIXME: signal that index is out of bounds.
+        throw IndexOutOfBoundsException();
       }
 
       // Use std::string::operator[] to get character without
@@ -127,6 +128,11 @@ namespace java {
       return k;
     }
 
+    std::ostream& operator<<(std::ostream& out, String s) {
+      out << s->data;
+      return out;
+    }
+
     // The vtable for java.lang.String.  Note that this definition
     // invokes the default no-arg constructor for __String_VT.
     __String_VT __String::__vtable;
@@ -134,15 +140,21 @@ namespace java {
     // =======================================================================
 
     // java.lang.Class(String, Class)
-    __Class::__Class(String name, Class parent)
+    __Class::__Class(String name, Class parent, Class component, bool primitive)
       : __vptr(&__vtable),
         name(name),
-        parent(parent) {
+        parent(parent),
+        component(component),
+        primitive(primitive) {
     }
 
     // java.lang.Class.toString()
     String __Class::toString(Class __this) {
-      return new __String("class " + __this->name->data);
+      if (__this->primitive) {
+        return __this->name;
+      } else {
+        return new __String("class " + __this->name->data);
+      }
     }
 
     // java.lang.Class.getName()
@@ -155,14 +167,30 @@ namespace java {
       return __this->parent;
     }
 
+    // java.lang.Class.isPrimitive()
+    bool __Class::isPrimitive(Class __this) {
+      return __this->primitive;
+    }
+
+    // java.lang.Class.isArray()
+    bool __Class::isArray(Class __this) {
+      return __rt::null() != __this->component;
+    }
+
+    // java.lang.Class.getComponentType()
+    Class __Class::getComponentType(Class __this) {
+      return __this->component;
+    }
+
     // java.lang.Class.isInstance(Object)
     bool __Class::isInstance(Class __this, Object o) {
       Class k = o->__vptr->getClass(o);
 
       do {
-        if (__this->__vptr->equals(__this, (Object)k)) return true;
+        if (__this->__vptr->equals(__this, k)) return true;
+
         k = k->__vptr->getSuperclass(k);
-      } while ((Class)__rt::null() != k);
+      } while (__rt::null() != k);
 
       return false;
     }
@@ -178,6 +206,15 @@ namespace java {
     // invokes the default no-arg constructor for __Class_VT.
     __Class_VT __Class::__vtable;
 
+    // =======================================================================
+
+    // java.lang.Integer.TYPE
+    Class __Integer::TYPE() {
+      static Class k =
+        new __Class(__rt::literal("int"), __rt::null(), __rt::null(), true);
+      return k;
+    }
+
   }
 }
 
@@ -189,6 +226,36 @@ namespace __rt {
   java::lang::Object null() {
     static java::lang::Object value(0);
     return value;
+  }
+
+  // Template specialization for arrays of ints.
+  template<>
+  java::lang::Class Array<int32_t>::__class() {
+    static java::lang::Class k =
+      new java::lang::__Class(literal("[I"),
+                              java::lang::__Object::__class(),
+                              java::lang::__Integer::TYPE());
+    return k;
+  }
+
+  // Template specialization for arrays of objects.
+  template<>
+  java::lang::Class Array<java::lang::Object>::__class() {
+    static java::lang::Class k =
+      new java::lang::__Class(literal("[Ljava.lang.Object;"),
+                              java::lang::__Object::__class(),
+                              java::lang::__Object::__class());
+    return k;
+  }
+
+  // Template specialization for arrays of strings.
+  template<>
+  java::lang::Class Array<java::lang::String>::__class() {
+    static java::lang::Class k =
+      new java::lang::__Class(literal("[Ljava.lang.String;"),
+                              Array<java::lang::Object>::__class(),
+                              java::lang::__String::__class());
+    return k;
   }
 
 }

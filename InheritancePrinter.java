@@ -55,7 +55,7 @@ public class InheritancePrinter extends Visitor {
   	dataLayout = n;
   	printer.pln("struct __" + className + ";");
   	printer.p("struct __" + className + "_VT;").pln(); //
-  	printer.p("typedef __" + className + "* " + className + ";").pln();
+  	printer.p("typedef __rt::Ptr<__" + className + "> " + className + ";").pln();
   	printer.p("struct __" + className + " {").pln();
   	visit(n);
   	printer.pln("};").pln();
@@ -89,6 +89,7 @@ public class InheritancePrinter extends Visitor {
   public void visitVTable(GNode n){
   	printer.pln("struct __" + className + "_VT {");
   	printer.pln("Class __isa;");
+    printer.pln("void (*__delete)(__" + className + "*);");
 
   	new Visitor(){
   		public void visitVTableMethodDeclaration(GNode n){
@@ -128,6 +129,9 @@ public class InheritancePrinter extends Visitor {
   public void visitVTableMethodDeclaration(GNode n){
     if (isFirstVTMethod) {
       printer.p("__isa(__" + className + "::__class())");
+      printer.p(",");
+      printer.pln();
+      printer.p("__delete(&__rt::__delete<__" + className + ">)");
       isFirstVTMethod = false;
     }
     else{
