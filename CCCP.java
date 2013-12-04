@@ -45,8 +45,8 @@ public class CCCP extends Visitor {
 
 
   private String packageName;
-  private String className;
-  private String javaClassName;
+  private String className;     // has prefix underscores, ie __HelloWorld
+  private String javaClassName; // has no underscoresm, ie HelloWorld
 
   /* Remember when we visit a constructor. We will check if this gets set,
      and if not, one will be added manually. 
@@ -98,6 +98,7 @@ public class CCCP extends Visitor {
     v("/* visiting class declaration */");
     table.enter(n);
     className = n.getString(1);
+    javaClassName = className.substring(2);
     visit(n);
     table.exit();
   }
@@ -161,7 +162,7 @@ public class CCCP extends Visitor {
       printer.incr();
     }
     else {
-      javaClassName = n.getString(5);
+      //javaClassName = n.getString(5);
       printer.p("(" + javaClassName + " __this)" + " {");
     }
     printer.pln();
