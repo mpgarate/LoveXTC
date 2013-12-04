@@ -176,7 +176,7 @@ public class Overloader extends Visitor {
           if (methods.contains(actual_method)){
           n.set(2,actual_method);
           // lets change the arguments by adding the parent as a cast
-          changeArguments((GNode)n.getNode(3), parent);
+          // changeArguments((GNode)n.getNode(3), parent);
           }
         }
       }
@@ -185,7 +185,8 @@ public class Overloader extends Visitor {
   /* This method puts the right casting in front of the right primary identifier.
      We will not need to put the implicit casting after implementing smart pointers.
      But for now we have to put the implicit casting ourselves.
-     */
+     WE HAVE SMART POINTERS NOW. DON'T NEED THIS!!
+     
   public void changeArguments(GNode n, String cast){
     for (int i = 0; i < n.size() ; i++){
       if (n.getNode(i).hasName("PrimaryIdentifier")){
@@ -210,7 +211,7 @@ public class Overloader extends Visitor {
         }
       }
     }
-  }
+  }*/
 
   public LinkedList<String> visitArguments(GNode n){
     LinkedList<String> answer = new LinkedList<String>();
