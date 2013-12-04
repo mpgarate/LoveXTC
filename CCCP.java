@@ -480,7 +480,7 @@ public class CCCP extends Visitor {
     printer.pln(className + "_VT " + className + "::__vtable;");
     printer.pln();
     printer.pln("Class " + className + "::__class() {");
-    printer.pln("static Class k =");
+    printer.p("static Class k = ");
     printer.pln("new __Class(__rt::literal(\"" + packageName + "." + javaClassName + "\"), (Class) __rt::null());");
     printer.pln("return k;");
     printer.pln("}");
