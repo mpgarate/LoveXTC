@@ -88,6 +88,7 @@ namespace java {
       static bool equals(Object, Object);
       static Class getClass(Object);
       static String toString(Object);
+      static Object init(Object __this) { return __this; }      
 
       // The function returning the class object representing
       // java.lang.Object.
@@ -132,6 +133,7 @@ namespace java {
       static String toString(String);
       static int32_t length(String);
       static char charAt(String, int32_t);
+      static String init(String __this) { return __this; }
 
       // The function returning the class object representing
       // java.lang.String.
@@ -190,6 +192,7 @@ namespace java {
       static bool isArray(Class);
       static Class getComponentType(Class);
       static bool isInstance(Class, Object);
+      static Class init(Class __this) { return __this; }
 
       // The function returning the class object representing
       // java.lang.Class.
@@ -319,6 +322,9 @@ namespace __rt {
       }
       return __data[index];
     }
+
+    static Ptr<Array<T> > init(Ptr<Array<T> > __this) {return __this; }
+
 
     // The function returning the class object representing the array.
     static java::lang::Class __class();

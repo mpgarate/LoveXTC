@@ -16,7 +16,13 @@ using namespace std;
 	/* Print namespace by using the package name in the tree */
 namespace subExamples {
 		
-	__HelloWorld::__HelloWorld() : __vptr(&__vtable), world(0) {}
+	__HelloWorld::__HelloWorld() : __vptr(&__vtable) {}
+
+	HelloWorld __HelloWorld::init(HelloWorld __this){
+		__Object::init(__this);
+		__this->world = 0;
+		return __this;
+	}
 
 	int32_t __HelloWorld::createWorld(HelloWorld __this) {
 		__this->world = 1;
@@ -46,6 +52,11 @@ namespace subExamples {
 
 	__HelloUniverse::__HelloUniverse() : __vptr(&__vtable) {}
 
+	HelloUniverse __HelloUniverse::init(HelloUniverse __this){
+		__HelloWorld::init(__this);
+		return __this;
+	}
+
 	int32_t __HelloUniverse::returnX(String b) {
 		int32_t x = 10;
 		return x;
@@ -67,10 +78,13 @@ namespace subExamples {
 
 int main(void){
 
-	HelloWorld hw = new __HelloWorld();
+	HelloWorld hw = __HelloWorld::init(new __HelloWorld());
+	__rt::checkNotNull(hw);
 	cout << hw->__vptr->toString(hw) <<endl;
+	cout << hw->world <<endl;
 
-	HelloUniverse hu = new __HelloUniverse();
+	HelloUniverse hu = __HelloUniverse::init(new __HelloUniverse());
+	__rt::checkNotNull(hu);
 	cout << hu->__vptr->toString(hu) <<endl;
 
 	Object o = (Object)hu;

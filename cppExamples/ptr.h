@@ -33,15 +33,34 @@
 namespace __rt {
 
   template<typename T>
+  struct object_policy {
+    static void destroy(T* addr) {
+      delete addr;
+    }
+  };
+
+  template<typename T>
+  struct array_policy {
+    static void destroy(T* addr) {
+      delete[] addr;
+    }
+  };
+
+  template<typename T>
+  struct java_policy {
+    static void destroy(T* addr) {
+      if (0 != addr) addr->__vptr->__delete(addr);
+    }
+  };
+
+  template<typename T, template <typename> class P = java_policy>
   class Ptr {
     T* addr;
     size_t* counter;
 
   public:
     typedef T value_type;
-
-    template<typename U>
-    friend class Ptr;
+    typedef P<T> policy_type;
 
     Ptr(T* addr = 0) : addr(addr), counter(new size_t(1)) {
       TRACE(addr);
@@ -52,16 +71,10 @@ namespace __rt {
       ++(*counter);
     }
 
-    template<typename U>
-    Ptr(const Ptr<U>& other) : addr((T*)other.addr), counter(other.counter) {
-      TRACE(addr);
-      ++(*counter);
-    }
-
     ~Ptr() {
       TRACE(addr);
       if (0 == --(*counter)) {
-        if (0 != addr) addr->__vptr->__delete(addr);
+        policy_type::destroy(addr);;
         delete counter;
       }
     }
@@ -70,7 +83,7 @@ namespace __rt {
       TRACE(addr);
       if (addr != right.addr) {
         if (0 == --(*counter)) {
-          if (0 != addr) addr->__vptr->__delete(addr);
+          policy_type::destroy(addr);
           delete counter;
         }
         addr = right.addr;
@@ -84,13 +97,22 @@ namespace __rt {
     T* operator->() const { TRACE(addr); return addr;  }
     T* raw()        const { TRACE(addr); return addr;  }
 
-    template<typename U>
-    bool operator==(const Ptr<U>& other) const {
+    template<typename U, template <typename> class Q>
+    friend class Ptr;
+
+    template<typename U, template <typename> class Q>
+    Ptr(const Ptr<U,Q>& other) : addr((T*)other.addr), counter(other.counter) {
+      TRACE(addr);
+      ++(*counter);
+    }
+
+    template<typename U, template <typename> class Q>
+    bool operator==(const Ptr<U,Q>& other) const {
       return addr == (T*)other.addr;
     }
     
-    template<typename U>
-    bool operator!=(const Ptr<U>& other) const {
+    template<typename U, template <typename> class Q>
+    bool operator!=(const Ptr<U,Q>& other) const {
       return addr != (T*)other.addr;
     }
 

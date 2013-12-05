@@ -26,6 +26,7 @@ namespace subExamples {
   	static int32_t createWorld(HelloWorld);
   	static int32_t returnX(String);
   	static Class __class();
+    static HelloWorld init(HelloWorld);
 
   	static __HelloWorld_VT __vtable;
 	};
@@ -73,6 +74,7 @@ namespace subExamples {
     	static int32_t createWorld(HelloUniverse);
     	static int32_t returnX(String);
     	static Class __class();
+      static HelloUniverse init(HelloUniverse);
 
     	static __HelloUniverse_VT __vtable;
 
