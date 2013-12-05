@@ -44,13 +44,13 @@ public class TestDriver{
   }
 */
   @Test public void translateWies1(){
-    String path = "examples/wies-tests/Test" + 5 + ".java";
-    String name = "Wies Test" + 5 + ".java";
+    String path = "examples/wies-tests/Test" + 1 + ".java";
+    String name = "Wies Test" + 1 + ".java";
     t.translateAndCompare(path, name);
   }
   @Test public void translateWies2(){
-    String path = "examples/wies-tests/Test" + 5 + ".java";
-    String name = "Wies Test" + 5 + ".java";
+    String path = "examples/wies-tests/Test" + 2 + ".java";
+    String name = "Wies Test" + 2 + ".java";
     t.translateAndCompare(path, name);
   }
   @Test public void translateWies5(){
