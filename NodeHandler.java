@@ -24,6 +24,8 @@ import xtc.util.Tool;
 
 import static org.junit.Assert.*;
 
+import java.util.*;
+
 public class NodeHandler {
 	String className = "";
 	public NodeHandler() {
@@ -41,7 +43,7 @@ public class NodeHandler {
 			for (int k=0;k<inheritNode.size();k++) {
 				if (inheritNode.getNode(k).hasProperty("typeOfNode") && inheritNode.getNode(k).getProperty("typeOfNode").equals("method")) {
 					inheritNode.getNode(k).set(5, "null");
-					if (inheritNode.getNode(k).getNode(4).size() != 0 && inheritNode.getNode(k).getString(3)=="Object") {
+					if (inheritNode.getNode(k).getNode(4).size() != 0) {
 						//Renames the parameters in a method to be the classname type
 						inheritNode.getNode(k).getNode(4).set(0,inheritNode.getProperty("parent"));
 					}
@@ -227,7 +229,7 @@ public class NodeHandler {
 		for (int i=0;i<nodesToOverload.size();i++) {
 			String newNodeString = nodesToOverload.getNode(i).getString(2);
 			if (nodesToOverload.getNode(i).getNode(4).size() > 0) {
-				for (int j=0;j<nodesToOverload.getNode(i).getNode(4).size();j++) {
+				for (int j=1;j<nodesToOverload.getNode(i).getNode(4).size();j++) {
 					String typeToAppend = nodesToOverload.getNode(i).getNode(4).getString(j);
 					typeToAppend = typeToAppend.replace(" ", "_");
 					newNodeString = newNodeString+"_"+typeToAppend;
@@ -369,6 +371,10 @@ public class NodeHandler {
 	    //Begin Helper Methods
 
 	protected GNode createMethod(String modifiers[], String name, String[] args, String returnType, String className, boolean isVTable) {
+		Set<String> filteredMethods = new HashSet<String>();
+		filteredMethods.add("__class");
+		filteredMethods.add("main");
+		filteredMethods.add("__isa");
 		// Create a GNode with method arguments and the returnType as children.
 		// The returnType will always be the first child.
 		GNode methodDeclaration = null;
@@ -383,6 +389,7 @@ public class NodeHandler {
 		GNode modifierDeclaration = GNode.create("Modifiers");
 		GNode parameters = GNode.create("Parameters");
 		
+	
 		if (modifiers != null) {
 			for (String mod : modifiers) {
 				modifierDeclaration.add(mod);
@@ -395,6 +402,9 @@ public class NodeHandler {
 		}
 		methodDeclaration.add(returnType);
 
+		if(!filteredMethods.contains(name))			
+			parameters.add(className);
+	
 		if (args != null) {
 			for (String arg : args) {
 				parameters.add(arg);
