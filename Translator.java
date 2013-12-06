@@ -196,12 +196,17 @@ public class Translator extends Tool {
         new ASTModifier().dispatch(listNode);
         new Overloader(table, inheritanceTree, overloadedNames).dispatch(listNode);
 
-        /* //Example of how to get static methods:
-        LinkedList<String> staticMethods = inheritanceTree.getStaticMethods(listNode);
+         //Example of how to get static methods:
+        /*LinkedList<String> staticMethods = inheritanceTree.getStaticMethods(listNode);
         for (String s : staticMethods) {
           System.out.println(s);
         }*/
 
+        //Example of how to get returnType:
+        //Right now this WON'T give you the returnType for Static Methods (since they're not in the vTable) not sure if we will need that.
+        //Pass in the name of method as first parameter, name of class as second.
+        /*String returnType = inheritanceTree.getReturnType("m_Object", "Derived");
+        System.out.println(returnType);*/
       }
 
       /* Write each AST in the list to output.cc as CPP */
