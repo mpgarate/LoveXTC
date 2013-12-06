@@ -55,6 +55,7 @@ public class CCCP extends Visitor {
   private boolean visitedConstructor;
   private boolean visitedNewClassExp;
   private boolean visitedConstructorFormalParam;
+  private boolean createdInitMethod;
 
 	public CCCP(Printer p, SymbolTable table, Inheritance inh, LinkedList<String> sNAmes){
     this.printer = p;
@@ -207,6 +208,7 @@ public class CCCP extends Visitor {
     String constructorName = n.getString(2);
     if (n.getNode(3).size() == 0){
       printer.p(javaClassName + " " + className + "::init(" +javaClassName + " __this" );
+      createdInitMethod = true;
     }
     else {
       visitedConstructorFormalParam = true;
@@ -281,10 +283,10 @@ public class CCCP extends Visitor {
       printer.p("->__vptr->");
     }
     printer.p(n.getString(2) + "(");
-    printer.p(n.getNode(3));
-    if (n.getNode(3).size() == 0){
-      printer.p(n.getNode(0));
-    }
+    printer.p(n.getNode(0));
+    if(n.getNode(3).size() > 0)
+	printer.p(", ");	
+    printer.p(n.getNode(3));    
     printer.p(")");
     /*LinkedList<GNode> methods = inheritanceTree.getVTableForNode(javaClassName);
     printer.p(methods.toString());*/
@@ -470,9 +472,15 @@ public class CCCP extends Visitor {
       visitedConstructorFormalParam = false;
     }
     else{
-    Iterator<Object> iter = n.iterator();
-      if (iter.hasNext()){
-      printer.p('(');
+	Iterator<Object> iter = n.iterator();
+	if(!createdInitMethod){		
+      		printer.p('(');
+      		printer.p(javaClassName + " __this");			
+	}else{
+		createdInitMethod = false;
+	}
+      if (iter.hasNext()){      
+	printer.p(", ");
       for (iter = n.iterator(); iter.hasNext(); ) {
         printer.p((Node)iter.next());
         if (iter.hasNext()) printer.p(", ");
