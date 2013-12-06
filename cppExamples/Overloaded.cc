@@ -13,6 +13,11 @@ using namespace std;
 
 	__A::__A() : __vptr(&__vtable) {}
 
+	A __A::init(A __this){
+		__Object::init(__this);
+		return __this;
+	}
+
 	String __A::toString(A __this) {
 				return new __String("A");
     }
@@ -29,6 +34,10 @@ using namespace std;
 
 
 	__B::__B() : __vptr(&__vtable) {}
+	B __B::init(B __this){
+		__A::init(__this);
+		return __this;
+	}
 
 	String __B::toString(B __this) {
 				return new __String("B");
@@ -47,6 +56,11 @@ using namespace std;
 
 	__C::__C() : __vptr(&__vtable) {}
 
+	C __C::init(C __this){
+		__B::init(__this);
+		return __this;
+	}
+
 	String __C::toString(C __this) {
 				return new __String("C");
     }
@@ -63,6 +77,11 @@ using namespace std;
 
 
 	__Overloaded::__Overloaded() : __vptr(&__vtable) {}
+
+	Overloaded __Overloaded::init(Overloaded __this){
+		__Object::init(__this);
+		return __this;
+	}
 
 	void __Overloaded::m(Overloaded __this) {
 				cout << "m()        : ---" <<endl;;
@@ -122,21 +141,26 @@ using namespace std;
 
 int main(void){
 
-	Overloaded o = new __Overloaded();
+	Overloaded o = __Overloaded::init(new __Overloaded());
+	__rt::checkNotNull(o);
 	unsigned char n1 = 1, n2 = 2;
 	short s = 5;
 	long l1 = 123456789;
-	A a = new __A();
-	B b = new __B();
-	C c = new __C();
+	A a = __A::init(new __A());
+	__rt::checkNotNull(a);
+	B b = __B::init(new __B());
+	__rt::checkNotNull(b);
+	C c = __C::init(new __C());
+	__rt::checkNotNull(c);
+
 
 	o->__vptr->m(o);
 	o->__vptr->m_byte(n1);
 	o->__vptr->m_int32_t(n1+n2);
 	o->__vptr->m_short(s);
 	o->__vptr->m_long(l1);
-	o->__vptr->m_Object(new __Object());
-	o->__vptr->m_String(new __String("String"));
+	o->__vptr->m_Object(__Object::init(new __Object()));
+	o->__vptr->m_String(__String::init(new __String("String")));
 	o->__vptr->m_A(a);
 	o->__vptr->m_B(b);
 	o->__vptr->m_B(c);

@@ -28,6 +28,7 @@ namespace def {
       static void m_Object(Object);
       static void m_String(String);
       static void m_class(Class);
+      static Base init(Base);
 
   	static __Base_VT __vtable;
 	};
@@ -71,10 +72,11 @@ namespace def {
   		static bool equals(Derived, Object);
   		static Class getClass(Derived);
   		static String toString(Derived);
+      static Class __class();
   		static void m_Object(Object);
       static void m_String(String);
       static void m_class(Class);
-  		static Class __class();
+      static Derived init(Derived);
 
   	static __Derived_VT __vtable;
 	};
