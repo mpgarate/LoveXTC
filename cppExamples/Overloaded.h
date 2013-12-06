@@ -25,6 +25,7 @@ typedef unsigned char byte;
   		static Class getClass(A);
   		static String toString(A);
   		static Class __class();
+      static A init(A);
 
   	static __A_VT __vtable;
 	};
@@ -64,6 +65,7 @@ typedef unsigned char byte;
   		static Class getClass(B);
   		static String toString(B);
   		static Class __class();
+      static B init(B);
 
   	static __B_VT __vtable;
 	};
@@ -103,6 +105,7 @@ typedef unsigned char byte;
   		static Class getClass(C);
   		static String toString(C);
   		static Class __class();
+      static C init(C);
 
   	static __C_VT __vtable;
 	};
@@ -155,6 +158,7 @@ typedef unsigned char byte;
   		static void m_B_A(B, A);
   		static void m_C_C(C, C);
   		static Class __class();
+      static Overloaded init(Overloaded);
 
   	static __Overloaded_VT __vtable;
 	};

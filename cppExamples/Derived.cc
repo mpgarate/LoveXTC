@@ -15,6 +15,11 @@ namespace def {
 
 	__Base::__Base() : __vptr(&__vtable) {}
 
+	Base __Base::init(Base __this){
+		__Object::init(__this);
+		return __this;
+	}
+
 	void __Base::m_Object(Object o) {
 				cout << "Base.m(Object)" <<endl;;
     }
@@ -38,6 +43,11 @@ namespace def {
 
 	__Derived::__Derived() : __vptr(&__vtable) {}
 
+	Derived __Derived::init(Derived __this){
+		__Base::init(__this);
+		return __this;
+	}
+
 	void __Derived::m_Object(Object o) {
 				cout << "Derived.m(Object)" <<endl;;
     }
@@ -60,10 +70,9 @@ namespace def {
 
 int main(void){
 
-	// NOT CORRECT. I HAVE ASKED THE PROF. ABOUT THIS
-	// THE CORRECT OUTPUT SHOULD BE Base b = new __Derived();
-	Derived d = new __Derived();
-	Base b = d;
+
+	Base b = __Derived::init(new __Derived());
+	__rt::checkNotNull(b);
 	
 	b->__vptr->m_Object(new __Object());
 	b->m_String(new __String("Hello"));

@@ -189,12 +189,13 @@ public class Translator extends Tool {
         OverloadingASTModifier oModifier = new OverloadingASTModifier();
         oModifier.dispatch(listNode);
         LinkedList<String> overloadedNames = oModifier.getOverloadedList();
+        LinkedList<String> staticMethods = inheritanceTree.getStaticMethods(listNode);
 
         //runtime.console().format(listNode).pln().flush();
         LOGGER.info("Building the Symbol Table:");
         new SymTab(runtime, table).dispatch(listNode);
         new ASTModifier().dispatch(listNode);
-        new Overloader(table, inheritanceTree, overloadedNames).dispatch(listNode);
+        new Overloader(table, inheritanceTree, overloadedNames, staticMethods).dispatch(listNode);
 
          //Example of how to get static methods:
         /*LinkedList<String> staticMethods = inheritanceTree.getStaticMethods(listNode);
@@ -257,7 +258,8 @@ public class Translator extends Tool {
       /* Print each GNode in the list into output.cc */
       for (GNode listNode : nodeList){
         LOGGER.info("Running CCCP on " + listNode.getLocation().toString());
-        new CCCP(pCC, table, inh).dispatch(listNode);
+        LinkedList<String> sNames = inh.getStaticMethods(listNode);
+        new CCCP(pCC, table, inh, sNames).dispatch(listNode);
       }
 
     } catch (IOException ex){

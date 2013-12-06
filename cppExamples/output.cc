@@ -78,7 +78,7 @@ namespace subExamples {
 
 int main(void){
 
-	HelloWorld hw = __HelloWorld::init(new __HelloWorld());
+	HelloWorld hw = __HelloUniverse::init(new __HelloUniverse());
 	__rt::checkNotNull(hw);
 	cout << hw->__vptr->toString(hw) <<endl;
 	cout << hw->world <<endl;

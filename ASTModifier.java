@@ -87,7 +87,7 @@ public class ASTModifier extends Visitor {
   public void visitConstructorDeclaration(GNode n){
     String constructorName = n.getString(2);
     n.set(2, "__" + constructorName);
-    GNode constructorBlock = GNode.create("ConstructorBlock");
+    /*GNode constructorBlock = GNode.create("ConstructorBlock");
     GNode constExpressionStatement = GNode.create("ConstructorExpression");
     for (int i = 0; i< n.getNode(5).size(); i++) {
       if(n.getNode(5).getNode(i).hasName("ExpressionStatement")) {
@@ -98,7 +98,7 @@ public class ASTModifier extends Visitor {
         constructorBlock.add(constExpressionStatement);
       }
     }
-    n.set(5,constructorBlock);
+    n.set(5,constructorBlock);*/
     visit(n);
   }
 

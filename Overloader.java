@@ -42,12 +42,14 @@ public class Overloader extends Visitor {
   private String className;
   private String javaClassName;
   private LinkedList<String> overloadedNames;
+  private LinkedList<String> staticMethods;
 
 
-	public Overloader(SymbolTable table, Inheritance inh, LinkedList<String> oNames){
+	public Overloader(SymbolTable table, Inheritance inh, LinkedList<String> oNames, LinkedList<String> sNames){
     this.table = table;
     this.inheritanceTree = inh;
     this.overloadedNames = oNames;
+    this.staticMethods = sNames;
     primTypes.add("int");
     primTypes.add("byte");
     primTypes.add("long");
@@ -160,6 +162,11 @@ public class Overloader extends Visitor {
       /* if the method name just found is legal then we change the name
          else we look for a more suitable method */
       if (methods.contains(actual_method)){
+        n.set(2,actual_method);
+      }
+      /* else if the method found is static inaddition to being overloaded
+         then we just use it*/
+      else if (staticMethods.contains(actual_method)){
         n.set(2,actual_method);
       }
       /* FIXME: have a more robust way of finding out the suitable method
