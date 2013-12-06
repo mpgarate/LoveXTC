@@ -55,6 +55,8 @@ public class Inheritance {
    	DataLayoutCreator dataLayout = new DataLayoutCreator();
    	VTableCreator vTable = new VTableCreator();
 
+   	LinkedList<String> staticMethods = new LinkedList<String>();
+
 	public Inheritance(LinkedList<GNode> nodeList) {
 		// Program starts here, we begin by creating Object and String class
 		// nodes.
@@ -313,6 +315,38 @@ public class Inheritance {
 		}
 		return null;
     }
+
+    	public LinkedList<String> getStaticMethods(GNode javaAST) {
+		new Visitor() {
+
+			public void visitCompilationUnit(GNode n) {
+				visit(n);
+			}
+
+			public void visitMethodDeclaration(GNode n) {
+				if (n.get(0)!=null) {
+					GNode modifiers = (GNode)n.getNode(0);
+					for (int i=0;i<modifiers.size();i++) {
+						if (modifiers.get(i) instanceof Node && modifiers.getNode(i).size()>0 && modifiers.getNode(i).get(0) instanceof String) {
+							String type = (String)modifiers.getNode(i).getString(0);
+							if (type.equals("static") && n.size()>3&&n.get(3) instanceof String) {
+								staticMethods.add(n.getString(3));
+							}
+						}
+					}
+				}
+			}
+
+			public void visit(Node n) {
+				for (Object o : n) {
+					if (o instanceof Node)
+						dispatch((Node) o);
+				}
+			}
+		}.dispatch(javaAST);
+
+		return staticMethods;
+	}
 
 	public LinkedList<GNode> parseNodeToInheritance(GNode n){
 		final LinkedList<GNode> returnList = new LinkedList<GNode>();
