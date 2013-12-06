@@ -12,7 +12,7 @@ public class Derived extends Base {
 public static void main(String[] args) {
     Base b = new Derived();
     b.m(new Object());
-    //b.m(new Integer(5));
+    //b.m(new Integer(5)); //we do not have to translate boxing/unboxing
     b.m("Hello");
     b.m(b.getClass());
   }
