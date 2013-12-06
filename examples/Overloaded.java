@@ -20,21 +20,34 @@
 class A           { public String toString() { return "A"; } }
 class B extends A { public String toString() { return "B"; } }
 class C extends B { public String toString() { return "C"; } }
-public class Overloaded {
 
-  public void m()           { System.out.println("m()        : ---"); }
-  public void m(byte b)     { System.out.println("m(byte)    : " + b); }
-  public void m(short s)    { System.out.println("m(short)   : " + s); }
-  public void m(int i)      { System.out.println("m(int)     : " + i); }
-  public void m(long l)     { System.out.println("m(long)    : " + l); }
-  public void m(Object o)   { System.out.println("m(Object)  : " + o); }
-  public void m(String s)   { System.out.println("m(String)  : " + s); }
-  public void m(A a)        { System.out.println("m(A)       : " + a); }
-  public void m(B b)        { System.out.println("m(B)       : " + b); }
-  public void m(A a1, A a2) { System.out.println("m(A,A)     : "+ a1 +", "+ a2);}
-  public void m(A a1, B b2) { System.out.println("m(A,B)     : "+ a1 +", "+ b2);}
-  public void m(B b1, A a2) { System.out.println("m(B,A)     : "+ b1 +", "+ a2);}
-  public void m(C c1, C c2) { System.out.println("m(C,C)     : "+ c1 +", "+ c2);}
+class ParentOverloaded {
+
+  public void m(C c)        { System.out.println("ParentOverloaded.m(C)       : " + c); } 
+  public void m(A a, C c, A a1) { System.out.println("ParentOverloaded.m(A,C,A)     : "+ a +", "+ c + ", " +a1);}
+
+}
+public class Overloaded  extends ParentOverloaded{
+
+  public void m()           { System.out.println("Overloaded.m()        : ---"); }
+  public void m(byte b)     { System.out.println("Overloaded.m(byte)    : " + b); }
+  public void m(short s)    { System.out.println("Overloaded.(short)   : " + s); }
+  public void m(int i)      { System.out.println("Overloaded.m(int)     : " + i); }
+  public void m(long l)     { System.out.println("Overloaded.m(long)    : " + l); }
+  public void m(Object o)   { System.out.println("Overloaded.m(Object)  : " + o); }
+  public void m(String s)   { System.out.println("Overloaded.m(String)  : " + s); }
+  //public void m(A a)        { System.out.println("Overloaded.m(A)       : " + a); }
+  public void m(B b)        { System.out.println("Overloaded.m(B)       : " + b); }
+  public void m(A a1, A a2) { System.out.println("Overloaded.m(A,A)     : "+ a1 +", "+ a2);}
+  public void m(A a1, B b2) { System.out.println("Overloaded.m(A,B)     : "+ a1 +", "+ b2);}
+  public void m(B b1, A a2) { System.out.println("Overloaded.m(B,A)     : "+ b1 +", "+ a2);}
+  public void m(C c1, C c2) { System.out.println("Overloaded.m(C,C)     : "+ c1 +", "+ c2);}
+  public void m(A a, B b, A a1) { System.out.println("Overloaded.m(A,B,A)     : "+ a +", "+ b + ", " +a1);}
+  public void m(B b, C c, C c1) { System.out.println("Overloaded.m(B,C,C)     : "+ b +", "+ c + ", " +c1);}
+  public void m(B b, B b1, B b2) { System.out.println("Overloaded.m(B,B,B)     : "+ b +", "+ b1 + ", " +b2);}
+  public void m(A a, A a1, A a2) { System.out.println("Overloaded.m(A,A,A)     : "+ a +", "+ a1 + ", " +a2);}
+  public void m(Object o, A a, A a2) { System.out.println("Overloaded.m(Object,A,A)     : "+ o +", "+ a + ", " +a2);}
+  public void m(A a, A a1, B b2) { System.out.println("Overloaded.m(A,A,B)     : "+ a +", "+ a1 + ", " +b2);}
 
   public static void main(String[] args) {
     Overloaded o = new Overloaded();
@@ -45,18 +58,22 @@ public class Overloaded {
     B b = new B();
     C c = new C();
 
-    o.m();
+    /*o.m();
     o.m(n1);
     o.m(n1 + n2);
     o.m(new Object());
     //o.m(new Exception());
     o.m("String");
     o.m(a);
-    o.m(b);
-    o.m(c);
+    o.m(b);*/
+    o.m(a);
+    /*
     o.m(a, a);
     o.m((A)b, b);
-    o.m(c, c);
+    o.m(c, c);*/
+    o.m(c);
+    o.m(c,c,c);
+    o.m(a,b,(A)c);
   }
 
 }

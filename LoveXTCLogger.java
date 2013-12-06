@@ -27,8 +27,8 @@ public class LoveXTCLogger {
     fh.setFormatter(simpleFormat);
     logger.addHandler(fh);
 
-    ch = new ConsoleHandler();
-    ch.setLevel(Level.WARNING);
-    logger.addHandler(ch);
+    //ch = new ConsoleHandler();
+    //ch.setLevel(Level.WARNING);
+    //logger.addHandler(ch);
   }
 }
