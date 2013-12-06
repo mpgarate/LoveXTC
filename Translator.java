@@ -204,9 +204,9 @@ public class Translator extends Tool {
         }*/
 
         //Example of how to get returnType:
-        //Right now this WON'T give you the returnType for Static Methods (since they're not in the vTable) not sure if we will need that.
+        //Gives static methods now
         //Pass in the name of method as first parameter, name of class as second.
-        /*String returnType = inheritanceTree.getReturnType("m_Object", "Derived");
+        /*String returnType = inheritanceTree.getReturnType("m_String", "Derived");
         System.out.println(returnType);*/
       }
 

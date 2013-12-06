@@ -263,12 +263,14 @@ public class Inheritance {
 	}
 
 	public String getReturnType(String methodName, String className) {
-		GNode vTable = (GNode)searchForNode(root, className).getNode(0).getNode(3);
-		for (int i=0;i<vTable.size();i++) {
-			//For each method in the vTable, compare it's name against the methodName we're searching for
-			String name = vTable.getNode(i).getString(2);
-			if (name.equals(methodName)) {
-				return vTable.getNode(i).getString(1);
+		GNode dataLayout = (GNode)searchForNode(root, className).getNode(0).getNode(2);
+		for (int i=0;i<dataLayout.size();i++) {
+			//For each method in the dataLayout, compare it's name against the methodName we're searching for
+			if (dataLayout.get(i) instanceof Node && dataLayout.getNode(i).hasProperty("typeOfNode")  && dataLayout.getNode(i).getProperty("typeOfNode").equals("method")) {
+				String name = dataLayout.getNode(i).getString(2);
+				if (name.equals(methodName)) {
+					return dataLayout.getNode(i).getString(1);
+				}
 			}
 		}
 		System.err.println("Error finding returnType for "+methodName+" in "+className);
