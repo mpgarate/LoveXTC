@@ -55,12 +55,11 @@ public class VTableCreator extends NodeHandler {
 	GNode objectVTable = GNode.create("VTable");
 	String arg[] = { "Object" };
 	objectVTable.add(createMethod(null, "__isa", null, "Class", "Object", isVTable));
-	objectVTable.add(createMethod(null, "hashCode", arg, "int32_t",
+	objectVTable.add(createMethod(null, "hashCode", null, "int32_t",
 				      "Object", isVTable));
-	objectVTable.add(createMethod(null, "equals", new String[] { "Object",
-				"Object" }, "bool", "Object", isVTable));
-	objectVTable.add(createMethod(null, "getClass", arg, "Class", "Object", isVTable));
-	objectVTable.add(createMethod(null, "toString", arg, "String", "Object", isVTable));
+	objectVTable.add(createMethod(null, "equals", new String[] {"Object" }, "bool", "Object", isVTable));
+	objectVTable.add(createMethod(null, "getClass", null, "Class", "Object", isVTable));
+	objectVTable.add(createMethod(null, "toString", null, "String", "Object", isVTable));
 	return objectVTable;
     }
 
@@ -68,9 +67,9 @@ public class VTableCreator extends NodeHandler {
 	boolean isVTable = true;
 	GNode stringVTable = setObjectVTable();
 	stringVTable.add(createMethod(null, "length",
-				      new String[] { "Object" }, "int32_t", "String",isVTable));
+				      null, "int32_t", "String",isVTable));
 	stringVTable.add(createMethod(null, "charAt",
-				      new String[] { "Object" }, "int32_t", "String",isVTable));
+				      null, "int32_t", "String",isVTable));
 	return stringVTable;
     }
 
@@ -78,11 +77,10 @@ public class VTableCreator extends NodeHandler {
 	boolean isVTable = true;
 	GNode classVTable = setObjectVTable();
 	classVTable.add(createMethod(null, "getName",
-				     new String[] { "Class" }, "String", "Class",isVTable));
+				     null, "String", "Class",isVTable));
 	classVTable.add(createMethod(null, "getSuperclass",
 				     new String[] { "Class" }, "Class", "Class",isVTable));
-	classVTable.add(createMethod(null, "isInstance", new String[] {
-		    "Class", "Object" }, "bool", "Class",isVTable));
+	classVTable.add(createMethod(null, "isInstance", new String[] {"Object"}, "bool", "Class",isVTable));
 
 	return classVTable;
     }
