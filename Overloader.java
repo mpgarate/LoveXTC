@@ -152,6 +152,7 @@ public class Overloader extends Visitor {
       else do nothing*/
     if (overloaded){
       LinkedList<String> argumentList = new LinkedList<String>();
+      String methodName = n.getString(2);
       String actual_method = n.getString(2);
       LinkedList<String> methods = inheritanceTree.getVTableForNode(nameOfClass);
       argumentList = visitArguments((GNode)n.getNode(3));
@@ -175,16 +176,15 @@ public class Overloader extends Visitor {
         LOGGER.info("ALERT: NO METHOD FOUND. Ideal method " + actual_method);
         LOGGER.info("ALERT: Looking for someother suitable method");
         /* WARNING: DOING THIS JUST FOR THIS EXAMPLE */
-        if (argumentList.size() > 0){
-          String parent = inheritanceTree.getParentOfNode(argumentList.get(0));
-          LOGGER.info("ALERT: parent of " + argumentList.get(0) + "is" + parent);
-          actual_method = n.getString(2);
-          actual_method = actual_method + "_" + parent;
-          if (methods.contains(actual_method)){
-          n.set(2,actual_method);
-          // lets change the arguments by adding the parent as a cast
-          // changeArguments((GNode)n.getNode(3), parent);
-          }
+        LinkedList<String> parentNames = new LinkedList<String>();
+        for (int i = 0; i < argumentList.size(); i++){
+          String parent = inheritanceTree.getParentOfNode(argumentList.get(i));
+          LOGGER.info("ALERT: parent of " + argumentList.get(i) + "is" + parent);
+          parentNames.add(parent);
+        }
+        String suitable_method = find_suitable_method(n, methods, argumentList, parentNames);
+        if (suitable_method != null){
+          n.set(2,suitable_method);
         }
       }
     }
@@ -219,6 +219,38 @@ public class Overloader extends Visitor {
       }
     }
   }*/
+  private String find_suitable_method(GNode n, LinkedList<String> methods, LinkedList<String> children, LinkedList<String> parent){
+    String actual_method = n.getString(2);
+    boolean found1 = false;
+    outerloop:
+    for (int i = 0; i < children.size(); i++){
+      actual_method = n.getString(2);
+      for(int j = 0; j < i; j++ ){
+        actual_method = actual_method + "_" + children.get(j);
+      }
+      int x;
+      for (x = i; x < i+1; x++){
+          actual_method = actual_method + "_" + parent.get(i);
+      }
+      for(int k = x; k < children.size(); k++ ){
+        actual_method = actual_method + "_" + children.get(k);
+      }
+      if (methods.contains(actual_method)){
+        found1 = true;
+        break outerloop;
+      }
+    }
+    if (found1){
+      return actual_method;
+    }
+
+      LOGGER.info("BIG ALERT: 2ND TRY FAILED. Ideal method " + actual_method);
+      actual_method = n.getString(2);
+      for (int i = 0; i < parent.size(); i++){
+        actual_method = actual_method + "_" + parent.get(i);
+      }
+    return actual_method;
+  }
 
   public LinkedList<String> visitArguments(GNode n){
     LinkedList<String> answer = new LinkedList<String>();
