@@ -195,6 +195,13 @@ public class Translator extends Tool {
         new SymTab(runtime, table).dispatch(listNode);
         new ASTModifier().dispatch(listNode);
         new Overloader(table, inheritanceTree, overloadedNames).dispatch(listNode);
+
+        /* //Example of how to get static methods:
+        LinkedList<String> staticMethods = inheritanceTree.getStaticMethods(listNode);
+        for (String s : staticMethods) {
+          System.out.println(s);
+        }*/
+
       }
 
       /* Write each AST in the list to output.cc as CPP */
