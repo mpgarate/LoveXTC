@@ -42,6 +42,7 @@ public class CCCP extends Visitor {
   protected Printer printer;
   protected Printer header;
   public GNode root;
+  private LinkedList<String> staticMethods;
 
 
   private String packageName;
@@ -52,12 +53,15 @@ public class CCCP extends Visitor {
      and if not, one will be added manually. 
   */
   private boolean visitedConstructor;
+  private boolean visitedNewClassExp;
+  private boolean visitedConstructorFormalParam;
 
-	public CCCP(Printer p, SymbolTable table, Inheritance inh){
+	public CCCP(Printer p, SymbolTable table, Inheritance inh, LinkedList<String> sNAmes){
     this.printer = p;
     this.table = table;
     printer.register(this);
     this.inheritanceTree = inh;
+    this.staticMethods = sNAmes;
 
 	}
 
@@ -129,7 +133,7 @@ public class CCCP extends Visitor {
     printlnUnlessNull("namespace " + packageName + " {", packageName);
     visit(n);
     if (visitedConstructor == false) {
-      printFallbackConstructor();
+      printFallbackinit();
     }
     printClassMethod(); 
 
@@ -199,19 +203,42 @@ public class CCCP extends Visitor {
 
   public void visitConstructorDeclaration(GNode n){
     visitedConstructor = true;
+    printFallbackConstructor();
     String constructorName = n.getString(2);
-    /* TODO: Allow constructor to accept parameters */
-    printer.p(className + "::" + constructorName + "()" );
-    printer.p(" : ");
-    printer.p("__vptr(&__vtable)");
-    visit(n);
-    printer.p("{");
+    if (n.getNode(3).size() == 0){
+      printer.p(javaClassName + " " + className + "::init(" +javaClassName + " __this" );
+    }
+    else {
+      visitedConstructorFormalParam = true;
+      printer.p(javaClassName + " " + className + "::init(" +javaClassName + " __this, " );
+    }
+    printer.p(n.getNode(3));
+    printer.pln("){");
+    String parent = inheritanceTree.getParentOfNode(javaClassName);
+    /* What if the parent constructor also has arguments? May need to fix this later*/
+    if (parent != null){
+      printer.pln("__"+ parent + "::init(__this);");
+    }
+    visit(n.getNode(5));
+    printer.pln("return __this;");
     printer.p("}");
     printer.pln();
     printer.pln();
   }
-  public void visitConstructorExpression(GNode n){
-    printer.p(", " + n.getString(0) + "(" +n.getString(1) +") ");
+
+  private void printFallbackinit(){
+    printer.pln();
+    printFallbackConstructor();
+    printer.pln(javaClassName + " " + className + "::init(" +javaClassName + " __this){" );
+    String parent = inheritanceTree.getParentOfNode(javaClassName);
+    if (parent != null){
+      printer.pln("__"+ parent + "::init(__this);");
+    }
+    printer.pln("return __this;");
+    printer.p("}");
+    printer.pln();
+    printer.pln();
+
   }
 
   public void visitFieldDeclaration(GNode n){
@@ -219,6 +246,13 @@ public class CCCP extends Visitor {
 	  visit(n);
     printer.p(";");
     printer.pln();
+    if (visitedNewClassExp){
+      printer.p("__rt::checkNotNull(");
+      String id = n.getNode(2).getNode(0).getString(0);
+      printer.p(id+");");
+      printer.pln();
+      visitedNewClassExp = false;
+    }
   }
   public void visitReturnStatement(GNode n){
     printer.p("return ");
@@ -240,7 +274,12 @@ public class CCCP extends Visitor {
 
   public void visitCallExpression(GNode n){
     printer.p(n.getNode(0));
-    printer.p("->__vptr->");
+    if (staticMethods.contains(n.getString(2))){
+      printer.p("->");
+    }
+    else{
+      printer.p("->__vptr->");
+    }
     printer.p(n.getString(2) + "(");
     printer.p(n.getNode(3));
     if (n.getNode(3).size() == 0){
@@ -252,19 +291,21 @@ public class CCCP extends Visitor {
   }
 
   public void visitArguments(GNode n){
-    for (int i = 0; i < n.size() ; i++){
-      if (n.getNode(i).hasName("StringLiteral")){
-        printer.p("new __String(");
-        printer.p(n.getNode(i));
-        printer.p(")");
+
+      for (int i = 0; i < n.size() ; i++){
+        if (n.getNode(i).hasName("StringLiteral")){
+          printer.p("__String::init(new __String(");
+          printer.p(n.getNode(i));
+          printer.p("))");
+        }
+        else{
+          printer.p(n.getNode(i));
+        }
+        if (! (i==n.size()-1)){
+          printer.p(",");
+        }
       }
-      else{
-        printer.p(n.getNode(i));
-      }
-      if (! (i==n.size()-1)){
-        printer.p(",");
-      }
-    }
+
   }  
 
   public void visitAdditiveExpression(GNode n){
@@ -292,9 +333,9 @@ public class CCCP extends Visitor {
     printer.p("(");
     visit(n);
     printer.p(")");
-    if (functionName.equals("toString")){
+    /*if (functionName.equals("toString")){
       printer.p("->data");
-    }
+    }*/
 
   }
   public void visitCoutAdditiveExpression(GNode n){
@@ -324,7 +365,7 @@ public class CCCP extends Visitor {
     if ((!primT) && n.getNode(2).hasName("PrimaryIdentifier")){
       printer.p("->__vptr->toString(");
       printer.p(n.getNode(2));
-      printer.p(")->data");
+      printer.p(")");
     }
   }
 
@@ -364,6 +405,7 @@ public class CCCP extends Visitor {
         if (! (i == n.size()-1)){
           printer.p(",");
         }
+
       }
     }
 
@@ -383,14 +425,19 @@ public class CCCP extends Visitor {
   }
 
   public void visitNewClassExpression(GNode n){
+    visitedNewClassExp = true;
     String className = fold((GNode)n.getNode(2), n.getNode(2).size());
+    printer.p("__"+className+"::init(");
     if (className.equals("Exception")){
       printer.p("new " + className + "(");
     }
     else{
-      printer.p("new __" + className + "(");
+      printer.p("new __" + className + "()");
     }
-    printer.p(n.getNode(3));      
+    if (n.getNode(3).size() > 0){
+      printer.p(", ");
+      printer.p(n.getNode(3)); 
+    }      
     printer.p(")");
   }
 
@@ -412,6 +459,17 @@ public class CCCP extends Visitor {
   
 
   public void visitFormalParameters(GNode n) {
+    if (visitedConstructorFormalParam){
+      Iterator<Object> iter = n.iterator();
+      if (iter.hasNext()){
+        for (iter = n.iterator(); iter.hasNext(); ) {
+          printer.p((Node)iter.next());
+          if (iter.hasNext()) printer.p(", ");
+        }
+      }
+      visitedConstructorFormalParam = false;
+    }
+    else{
     Iterator<Object> iter = n.iterator();
       if (iter.hasNext()){
       printer.p('(');
@@ -421,6 +479,7 @@ public class CCCP extends Visitor {
       }
       printer.p(')'); 
     }
+  }
   }
 
   /** Visit the specified qualified identifier. */
@@ -488,14 +547,13 @@ public class CCCP extends Visitor {
   }
 
   private void printFallbackConstructor(){
-    if (!visitedConstructor){
       printer.p(className + "::" + className + "()" );
       printer.p(" : ");
       printer.p("__vptr(&__vtable)");
       printer.p("{");
       printer.p("}");
       printer.pln();
-    }
+      printer.pln();
   }
 
   /* Print verbose debug messages into output file */
