@@ -262,6 +262,19 @@ public class Inheritance {
 		return vTableList;
 	}
 
+	public String getReturnType(String methodName, String className) {
+		GNode vTable = (GNode)searchForNode(root, className).getNode(0).getNode(3);
+		for (int i=0;i<vTable.size();i++) {
+			//For each method in the vTable, compare it's name against the methodName we're searching for
+			String name = vTable.getNode(i).getString(2);
+			if (name.equals(methodName)) {
+				return vTable.getNode(i).getString(1);
+			}
+		}
+		System.err.println("Error finding returnType for "+methodName+" in "+className);
+		return "";
+	}
+
 	public String getParentOfNode(String childName) {
 		for (int i=1;i<root.size();i++) {
 			if (root.getNode(i).getName().equals(childName)) {
@@ -316,7 +329,7 @@ public class Inheritance {
 		return null;
     }
 
-    	public LinkedList<String> getStaticMethods(GNode javaAST) {
+    public LinkedList<String> getStaticMethods(GNode javaAST) {
 		new Visitor() {
 
 			public void visitCompilationUnit(GNode n) {
