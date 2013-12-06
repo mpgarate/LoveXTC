@@ -53,9 +53,19 @@ public class TestDriver{
     String name = "Wies Test" + 2 + ".java";
     t.translateAndCompare(path, name);
   }
+  @Test public void translateWies3(){
+    String path = "examples/wies-tests/Test" + 3 + ".java";
+    String name = "Wies Test" + 3 + ".java";
+    t.translateAndCompare(path, name);
+  }
   @Test public void translateWies5(){
     String path = "examples/wies-tests/Test" + 5 + ".java";
     String name = "Wies Test" + 5 + ".java";
+    t.translateAndCompare(path, name);
+  }
+  @Test public void translateWies100(){
+    String path = "examples/wies-tests/Test" + 100 + ".java";
+    String name = "Wies Test" + 100 + ".java";
     t.translateAndCompare(path, name);
   }
 }
