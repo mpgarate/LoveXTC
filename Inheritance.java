@@ -249,6 +249,7 @@ public class Inheritance {
 		return root;
 	}
 
+	//Only returns overloaded methods.
 	public LinkedList<String> getVTableForNode(String name) {
 		GNode node = searchForNode(root, name);
 		LinkedList<String> vTableList = new LinkedList<String>();
@@ -257,7 +258,9 @@ public class Inheritance {
 			return vTableList;
 		}
 		for (int i=0;i<node.getNode(0).getNode(3).size();i++) {
-			vTableList.add(node.getNode(0).getNode(3).getNode(i).getString(2));
+			if (node.getNode(0).getNode(3).getNode(i).getString(6).equals("Overloaded")) {
+				vTableList.add(node.getNode(0).getNode(3).getNode(i).getString(2));
+			}
 		}
 		return vTableList;
 	}
