@@ -176,15 +176,21 @@ public class Overloader extends Visitor {
         LOGGER.info("ALERT: NO METHOD FOUND. Ideal method " + actual_method);
         LOGGER.info("ALERT: Looking for someother suitable method");
         /* WARNING: DOING THIS JUST FOR THIS EXAMPLE */
+        /*
         LinkedList<String> parentNames = new LinkedList<String>();
         for (int i = 0; i < argumentList.size(); i++){
           String parent = inheritanceTree.getParentOfNode(argumentList.get(i));
           LOGGER.info("ALERT: parent of " + argumentList.get(i) + "is" + parent);
           parentNames.add(parent);
         }
-        String suitable_method = find_suitable_method(n, methods, argumentList, parentNames);
+        */
+
+        String suitable_method = find_suitable_method(n, methods, argumentList, actual_method);
         if (suitable_method != null){
           n.set(2,suitable_method);
+        }
+        else{
+          LOGGER.warning("MASSIVE FAILURE! Could not find " + actual_method);
         }
       }
     }
@@ -219,7 +225,68 @@ public class Overloader extends Visitor {
       }
     }
   }*/
-  private String find_suitable_method(GNode n, LinkedList<String> methods, LinkedList<String> children, LinkedList<String> parent){
+
+
+  private int getArgumentCount(String s){
+    int count = 0;
+    for (int i = 0; i<s.length();i++){
+      if (s.charAt(i) == '_'){
+        count++;
+      }
+    }
+    //LOGGER.warning(s + " has " + count + " args.");
+    return count;
+  }
+
+  private LinkedList<String> removeByArgumentCount( LinkedList<String> methods,
+                                      LinkedList<String> argumentList,
+                                      String idealMethod){
+
+    LinkedList<String> newMethods = new LinkedList<String>();
+    //LOGGER.warning("Printing methods list BEFORE: ");
+    //LOGGER.warning(methods.toString());
+    int size = argumentList.size();
+    int mSize = 0;
+    for(int i = 0; i < methods.size(); i++){
+      String m = methods.get(i);
+      // get the number of arguments in a method
+      mSize = getArgumentCount(m);
+      // if this method has the wrong number of args, remove it from the list
+      if (size == mSize){
+        newMethods.add(methods.get(i));
+      }
+    }
+    //LOGGER.warning("Printing methods list AFTER: ");
+    //LOGGER.warning(newMethods.toString());
+    return newMethods;
+  }
+
+
+  private int getDistance(String start, String target){
+    int distance = 0;
+    String parent = start;
+    while (!parent.equals(start) && !parent.equals("Object")){
+      parent = inheritanceTree.getParentOfNode(parent);
+      distance++;
+    }
+    return distance;
+  }
+
+  private void removeByRelationship(  LinkedList<String> methods,
+                                      LinkedList<String> argumentList,
+                                      String idealMethod){
+
+  }
+
+  private String find_suitable_method(  GNode n,
+                                        LinkedList<String> methods,
+                                        LinkedList<String> argumentList,
+                                        String idealMethod){
+  
+    methods = removeByArgumentCount(methods,argumentList,idealMethod);
+
+
+  /*
     String actual_method = n.getString(2);
     boolean found1 = false;
     outerloop:
@@ -250,6 +317,8 @@ public class Overloader extends Visitor {
         actual_method = actual_method + "_" + parent.get(i);
       }
     return actual_method;
+  */
+    return null;
   }
 
   public LinkedList<String> visitArguments(GNode n){
