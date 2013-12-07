@@ -1,3 +1,4 @@
+
 /* Overloader - determines the right method name in method call */
 
 package xtc.oop;
@@ -122,8 +123,9 @@ public class Overloader extends Visitor {
   /* main work for overloading starts at this point
      basically first we find if a method is overloaded or not.
      if yes, then we visit the arguments to determine the correct name of method*/
-  public void visitCallExpression(GNode n){
+  public String visitCallExpression(GNode n){
     boolean overloaded = false;
+    String methodName = n.getString(2);
 
     for (String o : overloadedNames) { //Detects if there's overloading
       if (o.equals(n.getString(2))) {
@@ -131,11 +133,6 @@ public class Overloader extends Visitor {
         LOGGER.info("Overloading happening for method " + o);
         break;
       }
-    }
-
-    //If there's no overloading going on, we don't need to do anything.
-    if (overloaded==false) {
-      return;
     }
     // name of class is the class name incase of static methods
     String nameOfClass = className;
@@ -148,11 +145,17 @@ public class Overloader extends Visitor {
       LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
       }
     }
-    /* if method is overloaded the change the method name in the node 
-      else do nothing*/
+
+    //If there's no overloading going on, we return the return type.
+    if (overloaded==false) {
+      String returntype = inheritanceTree.getReturnType(methodName, nameOfClass);
+      return returntype;
+    }
+
+    /* if method is overloaded then change the method name in the node 
+      and then return the return type of that method*/
     if (overloaded){
       LinkedList<String> argumentList = new LinkedList<String>();
-      String methodName = n.getString(2);
       String actual_method = n.getString(2);
       LinkedList<String> methods = inheritanceTree.getVTableForNode(nameOfClass);
       argumentList = visitArguments((GNode)n.getNode(3));
@@ -170,58 +173,102 @@ public class Overloader extends Visitor {
       else if (staticMethods.contains(actual_method)){
         n.set(2,actual_method);
       }
-      /* FIXME: have a more robust way of finding out the suitable method
-         For now i am just making it work for this example */
+      /* At this point we have to find the best possible method blindly by 
+         trying out all the possibilities. */
       else{
         LOGGER.info("ALERT: NO METHOD FOUND. Ideal method " + actual_method);
         LOGGER.info("ALERT: Looking for someother suitable method");
-        /* WARNING: DOING THIS JUST FOR THIS EXAMPLE */
-        LinkedList<String> parentNames = new LinkedList<String>();
-        for (int i = 0; i < argumentList.size(); i++){
-          String parent = inheritanceTree.getParentOfNode(argumentList.get(i));
-          LOGGER.info("ALERT: parent of " + argumentList.get(i) + "is" + parent);
+        // lets call the first helper method to get the best method
+        String best_method = find_best(n, methods, argumentList);
+        if (best_method != null){
+          n.set(2,best_method);
+          return inheritanceTree.getReturnType(best_method, nameOfClass);
+        }
+        // We are screwed at this point.
+        else{
+          LOGGER.warning("MASSIVE FAILURE: DID NOT FIND THE BEST METHOD");
+        }
+      }
+    }
+    return null;
+  }
+  /* This method gets the parents of the ideal arguments and then calls another helper method to 
+     find a suitable method. It keeps doing this over and over until all the parents are Objects
+     There is a possibility of infinite loop here. BEAWARE */
+  private String find_best(GNode n, LinkedList<String> methods, LinkedList<String> argumentList){
+    LinkedList<String> parentNames = new LinkedList<String>();
+    LinkedList<String> tmpLL = duplicateLL(argumentList);
+    boolean not_found = true;
+    String suitable_method = null;
+    while (not_found){
+      // This loop finds the parents of the tmpLL which is initially the argument list.
+      for (int i = 0; i < argumentList.size(); i++){
+        String parent = inheritanceTree.getParentOfNode(tmpLL.get(i));
+        LOGGER.info("ALERT: parent of " + argumentList.get(i) + "is" + parent);
+        if (argumentList.get(i).equals("Object")){
+          parentNames.add(argumentList.get(i));
+        }
+        else{
           parentNames.add(parent);
         }
-        String suitable_method = find_suitable_method(n, methods, argumentList, parentNames);
-        if (suitable_method != null){
-          n.set(2,suitable_method);
+      }
+      // lets call the helper method to find the suitable method.
+      suitable_method = find_suitable_method(n, methods, argumentList, parentNames);
+      if (suitable_method != null){
+        return suitable_method;    
+      }
+      // If the parent names are all "Objects" then we have to stop.
+      int x = 0;
+      for (int i = 0; i < parentNames.size(); i++){
+        if (parentNames.get(i).equals("Object")){
+          x++;
         }
       }
+      if (x == parentNames.size()){
+        not_found = false;
+      }
+      // don't forget to set the tmpLL to parentNames so we actually make progress
+      tmpLL = parentNames;
     }
+    // this should be returning null >> we are screwed.
+    return suitable_method;
   }
-  /* This method puts the right casting in front of the right primary identifier.
-     We will not need to put the implicit casting after implementing smart pointers.
-     But for now we have to put the implicit casting ourselves.
-     WE HAVE SMART POINTERS NOW. DON'T NEED THIS!!
-     
-  public void changeArguments(GNode n, String cast){
-    for (int i = 0; i < n.size() ; i++){
-      if (n.getNode(i).hasName("PrimaryIdentifier")){
-        String name = n.getNode(i).getString(0);
-        String nameOfClass = "";
-        if (table.current().isDefined(name)) {
-          Type type = (Type) table.current().lookup(name);
-          if (type.hasAlias()){
-          nameOfClass = type.toAlias().getName();
-          }
-          else {
-          WrappedT wtype = (WrappedT) table.current().lookup(name);
-          nameOfClass = wtype.getType().toString();
-          }
-        }
-        String parent = inheritanceTree.getParentOfNode(nameOfClass);
-        LOGGER.info("name = "+name+ " parent = "+parent+ " cast = "+cast);
-        if (parent.equals(cast)){
-          LOGGER.info("INFO: Applying casting inside the right identifier");
-          String newname = "("+cast+")" + name;
-          n.getNode(i).set(0, newname);
-        }
-      }
+  // helper method to duplicate a linked list
+  private LinkedList<String> duplicateLL(LinkedList<String> old){
+    LinkedList<String> newLL = new LinkedList<String>();
+    for(String s : old){
+      newLL.add(s);
     }
-  }*/
+    return newLL;
+  }
+  /* this helper method calls another helper method to permute the different combinations of the
+     arguments*/
   private String find_suitable_method(GNode n, LinkedList<String> methods, LinkedList<String> children, LinkedList<String> parent){
     String actual_method = n.getString(2);
+    boolean found = false;
+    // This loop calls the helper method by giving it the number of arguments to permute on
+    // The first step is to permute 1 arguments and the last step is to permute them all.
+    for (int i = 1; i <= children.size(); i++ ){
+      String answer = permute_combinations(n, i, methods, children, parent);
+      if (answer != null){
+        found = true;
+        actual_method = answer;
+        break;
+      }
+    }
+    if (found){
+      return actual_method;
+    }
+    else 
+      return null;
+  }
+  /* This is where we do the actual permutation and we continually check if the method is in
+     the methods list. The for loops are a little confusing but seems to work */
+  private String permute_combinations(GNode n, int m, LinkedList<String> methods, LinkedList<String> children, LinkedList<String> parent){
+    String actual_method = n.getString(2);
     boolean found1 = false;
+    // It takes some time to understand this loop but what it basically does is that
+    // it builds a method name based on the int m passed to it and checks if it is in methods list.
     outerloop:
     for (int i = 0; i < children.size(); i++){
       actual_method = n.getString(2);
@@ -229,7 +276,7 @@ public class Overloader extends Visitor {
         actual_method = actual_method + "_" + children.get(j);
       }
       int x;
-      for (x = i; x < i+1; x++){
+      for (x = i; x < i+m; x++){
           actual_method = actual_method + "_" + parent.get(i);
       }
       for(int k = x; k < children.size(); k++ ){
@@ -243,13 +290,8 @@ public class Overloader extends Visitor {
     if (found1){
       return actual_method;
     }
-
-      LOGGER.info("BIG ALERT: 2ND TRY FAILED. Ideal method " + actual_method);
-      actual_method = n.getString(2);
-      for (int i = 0; i < parent.size(); i++){
-        actual_method = actual_method + "_" + parent.get(i);
-      }
-    return actual_method;
+    else
+      return null;
   }
 
   public LinkedList<String> visitArguments(GNode n){
@@ -272,6 +314,9 @@ public class Overloader extends Visitor {
       }
       if (n.getNode(i).hasName("StringLiteral")){
         answer.add(visitStringLiteral((GNode)n.getNode(i)));
+      }
+      if (n.getNode(i).hasName("CallExpression")){
+        answer.add(visitCallExpression((GNode)n.getNode(i)));
       }
     }
     return answer;
