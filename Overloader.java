@@ -43,7 +43,8 @@ public class Overloader extends Visitor {
   private String javaClassName;
   private LinkedList<String> overloadedNames;
   private LinkedList<String> staticMethods;
-
+  private String bestMatchName;
+  private int bestMatchValue;
 
 	public Overloader(SymbolTable table, Inheritance inh, LinkedList<String> oNames, LinkedList<String> sNames){
     this.table = table;
@@ -263,19 +264,120 @@ public class Overloader extends Visitor {
 
 
   private int getDistance(String start, String target){
+
+    if(start == target) return 0;
+   
     int distance = 0;
+    boolean found = false;
     String parent = start;
-    while (!parent.equals(start) && !parent.equals("Object")){
+
+    while (!parent.equals(target)){
+      //LOGGER.warning("Parent of " + parent);
       parent = inheritanceTree.getParentOfNode(parent);
+      //LOGGER.warning(" is " + parent);
+      if (parent.equals(target)){
+        found = true;
+      }
       distance++;
+
+      if (parent.equals("Object")){
+        break;
+      }
     }
-    return distance;
+
+    if (found) {
+      return distance;
+    }
+    else{
+      return -1; //could not find
+    }
   }
 
-  private void removeByRelationship(  LinkedList<String> methods,
+  private LinkedList<String> getArguments(String s){
+    /*
+     * Args are split from a string like methodName_A_B_C_Object
+     * to a linkedlist like [A->B->C]
+     */
+    //LOGGER.warning("Getting args from " + s);
+    LinkedList<String> foundArgs = new LinkedList<String>();
+    for(int i = 0; i<s.length();i++){
+      if (s.charAt(i) == '_'){
+        int nextUnderscore = s.indexOf("_",i+1);
+        if (nextUnderscore == -1){
+          //did not fund an underscore. This occurs at end of file.
+          foundArgs.add(s.substring(i+1));
+        }
+        else{
+          foundArgs.add(s.substring(i+1, nextUnderscore));          
+        }
+      }
+    }
+    //LOGGER.warning("Found args " + foundArgs.toString());
+    return foundArgs;
+  }
+
+
+  private LinkedList<String> duplicateLL(LinkedList<String> old){
+    LinkedList<String> newLL = new LinkedList<String>();
+    for(String s : old){
+      newLL.add(s);
+    }
+    return newLL;
+  }
+
+  private LinkedList<String> removeByRelationship(  LinkedList<String> methods,
                                       LinkedList<String> argumentList,
                                       String idealMethod){
+    LOGGER.warning("Removing for " + idealMethod);
+    LOGGER.warning("BEFORE: " + methods.toString());
 
+    LinkedList<String> idealArgs = getArguments(idealMethod);
+    LinkedList<String> mArgs = new LinkedList<String>();
+    LinkedList<String> newMethods = new LinkedList<String>();
+    newMethods = duplicateLL(methods);
+
+    for (int i = 0; i<methods.size(); i++){
+      String m = methods.get(i);
+      mArgs = getArguments(m);
+
+      innerloop:
+      for(int j = 0; j<mArgs.size(); j++){
+        /* 
+         * If both the ideal and found params are prim types,
+         * we check for equality and remove the method if not equal. 
+         */
+        if (isPrim(idealArgs.get(j))){
+          if(isPrim(mArgs.get(j))){
+            if (!(mArgs.get(j)).equals(idealArgs.get(j))){
+              newMethods.remove(methods.get(i));
+              break innerloop;
+            }
+          }
+          else{
+            newMethods.remove(methods.get(i));
+            break innerloop;
+          }
+        }
+
+        /* 
+         * Find whether or not an argument has valid ancestry
+        */
+
+        String arg = mArgs.get(j);
+        if (idealArgs.get(j) != arg){
+          int dist = getDistance(idealArgs.get(j),arg);
+          if (dist == -1){
+            LOGGER.warning("Dist is -1 for " + arg);
+            newMethods.remove(methods.get(i));
+            break innerloop;
+          }
+        }
+      }
+    }
+
+    LOGGER.warning("AFTER: " + newMethods.toString());
+
+    return newMethods;
   }
 
   private String find_suitable_method(  GNode n,
@@ -285,6 +387,9 @@ public class Overloader extends Visitor {
   
     methods = removeByArgumentCount(methods,argumentList,idealMethod);
 
+    methods = removeByRelationship(methods,argumentList,idealMethod);
+
+    //methods = removeByPrecision(methods,argumentList,idealMethod);
 
   /*
     String actual_method = n.getString(2);
