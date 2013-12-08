@@ -40,22 +40,3 @@ Print a java file's C++ AST with:
 ```sh
 java xtc.oop.Translator -printCPPTree examples/TranslateMe.java
 ```
-
-TODO:
-
-* Write class to scan a directory of java files, translate to c++, compile, and compare results.
-
-WHAT ARE WE DOING RIGHT NOW?
-* Adam:
-* Ahmad: Symbol table
-* Bruno:
-* Carl:
-* Michael: Wies Tests
-
-FILE STATUS
-* Dependency.java : working for HelloWorld.java and HelloUniverse.java inputs!
-* Inheritance.java : some tree structure present, requires further testing
-* ASTModifier : manipulates tree for C++ output
-* CCCP.java: prints much of output.cc correctly
-* Translator.java: needs to be cleaned up
-* SymTab.java : should accept the linked list instead of a single node 
