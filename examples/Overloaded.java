@@ -58,19 +58,19 @@ public class Overloaded  extends ParentOverloaded{
     B b = new B();
     C c = new C();
 
-    /*o.m();
+    o.m();
     o.m(n1);
     o.m(n1 + n2);
     o.m(new Object());
     //o.m(new Exception());
     o.m("String");
     o.m(a);
-    o.m(b);*/
+    o.m(b);
     o.m(a);
-    /*
+    
     o.m(a, a);
     o.m((A)b, b);
-    o.m(c, c);*/
+    o.m(c, c);
     o.m(c);
     o.m(c,c,c);
     o.m(a,b,(A)c);

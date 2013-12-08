@@ -121,8 +121,9 @@ public class Overloader extends Visitor {
   /* main work for overloading starts at this point
      basically first we find if a method is overloaded or not.
      if yes, then we visit the arguments to determine the correct name of method*/
-  public void visitCallExpression(GNode n){
+  public String visitCallExpression(GNode n){
     boolean overloaded = false;
+    String methodName = n.getString(2);
 
     for (String o : overloadedNames) { //Detects if there's overloading
       if (o.equals(n.getString(2))) {
@@ -132,10 +133,6 @@ public class Overloader extends Visitor {
       }
     }
 
-    //If there's no overloading going on, we don't need to do anything.
-    if (overloaded==false) {
-      return;
-    }
     // name of class is the class name incase of static methods
     String nameOfClass = className;
     // else it is the class of the primary identifier 
@@ -147,11 +144,17 @@ public class Overloader extends Visitor {
       LOGGER.info("variableName " + variableName + " of className " + nameOfClass);
       }
     }
+
+    //If there's no overloading going on, we return the return type.
+    if (overloaded==false) {
+      String returntype = inheritanceTree.getReturnType(methodName, nameOfClass);
+      return returntype;
+    }
+  
     /* if method is overloaded the change the method name in the node 
       else do nothing*/
     if (overloaded){
       LinkedList<String> argumentList = new LinkedList<String>();
-      String methodName = n.getString(2);
       String actual_method = n.getString(2);
       LinkedList<String> methods = inheritanceTree.getVTableForNode(nameOfClass);
       argumentList = visitArguments((GNode)n.getNode(3));
@@ -187,44 +190,15 @@ public class Overloader extends Visitor {
         String suitable_method = find_suitable_method(n, methods, argumentList, actual_method);
         if (suitable_method != null){
           n.set(2,suitable_method);
+          return inheritanceTree.getReturnType(suitable_method,nameOfClass);
         }
         else{
           LOGGER.warning("MASSIVE FAILURE! Could not find " + actual_method);
         }
       }
     }
+    return null;
   }
-  /* This method puts the right casting in front of the right primary identifier.
-     We will not need to put the implicit casting after implementing smart pointers.
-     But for now we have to put the implicit casting ourselves.
-     WE HAVE SMART POINTERS NOW. DON'T NEED THIS!!
-     
-  public void changeArguments(GNode n, String cast){
-    for (int i = 0; i < n.size() ; i++){
-      if (n.getNode(i).hasName("PrimaryIdentifier")){
-        String name = n.getNode(i).getString(0);
-        String nameOfClass = "";
-        if (table.current().isDefined(name)) {
-          Type type = (Type) table.current().lookup(name);
-          if (type.hasAlias()){
-          nameOfClass = type.toAlias().getName();
-          }
-          else {
-          WrappedT wtype = (WrappedT) table.current().lookup(name);
-          nameOfClass = wtype.getType().toString();
-          }
-        }
-        String parent = inheritanceTree.getParentOfNode(nameOfClass);
-        LOGGER.info("name = "+name+ " parent = "+parent+ " cast = "+cast);
-        if (parent.equals(cast)){
-          LOGGER.info("INFO: Applying casting inside the right identifier");
-          String newname = "("+cast+")" + name;
-          n.getNode(i).set(0, newname);
-        }
-      }
-    }
-  }*/
-
 
   private int getArgumentCount(String s){
     int count = 0;
@@ -242,8 +216,8 @@ public class Overloader extends Visitor {
                                       String idealMethod){
 
     LinkedList<String> newMethods = new LinkedList<String>();
-    //LOGGER.warning("Printing methods list BEFORE: ");
-    //LOGGER.warning(methods.toString());
+    LOGGER.info("Printing methods list BEFORE: ");
+    LOGGER.info(methods.toString());
     int size = argumentList.size();
     int mSize = 0;
     for(int i = 0; i < methods.size(); i++){
@@ -255,8 +229,8 @@ public class Overloader extends Visitor {
         newMethods.add(methods.get(i));
       }
     }
-    //LOGGER.warning("Printing methods list AFTER: ");
-    //LOGGER.warning(newMethods.toString());
+    LOGGER.info("Printing methods list AFTER: ");
+    LOGGER.info(newMethods.toString());
     return newMethods;
   }
 
@@ -451,6 +425,9 @@ public class Overloader extends Visitor {
       }
       if (n.getNode(i).hasName("StringLiteral")){
         answer.add(visitStringLiteral((GNode)n.getNode(i)));
+      }
+      if (n.getNode(i).hasName("CallExpression")){
+        answer.add(visitCallExpression((GNode)n.getNode(i)));
       }
     }
     return answer;
