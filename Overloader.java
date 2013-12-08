@@ -263,16 +263,16 @@ public class Overloader extends Visitor {
 
   private int getDistance(String start, String target){
 
-    if(start == target) return 0;
+    if(start.equals(target)) return 0;
    
     int distance = 0;
     boolean found = false;
     String parent = start;
 
     while (!parent.equals(target)){
-      //LOGGER.warning("getting Distance... " + parent);
+      LOGGER.info("getting Distance... " + parent);
       parent = inheritanceTree.getParentOfNode(parent);
-      //LOGGER.warning(" is " + parent);
+      LOGGER.info(" is " + parent);
       if (parent.equals(target)){
         found = true;
       }
@@ -330,12 +330,11 @@ public class Overloader extends Visitor {
 
   /* Remove any entries in the methods list which are impossible to call. */
   private LinkedList<String> removeByRelationship(  LinkedList<String> methods,
-                                      LinkedList<String> argumentList,
+                                      LinkedList<String> idealArgs,
                                       String idealMethod){
-    LOGGER.warning("Removing for " + idealMethod);
-    LOGGER.warning("BEFORE: " + methods.toString());
+    LOGGER.info("Removing for " + idealMethod);
+    LOGGER.info("BEFORE: " + methods.toString());
 
-    LinkedList<String> idealArgs = getArguments(idealMethod);
     LinkedList<String> mArgs = new LinkedList<String>();
     LinkedList<String> newMethods = new LinkedList<String>();
     newMethods = duplicateLL(methods);
@@ -371,7 +370,6 @@ public class Overloader extends Visitor {
         if (idealArgs.get(j) != arg){
           int dist = getDistance(idealArgs.get(j),arg);
           if (dist == -1){
-            //LOGGER.warning("Dist is -1 for " + arg);
             newMethods.remove(methods.get(i));
             break innerloop;
           }
@@ -379,7 +377,7 @@ public class Overloader extends Visitor {
       }
     }
 
-    LOGGER.warning("AFTER: " + newMethods.toString());
+    LOGGER.info("AFTER: " + newMethods.toString());
 
     return newMethods;
   }
@@ -387,9 +385,9 @@ public class Overloader extends Visitor {
   private String selectByPrecision( LinkedList<String> methods,
                                                 LinkedList<String> argumentList,
                                                 String idealMethod){
-    LOGGER.warning("Selecting by precision for " + idealMethod);
+    LOGGER.info("Selecting by precision for " + idealMethod);
     String bestMatchName = "";
-    int bestMatchValue = -1;
+    int bestMatchValue = 999999;
     int distance = -1;
     LinkedList<String> mArgs;
 
@@ -398,10 +396,9 @@ public class Overloader extends Visitor {
       distance = 0;
       for (int j = 0; j<mArgs.size(); j++){
         /* See how far away an argument is from its candidate */
-        distance += getDistance(mArgs.get(j),argumentList.get(j));
+        distance += getDistance(argumentList.get(j),mArgs.get(j));
       }
       if (distance < bestMatchValue){
-        LOGGER.warning("Setting bestMatchName to " + m);
         bestMatchValue = distance;
         bestMatchName = m;
       }
