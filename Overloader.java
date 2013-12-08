@@ -233,14 +233,6 @@ public class Overloader extends Visitor {
     // this should be returning null >> we are screwed.
     return suitable_method;
   }
-  // helper method to duplicate a linked list
-  private LinkedList<String> duplicateLL(LinkedList<String> old){
-    LinkedList<String> newLL = new LinkedList<String>();
-    for(String s : old){
-      newLL.add(s);
-    }
-    return newLL;
-  }
   /* this helper method calls another helper method to permute the different combinations of the
      arguments*/
   private String find_suitable_method(GNode n, LinkedList<String> methods, LinkedList<String> children, LinkedList<String> parent){
