@@ -229,6 +229,11 @@ public class CCCP extends Visitor {
     printer.pln();
   }
 
+  public void visitSelectionExpression(GNode n){
+    visit(n);
+    printer.p("->" + n.getString(1));
+  }
+
   private void printLoveField(GNode n){
     if (n.getNode(2).hasName("Declarators")){
       GNode declaration = (GNode)n.getNode(2).getNode(0);
