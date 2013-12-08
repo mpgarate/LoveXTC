@@ -394,6 +394,7 @@ public class CCCP extends Visitor {
     if (n.get(2) != null) printer.p(n.getNode(2));
     //visit(n);
   }
+
   public void visitPrimaryIdentifier(GNode n) {
     //if this is a field, prepend "__this->"
     String variableName = n.getString(0);
@@ -429,6 +430,11 @@ public class CCCP extends Visitor {
     }
 
   }
+
+  public void visitThisExpression(GNode n){
+    printer.p("__this");
+  }
+
   public void visitDeclarator(GNode n){
     printer.p(" " + n.getString(0));
     if (n.getNode(2) != null){
@@ -569,7 +575,14 @@ public class CCCP extends Visitor {
     printer.pln();
     printer.pln("Class " + className + "::__class() {");
     printer.p("static Class k = ");
-    printer.pln("new __Class(__rt::literal(\"" + packageName + "." + javaClassName + "\"), (Class) __rt::null());");
+    printer.pln();
+    printer.p("new __Class(__rt::literal(\"");
+    if (packageName != null){
+      printer.p(packageName + ".");
+    }
+    printer.p(javaClassName + "\"), (Class) __rt::null());");
+
+
     printer.pln("return k;");
     printer.pln("}");
   }

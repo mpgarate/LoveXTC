@@ -70,7 +70,12 @@ public class TestDriver{
   }
   @Test public void translateWies6(){
     String path = "examples/wies-tests/Test" + 6 + ".java";
-    String name = "Wies Test" + 6+ ".java";
+    String name = "Wies Test" + 6 + ".java";
+    t.translateAndCompare(path, name);
+  }
+  @Test public void translateWies9(){
+    String path = "examples/wies-tests/Test" + 9 + ".java";
+    String name = "Wies Test" + 9 + ".java";
     t.translateAndCompare(path, name);
   }
   @Test public void translateWies100(){
