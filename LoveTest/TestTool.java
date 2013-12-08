@@ -24,8 +24,8 @@ public class TestTool{
     File file = new File(path);
     translateFile(file);
     compileOutput();
-    String javaOut = runJavaFile(file);
-    String cppOut = runCPPOutput();
+    String javaOut = runJavaFile(file,name);
+    String cppOut = runCPPOutput(name);
     compareOutputs(javaOut,cppOut);
   }
 
@@ -43,7 +43,7 @@ public class TestTool{
 
   public void compileOutput(){
     try{
-      Process process = rt.exec("make compile");
+      Process process = rt.exec("make -s compile");
       printCommandStdOut(process);
       printCommandStdErr(process);
     }
@@ -52,8 +52,8 @@ public class TestTool{
     }
   }
 
-  public String runJavaFile(File file){ 
-    System.out.println("Running java file:");
+  public String runJavaFile(File file, String name){ 
+    System.out.println("Running " + " java file:");
     System.out.println("-------------------------------------");
 
     String className = file.getName().replace(".java","");
@@ -75,8 +75,8 @@ public class TestTool{
     }
   }
 
-  public String runCPPOutput(){ 
-    System.out.println("Running CPP output file:");
+  public String runCPPOutput(String name){ 
+    System.out.println("Running " + name + " CPP output file:");
     System.out.println("-------------------------------------");
 
     try{
@@ -120,7 +120,7 @@ public class TestTool{
     System.out.println("Cleaning up.");
 
     try{
-      Process process = rt.exec("make cleanup");
+      Process process = rt.exec("make -s cleanup");
       String stdOut = printCommandStdOut(process);
       printCommandStdErr(process);
     }

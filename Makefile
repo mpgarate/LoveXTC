@@ -86,10 +86,10 @@ love:
 	java xtc.oop.Translator -translate ${FILE}
 
 compile:
-	cd output && g++ java_lang.cc output.cc
+	g++ output/java_lang.cc output/output.cc -o output/a.out
 
 run:
-	cd output && ./a.out
+	output/a.out
 
 cleanup:
-	cd output && rm -f a.out output.*
+	rm -f output/a.out output/output.*

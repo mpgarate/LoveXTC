@@ -166,9 +166,9 @@ public class Translator extends Tool {
 
       /* Store the found dependencies as AST */
       nodeList = dep.makeNodeList();
-      for (int i=0; i<nodeList.size();i++){
-        System.out.println(" -> " + nodeList.get(i).getLocation().toString());
-      }
+      //for (int i=0; i<nodeList.size();i++){
+      //  System.out.println(" -> " + nodeList.get(i).getLocation().toString());
+      //}
       
       /* Build inheritance tree */
       LOGGER.info("Building inheritance tree:");
