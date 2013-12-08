@@ -43,8 +43,6 @@ public class Overloader extends Visitor {
   private String javaClassName;
   private LinkedList<String> overloadedNames;
   private LinkedList<String> staticMethods;
-  private String bestMatchName;
-  private int bestMatchValue;
 
 	public Overloader(SymbolTable table, Inheritance inh, LinkedList<String> oNames, LinkedList<String> sNames){
     this.table = table;
@@ -272,7 +270,7 @@ public class Overloader extends Visitor {
     String parent = start;
 
     while (!parent.equals(target)){
-      //LOGGER.warning("Parent of " + parent);
+      //LOGGER.warning("getting Distance... " + parent);
       parent = inheritanceTree.getParentOfNode(parent);
       //LOGGER.warning(" is " + parent);
       if (parent.equals(target)){
@@ -281,6 +279,10 @@ public class Overloader extends Visitor {
       distance++;
 
       if (parent.equals("Object")){
+        break;
+      }
+      if (parent.equals("No Parent Found")){
+        found = false;
         break;
       }
     }
@@ -325,6 +327,8 @@ public class Overloader extends Visitor {
     return newLL;
   }
 
+
+  /* Remove any entries in the methods list which are impossible to call. */
   private LinkedList<String> removeByRelationship(  LinkedList<String> methods,
                                       LinkedList<String> argumentList,
                                       String idealMethod){
@@ -367,7 +371,7 @@ public class Overloader extends Visitor {
         if (idealArgs.get(j) != arg){
           int dist = getDistance(idealArgs.get(j),arg);
           if (dist == -1){
-            LOGGER.warning("Dist is -1 for " + arg);
+            //LOGGER.warning("Dist is -1 for " + arg);
             newMethods.remove(methods.get(i));
             break innerloop;
           }
@@ -380,6 +384,36 @@ public class Overloader extends Visitor {
     return newMethods;
   }
 
+  private String selectByPrecision( LinkedList<String> methods,
+                                                LinkedList<String> argumentList,
+                                                String idealMethod){
+    LOGGER.warning("Selecting by precision for " + idealMethod);
+    String bestMatchName = "";
+    int bestMatchValue = -1;
+    int distance = -1;
+    LinkedList<String> mArgs;
+
+    for(String m : methods){
+      mArgs = getArguments(m);
+      distance = 0;
+      for (int j = 0; j<mArgs.size(); j++){
+        /* See how far away an argument is from its candidate */
+        distance += getDistance(mArgs.get(j),argumentList.get(j));
+      }
+      if (distance < bestMatchValue){
+        LOGGER.warning("Setting bestMatchName to " + m);
+        bestMatchValue = distance;
+        bestMatchName = m;
+      }
+    }
+
+    if (bestMatchValue == -1){
+      LOGGER.warning("Could not find a suitable method.");
+    }
+
+    return bestMatchName;
+  }
+
   private String find_suitable_method(  GNode n,
                                         LinkedList<String> methods,
                                         LinkedList<String> argumentList,
@@ -389,42 +423,16 @@ public class Overloader extends Visitor {
 
     methods = removeByRelationship(methods,argumentList,idealMethod);
 
-    //methods = removeByPrecision(methods,argumentList,idealMethod);
+    String suitableMethod = selectByPrecision(methods,argumentList,idealMethod);
 
-  /*
-    String actual_method = n.getString(2);
-    boolean found1 = false;
-    outerloop:
-    for (int i = 0; i < children.size(); i++){
-      actual_method = n.getString(2);
-      for(int j = 0; j < i; j++ ){
-        actual_method = actual_method + "_" + children.get(j);
-      }
-      int x;
-      for (x = i; x < i+1; x++){
-          actual_method = actual_method + "_" + parent.get(i);
-      }
-      for(int k = x; k < children.size(); k++ ){
-        actual_method = actual_method + "_" + children.get(k);
-      }
-      if (methods.contains(actual_method)){
-        found1 = true;
-        break outerloop;
-      }
+    if (suitableMethod.length() == 0){
+      return null;
     }
-    if (found1){
-      return actual_method;
+    else{
+      return suitableMethod;
     }
-
-      LOGGER.info("BIG ALERT: 2ND TRY FAILED. Ideal method " + actual_method);
-      actual_method = n.getString(2);
-      for (int i = 0; i < parent.size(); i++){
-        actual_method = actual_method + "_" + parent.get(i);
-      }
-    return actual_method;
-  */
-    return null;
   }
+
 
   public LinkedList<String> visitArguments(GNode n){
     LinkedList<String> answer = new LinkedList<String>();
