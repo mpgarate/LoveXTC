@@ -28,7 +28,7 @@ public class CCCP extends Visitor {
     final private SymbolTable table;
     Inheritance inheritanceTree;
   private static final boolean VERBOSE = false;
-  LinkedList<String> classFields = new LinkedList<String>();
+  LinkedList<GNode> classFields = new LinkedList<GNode>();
 	/* We should base this file on src/xtc/lang/CPrinter.java */
 
 	/* This file will have a ton of methods of two types:
@@ -72,9 +72,7 @@ public class CCCP extends Visitor {
   /***************************************************************/
 
   public void visitLoveFieldDeclaration(GNode n){
-    StringBuilder sb = new StringBuilder();
-    sb.append(n.getNode(1).getString(0));
-    classFields.add(sb.toString());
+    classFields.add(n);
   }
 
   /***************************************************************/
@@ -222,10 +220,29 @@ public class CCCP extends Visitor {
       printer.pln("__"+ parent + "::init(__this);");
     }
     visit(n.getNode(5));
+    for (int i = 0; i < classFields.size(); i++){
+      printLoveField(classFields.get(i));
+    }
     printer.pln("return __this;");
     printer.p("}");
     printer.pln();
     printer.pln();
+  }
+
+  private void printLoveField(GNode n){
+    if (n.getNode(2).hasName("Declarators")){
+      GNode declaration = (GNode)n.getNode(2).getNode(0);
+      if (declaration.getNode(2) != null){
+        printer.p("__this->" + declaration.getString(0));
+        printer.p(" = ");
+        if (declaration.getNode(2).hasName("StringLiteral")){
+          printer.p("__String::init(new __String(");
+          printer.p(declaration.getNode(2));
+          printer.p("));");
+          printer.pln();  
+        }
+      }
+    }
   }
 
   private void printFallbackinit(){
@@ -413,7 +430,10 @@ public class CCCP extends Visitor {
 
   }
   public void visitDeclarator(GNode n){
-    printer.p(" " + n.getString(0) + " = ");
+    printer.p(" " + n.getString(0));
+    if (n.getNode(2) != null){
+      printer.p(" = ");
+    }
     visit(n);
   }
   public void visitIntegerLiteral(GNode n){
