@@ -228,10 +228,11 @@ public class CCCP extends Visitor {
     printer.pln();
     printer.pln();
   }
-
+  boolean visitedSelectionExpression = false;
   public void visitSelectionExpression(GNode n){
     visit(n);
     printer.p("->" + n.getString(1));
+    visitedSelectionExpression = true;
   }
 
   private void printLoveField(GNode n){
@@ -270,7 +271,7 @@ public class CCCP extends Visitor {
 	  visit(n);
     printer.p(";");
     printer.pln();
-    if (visitedNewClassExp){
+    if (visitedNewClassExp || visitedSelectionExpression){
       printer.p("__rt::checkNotNull(");
       String id = n.getNode(2).getNode(0).getString(0);
       printer.p(id+");");
@@ -307,7 +308,7 @@ public class CCCP extends Visitor {
     printer.p(n.getString(2) + "(");
     printer.p(n.getNode(0));
     if(n.getNode(3).size() > 0)
-	printer.p(", ");	
+    printer.p(", ");	
     printer.p(n.getNode(3));    
     printer.p(")");
     /*LinkedList<GNode> methods = inheritanceTree.getVTableForNode(javaClassName);
@@ -433,7 +434,6 @@ public class CCCP extends Visitor {
 
       }
     }
-
   }
 
   public void visitThisExpression(GNode n){
@@ -444,9 +444,13 @@ public class CCCP extends Visitor {
     printer.p(" " + n.getString(0));
     if (n.getNode(2) != null){
       printer.p(" = ");
+      visit(n);
     }
-    visit(n);
+    else{
+      visit(n);
+    }
   }
+
   public void visitIntegerLiteral(GNode n){
     printer.p(n.getString(0));
   }

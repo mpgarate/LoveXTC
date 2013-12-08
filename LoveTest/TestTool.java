@@ -108,10 +108,20 @@ public class TestTool{
     return a;
   }
 
+  public String maskException(String a){
+    if (a.contains("NullPointerException")){
+      return "NullPointerException";
+    }
+    return a;
+  }
+
   public void compareOutputs(String a, String b){
 
     a = maskMemoryAddress(a);
     b = maskMemoryAddress(b);
+
+    a = maskException(a);
+    b = maskException(b);
     
     assertEquals("Outputs did not match.",a,b);
   }
