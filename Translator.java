@@ -52,7 +52,7 @@ public class Translator extends Tool {
   }
 
   public String getVersion() {
-    return "0.1";
+    return "0.8";
   }
 
   public void init() {
