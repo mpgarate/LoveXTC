@@ -45,7 +45,6 @@ public class Overloader extends Visitor {
   private LinkedList<String> overloadedNames;
   private LinkedList<String> staticMethods;
 
-
 	public Overloader(SymbolTable table, Inheritance inh, LinkedList<String> oNames, LinkedList<String> sNames){
     this.table = table;
     this.inheritanceTree = inh;
@@ -154,6 +153,7 @@ public class Overloader extends Visitor {
 
     /* if method is overloaded then change the method name in the node 
       and then return the return type of that method*/
+
     if (overloaded){
       LinkedList<String> argumentList = new LinkedList<String>();
       String actual_method = n.getString(2);
@@ -178,20 +178,20 @@ public class Overloader extends Visitor {
       else{
         LOGGER.info("ALERT: NO METHOD FOUND. Ideal method " + actual_method);
         LOGGER.info("ALERT: Looking for someother suitable method");
-        // lets call the first helper method to get the best method
-        String best_method = find_best(n, methods, argumentList);
-        if (best_method != null){
-          n.set(2,best_method);
-          return inheritanceTree.getReturnType(best_method, nameOfClass);
+
+        String suitable_method = findSuitableMethod(n, methods, argumentList, actual_method);
+        if (suitable_method != null){
+          n.set(2,suitable_method);
+          return inheritanceTree.getReturnType(suitable_method,nameOfClass);
         }
-        // We are screwed at this point.
         else{
-          LOGGER.warning("MASSIVE FAILURE: DID NOT FIND THE BEST METHOD");
+          LOGGER.warning("MASSIVE FAILURE! Could not find " + actual_method);
         }
       }
     }
     return null;
   }
+
   /* This method gets the parents of the ideal arguments and then calls another helper method to 
      find a suitable method. It keeps doing this over and over until all the parents are Objects
      There is a possibility of infinite loop here. BEAWARE */
@@ -233,6 +233,165 @@ public class Overloader extends Visitor {
     // this should be returning null >> we are screwed.
     return suitable_method;
   }
+
+
+  private int getArgumentCount(String s){
+    int count = 0;
+    for (int i = 0; i<s.length();i++){
+      if (s.charAt(i) == '_'){
+        count++;
+      }
+    }
+    //LOGGER.warning(s + " has " + count + " args.");
+    return count;
+  }
+
+  private LinkedList<String> removeByArgumentCount( LinkedList<String> methods,
+                                      LinkedList<String> argumentList,
+                                      String idealMethod){
+
+    LinkedList<String> newMethods = new LinkedList<String>();
+    LOGGER.info("Printing methods list BEFORE: ");
+    LOGGER.info(methods.toString());
+    int size = argumentList.size();
+    int mSize = 0;
+    for(int i = 0; i < methods.size(); i++){
+      String m = methods.get(i);
+      // get the number of arguments in a method
+      mSize = getArgumentCount(m);
+      // if this method has the wrong number of args, remove it from the list
+      if (size == mSize){
+        newMethods.add(methods.get(i));
+      }
+    }
+    LOGGER.info("Printing methods list AFTER: ");
+    LOGGER.info(newMethods.toString());
+    return newMethods;
+  }
+
+
+  private int getDistance(String start, String target){
+
+    if(start.equals(target)) return 0;
+   
+    int distance = 0;
+    boolean found = false;
+    String parent = start;
+
+    while (!parent.equals(target)){
+      LOGGER.info("getting Distance... " + parent);
+      parent = inheritanceTree.getParentOfNode(parent);
+      LOGGER.info(" is " + parent);
+      if (parent.equals(target)){
+        found = true;
+      }
+      distance++;
+
+      if (parent.equals("Object")){
+        break;
+      }
+      if (parent.equals("No Parent Found")){
+        found = false;
+        break;
+      }
+    }
+
+    if (found) {
+      return distance;
+    }
+    else{
+      return -1; //could not find
+    }
+  }
+
+  private LinkedList<String> getArguments(String s){
+    /*
+     * Args are split from a string like methodName_A_B_C_Object
+     * to a linkedlist like [A->B->C]
+     */
+    //LOGGER.warning("Getting args from " + s);
+    LinkedList<String> foundArgs = new LinkedList<String>();
+    for(int i = 0; i<s.length();i++){
+      if (s.charAt(i) == '_'){
+        int nextUnderscore = s.indexOf("_",i+1);
+        if (nextUnderscore == -1){
+          //did not fund an underscore. This occurs at end of file.
+          foundArgs.add(s.substring(i+1));
+        }
+        else{
+          foundArgs.add(s.substring(i+1, nextUnderscore));          
+        }
+      }
+    }
+    //LOGGER.warning("Found args " + foundArgs.toString());
+    return foundArgs;
+  }
+
+
+  private LinkedList<String> duplicateLL(LinkedList<String> old){
+    LinkedList<String> newLL = new LinkedList<String>();
+    for(String s : old){
+      newLL.add(s);
+    }
+    return newLL;
+  }
+
+
+  /* Remove any entries in the methods list which are impossible to call. */
+  private LinkedList<String> removeByRelationship(  LinkedList<String> methods,
+                                      LinkedList<String> idealArgs,
+                                      String idealMethod){
+    LOGGER.info("Removing for " + idealMethod);
+    LOGGER.info("BEFORE: " + methods.toString());
+
+    LinkedList<String> mArgs = new LinkedList<String>();
+    LinkedList<String> newMethods = new LinkedList<String>();
+    newMethods = duplicateLL(methods);
+
+    for (int i = 0; i<methods.size(); i++){
+      String m = methods.get(i);
+      mArgs = getArguments(m);
+
+      innerloop:
+      for(int j = 0; j<mArgs.size(); j++){
+        /* 
+         * If both the ideal and found params are prim types,
+         * we check for equality and remove the method if not equal. 
+         */
+        if (isPrim(idealArgs.get(j))){
+          if(isPrim(mArgs.get(j))){
+            if (!(mArgs.get(j)).equals(idealArgs.get(j))){
+              newMethods.remove(methods.get(i));
+              break innerloop;
+            }
+          }
+          else{
+            newMethods.remove(methods.get(i));
+            break innerloop;
+          }
+        }
+
+        /* 
+         * Find whether or not an argument has valid ancestry
+        */
+
+        String arg = mArgs.get(j);
+        if (idealArgs.get(j) != arg){
+          int dist = getDistance(idealArgs.get(j),arg);
+          if (dist == -1){
+            newMethods.remove(methods.get(i));
+            break innerloop;
+          }
+        }
+      }
+    }
+
+
+    LOGGER.info("AFTER: " + newMethods.toString());
+
+    return newMethods;
+  }
+
   /* this helper method calls another helper method to permute the different combinations of the
      arguments*/
   private String find_suitable_method(GNode n, LinkedList<String> methods, LinkedList<String> children, LinkedList<String> parent){
@@ -279,11 +438,59 @@ public class Overloader extends Visitor {
         break outerloop;
       }
     }
-    if (found1){
+
+    if(found1){
       return actual_method;
     }
-    else
+    else return null;
+  }
+
+  private String selectByPrecision( LinkedList<String> methods,
+                                                LinkedList<String> argumentList,
+                                                String idealMethod){
+    LOGGER.info("Selecting by precision for " + idealMethod);
+    String bestMatchName = "";
+    int bestMatchValue = 999999;
+    int distance = -1;
+    LinkedList<String> mArgs;
+
+    for(String m : methods){
+      mArgs = getArguments(m);
+      distance = 0;
+      for (int j = 0; j<mArgs.size(); j++){
+        /* See how far away an argument is from its candidate */
+        distance += getDistance(argumentList.get(j),mArgs.get(j));
+      }
+      if (distance < bestMatchValue){
+        bestMatchValue = distance;
+        bestMatchName = m;
+      }
+    }
+
+    if (bestMatchValue == -1){
+      LOGGER.warning("Could not find a suitable method.");
+    }
+
+    return bestMatchName;
+  }
+
+  private String findSuitableMethod(  GNode n,
+                                        LinkedList<String> methods,
+                                        LinkedList<String> argumentList,
+                                        String idealMethod){
+  
+    methods = removeByArgumentCount(methods,argumentList,idealMethod);
+
+    methods = removeByRelationship(methods,argumentList,idealMethod);
+
+    String suitableMethod = selectByPrecision(methods,argumentList,idealMethod);
+
+    if (suitableMethod.length() == 0){
       return null;
+    }
+    else{
+      return suitableMethod;
+    }
   }
 
   public LinkedList<String> visitArguments(GNode n){
