@@ -29,6 +29,7 @@ public class CCCP extends Visitor {
     Inheritance inheritanceTree;
   private static final boolean VERBOSE = false;
   LinkedList<GNode> classFields = new LinkedList<GNode>();
+  LinkedList<String> constructorargs = new LinkedList<String>();
 	/* We should base this file on src/xtc/lang/CPrinter.java */
 
 	/* This file will have a ton of methods of two types:
@@ -56,6 +57,7 @@ public class CCCP extends Visitor {
   private boolean visitedNewClassExp;
   private boolean visitedConstructorFormalParam;
   private boolean createdInitMethod;
+  private boolean insideConstBlock;
 
 	public CCCP(Printer p, SymbolTable table, Inheritance inh, LinkedList<String> sNAmes){
     this.printer = p;
@@ -213,13 +215,18 @@ public class CCCP extends Visitor {
       printer.p(javaClassName + " " + className + "::init(" +javaClassName + " __this, " );
     }
     printer.p(n.getNode(3));
+    for (int i = 0; i < n.getNode(3).size(); i++){
+      constructorargs.add(n.getNode(3).getNode(i).getString(3));
+    }
     printer.pln("){");
     String parent = inheritanceTree.getParentOfNode(javaClassName);
     /* What if the parent constructor also has arguments? May need to fix this later*/
     if (parent != null){
       printer.pln("__"+ parent + "::init(__this);");
     }
+    insideConstBlock = true;
     visit(n.getNode(5));
+    insideConstBlock = false;
     for (int i = 0; i < classFields.size(); i++){
       printLoveField(classFields.get(i));
     }
@@ -402,11 +409,11 @@ public class CCCP extends Visitor {
   }
 
   public void visitPrimaryIdentifier(GNode n) {
-    //if this is a field, prepend "__this->"
     String variableName = n.getString(0);
-    /*if (classFields.contains(variableName)){
-      printer.p("__this->" + variableName);
-    }*/
+    if (insideConstBlock){
+      printHandleConst(n);
+      return;
+    }
     if (table.current().isDefined(variableName)) {
       Type type = (Type) table.current().lookup(variableName);
       if (JavaEntities.isFieldT(type)){
@@ -420,6 +427,34 @@ public class CCCP extends Visitor {
         printer.p(variableName);
     }
   } 
+
+  private void printHandleConst(GNode n){
+    String variableName = n.getString(0);
+    if(constructorargs.size() == 0){
+      if (table.current().isDefined(variableName)) {
+        Type type = (Type) table.current().lookup(variableName);
+        if (JavaEntities.isFieldT(type)){
+          printer.p("__this->" + variableName);
+        }
+        else {
+          printer.p(variableName);
+        }
+      }
+      else{
+        printer.p(variableName);
+      }
+    }
+    else {
+      for (int i = 0; i < constructorargs.size(); i++){
+        if (variableName.equals(constructorargs.get(i))){
+          printer.p(variableName);
+        }
+        else {
+          printer.p("__this->" + variableName);
+        }
+      }
+    }
+  }
 
   public void visitDeclarators(GNode n){
     if (n.size() == 1) {
