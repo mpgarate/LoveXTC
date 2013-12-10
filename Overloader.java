@@ -135,6 +135,7 @@ public class Overloader extends Visitor {
     }
     // name of class is the class name incase of static methods
     String nameOfClass = className;
+    LOGGER.info("nameOfClass is " + nameOfClass);
     // else it is the class of the primary identifier 
     if (n.getNode(0) != null){
       String variableName = n.getNode(0).getString(0);
@@ -147,8 +148,16 @@ public class Overloader extends Visitor {
 
     //If there's no overloading going on, we return the return type.
     if (overloaded==false) {
-      String returntype = inheritanceTree.getReturnType(methodName, nameOfClass);
-      return returntype;
+      //LOGGER.warning("nameOfClass is " + nameOfClass + "method name is " + methodName);
+      String returntype;
+      if (inheritanceTree.getReturnType(methodName, nameOfClass) != null){
+        returntype = inheritanceTree.getReturnType(methodName, nameOfClass);
+        if (returntype != null){
+          return returntype;
+        }
+      }
+      
+      return null;
     }
 
     /* if method is overloaded then change the method name in the node 

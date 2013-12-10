@@ -305,6 +305,10 @@ public class CCCP extends Visitor {
   }
 
   public void visitCallExpression(GNode n){
+    if (n.getNode(0).hasName("SuperExpression")){
+      String parent = inheritanceTree.getParentOfNode(javaClassName);
+      printer.pln(parent +" tmp = __"+ parent + "::init(new __"+ parent+"());");
+    }
     printer.p(n.getNode(0));
     if (staticMethods.contains(n.getString(2))){
       printer.p("->");
@@ -320,6 +324,11 @@ public class CCCP extends Visitor {
     printer.p(")");
     /*LinkedList<GNode> methods = inheritanceTree.getVTableForNode(javaClassName);
     printer.p(methods.toString());*/
+  }
+
+  public void visitSuperExpression(GNode n){
+    String parent = inheritanceTree.getParentOfNode(javaClassName);
+    printer.p("tmp");
   }
 
   public void visitArguments(GNode n){
