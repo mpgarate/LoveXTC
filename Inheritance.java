@@ -266,7 +266,11 @@ public class Inheritance {
 	}
 
 	public String getReturnType(String methodName, String className) {
-		GNode dataLayout = (GNode)searchForNode(root, className).getNode(0).getNode(2);
+		GNode a = (GNode)searchForNode(root, className);
+		if (a==null) {
+			System.err.println("Node "+className+" that was searched for was not found");
+		}
+		GNode dataLayout = (GNode)a.getNode(0).getNode(2);
 		for (int i=0;i<dataLayout.size();i++) {
 			//For each method in the dataLayout, compare it's name against the methodName we're searching for
 			if (dataLayout.get(i) instanceof Node && dataLayout.getNode(i).hasProperty("typeOfNode")  && dataLayout.getNode(i).getProperty("typeOfNode").equals("method")) {
@@ -317,6 +321,17 @@ public class Inheritance {
 	
     private GNode searchForNode(GNode node, String name) {
 		// DOES A DEPTH-FIRST SEARCH THROUGH THE TREE FOR A NODE OF SPECIFIC NAME
+
+    	//Removes extra underscores at beginning of name:
+    	for (int i=0;i<name.length();i++) {
+    		if (name.charAt(i)=='_') {
+    			name=name.substring(i+1,name.length());
+    		}
+    		else {
+    			break;
+    		}
+    	}
+
 		if (node.getNode(0).getString(1).equals(name)) {
 	    	return node;
 		}
