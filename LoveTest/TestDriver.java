@@ -103,16 +103,30 @@ public class TestDriver{
     String name = "Wies Test" + 13 + ".java";
     t.translateAndCompare(path, name);
   }
-  /* This works but is not yet tested properly
+
+  /* 
+    Wies test 14 is handled correctly, but the error output is not 
+    Identical. Here our test driver ensures that our output for test 14
+    compiles, runs, and prints nothing to stdout, just like the java file. 
+  */
   @Test public void translateWies14(){
     String path = "examples/wies-tests/Test" + 14 + ".java";
     String name = "Wies Test" + 14 + ".java";
     t.translateAndCompare(path, name);
   }
-  */
   @Test public void translateWies100(){
     String path = "examples/wies-tests/Test" + 100 + ".java";
     String name = "Wies Test" + 100 + ".java";
+    t.translateAndCompare(path, name);
+  }
+  @Test public void translateWies101(){
+    String path = "examples/wies-tests/Test" + 101 + ".java";
+    String name = "Wies Test" + 101 + ".java";
+    t.translateAndCompare(path, name);
+  }
+  @Test public void translateWies102(){
+    String path = "examples/wies-tests/Test" + 102 + ".java";
+    String name = "Wies Test" + 102 + ".java";
     t.translateAndCompare(path, name);
   }
 }

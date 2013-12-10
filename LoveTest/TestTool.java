@@ -65,8 +65,10 @@ public class TestTool{
 
       Process process2 = rt.exec("java -cp " + directory + " " + className);
       String stdOut = printCommandStdOut(process2);
-      printCommandStdErr(process2);
+      String stdErr = printCommandStdErr(process2);
       System.out.println("-------------------------------------");
+
+      //if (stdErr.length() > 0) return stdErr;
       return stdOut;
     }
     catch(IOException e){
@@ -82,9 +84,11 @@ public class TestTool{
     try{
       Process process = rt.exec("output/a.out");
       String stdOut = printCommandStdOut(process);
-      printCommandStdErr(process);
+      String stdErr = printCommandStdErr(process);
 
       System.out.println("-------------------------------------");
+
+      //if (stdErr.length() > 0) return stdErr;
       return stdOut;
     }
     catch(IOException e){
@@ -162,20 +166,23 @@ public class TestTool{
     }
     return sb.toString();
   }
-  private void printCommandStdErr(Process pr){
+  private String printCommandStdErr(Process pr){
     BufferedReader input = new BufferedReader(new InputStreamReader(pr.getErrorStream()));
     String line=null;
+    StringBuilder sb = new StringBuilder();
     try{
       if (input.readLine() != null){
         while((line=input.readLine()) != null) {
-          System.out.println(line);
+          sb.append("\n");
+          //System.out.println(line);
+          sb.append(line);
         }
-        //assertTrue(1==0);
-        System.exit(0);
+        sb.append("\n");
       }
     }
     catch(IOException e){
       System.out.println("IO Exception");
     }
+    return sb.toString();
   }
 }
