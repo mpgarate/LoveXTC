@@ -331,6 +331,55 @@ public class CCCP extends Visitor {
     printer.p("tmp");
   }
 
+  public void visitInstanceOfExpression(GNode n){
+    String variableName = n.getNode(0).getString(0);
+    String start = null;
+    if (table.current().isDefined(variableName)) {
+      Type type = (Type) table.current().lookup(variableName);
+      if (type.hasAlias()){
+        start = type.toAlias().getName();
+      }
+    }
+    String target =  n.getNode(1).getNode(0).getString(0);
+    if (start != null){
+      if (getDistance(start,target) >= 0){
+        printer.p("\"true\"");
+      }
+    }
+  }
+
+  private int getDistance(String start, String target){
+
+    if(start.equals(target)) return 0;
+   
+    int distance = 0;
+    boolean found = false;
+    String parent = start;
+
+    while (!parent.equals(target)){
+      parent = inheritanceTree.getParentOfNode(parent);
+      if (parent.equals(target)){
+        found = true;
+      }
+      distance++;
+
+      if (parent.equals("Object")){
+        break;
+      }
+      if (parent.equals("No Parent Found")){
+        found = false;
+        break;
+      }
+    }
+
+    if (found) {
+      return distance;
+    }
+    else{
+      return -1; //could not find
+    }
+  }
+
   public void visitArguments(GNode n){
 
       for (int i = 0; i < n.size() ; i++){
