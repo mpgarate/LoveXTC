@@ -21,7 +21,11 @@ class A           { public String toString() { return "A"; } }
 class B extends A { public String toString() { return "B"; } }
 class C extends B { public String toString() { return "C"; } }
 
-class ParentOverloaded {
+class ParentParent {
+  public void m(C c1, C c2, C c3) { System.out.println("PPO.m(C,C,C)     : "+ c1 +", "+ c2 + ", " +c3);}
+}
+
+class ParentOverloaded extends ParentParent {
 
   public void m(C c)        { System.out.println("ParentOverloaded.m(C)       : " + c); } 
   public void m(A a, C c, A a1) { System.out.println("ParentOverloaded.m(A,C,A)     : "+ a +", "+ c + ", " +a1);}
@@ -49,7 +53,7 @@ public class OverOverloaded  extends ParentOverloaded{
   public void m(B b1, A a2) { System.out.println("Overloaded.m(B,A)     : "+ b1 +", "+ a2);}
   public void m(C c1, C c2) { System.out.println("Overloaded.m(C,C)     : "+ c1 +", "+ c2);}
   public void m(A a, B b, A a1) { System.out.println("Overloaded.m(A,B,A)     : "+ a +", "+ b + ", " +a1);}
-  public void m(B b, C c, C c1) { System.out.println("Overloaded.m(B,C,C)     : "+ b +", "+ c + ", " +c1);}
+  //public void m(B b, C c, C c1) { System.out.println("Overloaded.m(B,C,C)     : "+ b +", "+ c + ", " +c1);}
   public void m(B b, B b1, B b2) { System.out.println("Overloaded.m(B,B,B)     : "+ b +", "+ b1 + ", " +b2);}
   public void m(A a, A a1, A a2) { System.out.println("Overloaded.m(A,A,A)     : "+ a +", "+ a1 + ", " +a2);}
   public void m(Object o, A a, A a2) { System.out.println("Overloaded.m(Object,A,A)     : "+ o +", "+ a + ", " +a2);}
@@ -58,7 +62,6 @@ public class OverOverloaded  extends ParentOverloaded{
   public static void main(String[] args) {
     OverOverloaded o = new OverOverloaded();
     ParentOverloaded po = new OverOverloaded();
-    OverOverloaded oo = new ParentOverloaded();
     byte n1 = 1, n2 = 2;
     short s = 5;
     long l1 = 123456789;
@@ -84,9 +87,6 @@ public class OverOverloaded  extends ParentOverloaded{
 
     po.m(c,c,c);
     po.m(a,b,(A)c);
-
-    oo.m(c,c,c);
-    oo.m(a,b,(A)c);
   }
 
 }
