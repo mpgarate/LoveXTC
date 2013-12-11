@@ -29,6 +29,12 @@ public class TestDriver{
     String name = "Overloaded.java";
     t.translateAndCompare(path, name);
   }
+  /*
+  @Test public void translateOverOverloaded() {
+    String path = "examples/OverOverloaded.java";
+    String name = "OverOverloaded.java";
+    t.translateAndCompare(path, name);
+  } */
   @Test public void translateDerived() {
     String path = "examples/Derived.java";
     String name = "Derived.java";
