@@ -438,8 +438,6 @@ public class Inheritance {
 
     private GNode copyNode(GNode oldNode) {
 
-    	
-
 		GNode newNode = GNode.create(oldNode.getName());
 		if (oldNode.hasProperty("typeOfNode")) {
 			newNode.setProperty("typeOfNode", oldNode.getProperty("typeOfNode"));
