@@ -96,7 +96,7 @@ public class DataLayoutCreator extends NodeHandler {
 		objectDataLayout.add(createConstructor("Object", null));
 		String arg[] = { "Object" };
 		String modifier[] = { "static" };
-		objectDataLayout.add(createMethod(modifier, "hashCode", null, "int32_t",
+		objectDataLayout.add(createMethod(modifier, "hashCode", null, "int",
 					"Object",isVTable));
 		objectDataLayout.add(createMethod(modifier, "equals", new String[] {
 					"Object" }, "bool", "Object",isVTable));
@@ -120,7 +120,7 @@ public class DataLayoutCreator extends NodeHandler {
 					"vtable", null));
 		stringDataLayout.add(createConstructor("String", null));
 		String modifier[] = { "static" };
-		stringDataLayout.add(createMethod(modifier, "hashCode", null, "int32_t",
+		stringDataLayout.add(createMethod(modifier, "hashCode", null, "int",
 					"String",isVTable));
 		stringDataLayout.add(createMethod(modifier, "equals", new String[] {
 					"Object" }, "bool", "String",isVTable));
@@ -131,9 +131,9 @@ public class DataLayoutCreator extends NodeHandler {
 		stringDataLayout.add(createMethod(modifier, "__class", null, "Class",
 					"String",isVTable));
 		stringDataLayout.add(createMethod(new String[] { "static" }, "length",
-					null, "int32_t", "String",isVTable));
+					null, "int", "String",isVTable));
 		stringDataLayout.add(createMethod(new String[] { "static" }, "charAt",
-					new String[] { "int32_t" }, "int32_t", "String",isVTable));
+					new String[] { "int" }, "int", "String",isVTable));
 		return stringDataLayout;
   }
 

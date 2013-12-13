@@ -449,9 +449,10 @@ public class NodeHandler {
 	    // Converts the java type to the corresponding C++ Type
 	protected String convertMethodNameType(String javaType) {
 		String cppType = javaType;
+		/*
 		if (javaType.equals("int")){
 			cppType = "int32_t";
-		}
+		}*/
 		return cppType;
 	}
 	    //End Helper Methods

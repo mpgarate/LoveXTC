@@ -55,7 +55,7 @@ public class VTableCreator extends NodeHandler {
 	GNode objectVTable = GNode.create("VTable");
 	String arg[] = { "Object" };
 	objectVTable.add(createMethod(null, "__isa", null, "Class", "Object", isVTable));
-	objectVTable.add(createMethod(null, "hashCode", null, "int32_t",
+	objectVTable.add(createMethod(null, "hashCode", null, "int",
 				      "Object", isVTable));
 	objectVTable.add(createMethod(null, "equals", new String[] {"Object" }, "bool", "Object", isVTable));
 	objectVTable.add(createMethod(null, "getClass", null, "Class", "Object", isVTable));
@@ -67,9 +67,9 @@ public class VTableCreator extends NodeHandler {
 	boolean isVTable = true;
 	GNode stringVTable = setObjectVTable();
 	stringVTable.add(createMethod(null, "length",
-				      null, "int32_t", "String",isVTable));
+				      null, "int", "String",isVTable));
 	stringVTable.add(createMethod(null, "charAt",
-				      null, "int32_t", "String",isVTable));
+				      null, "int", "String",isVTable));
 	return stringVTable;
     }
 
