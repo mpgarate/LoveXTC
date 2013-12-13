@@ -81,8 +81,17 @@ public class InheritancePrinter extends Visitor {
   }
 
   public void visitDataLayoutMethodDeclaration(GNode n){
-          if (!(n.get(0) == null)) printer.p(n.getNode(0));
-          if (!(n.get(1) == null)) printer.p(n.getString(1)).p(" ");
+    if (!(n.get(0) == null)) {
+      printer.p(n.getNode(0));
+    }
+    if (!(n.get(1) == null)) {
+      if (n.getString(1).equals("int")){
+        printer.p("int32_t").p(" ");
+      }
+      else{
+        printer.p(n.getString(1)).p(" ");
+      }
+    }
     String methodName = n.getString(2);
     printer.p(methodName);
     printer.p("(");
@@ -147,8 +156,16 @@ public class InheritancePrinter extends Visitor {
       printer.p(",");
       printer.pln();
       printer.p(n.getString(2)).p("(");
-      // Should make it more general than this.
-      if (n.get(1) != null) {printer.p("(").p(n.getString(1)).p("(*)(").p(n.getNode(4));}
+      if (n.get(1) != null) {
+        printer.p("(");
+        if(n.getString(1).equals("int")){
+          printer.p("int32_t");
+        }
+        else{
+          printer.p(n.getString(1));
+        }
+        printer.p("(*)(").p(n.getNode(4));
+      }
       if (n.getNode(4).size()==0){
         printer.p(className);
       }
@@ -163,7 +180,12 @@ public class InheritancePrinter extends Visitor {
   }
   public void visitParameters(GNode n){
     for (int x = 0; x < n.size() ; x++){
-      printer.p(n.getString(x));
+      if (n.getString(x).equals("int")){
+        printer.p("int32_t");
+      }
+      else{
+        printer.p(n.getString(x));
+      }
       if (x != (n.size()-1)){
         printer.p(",");
       }
