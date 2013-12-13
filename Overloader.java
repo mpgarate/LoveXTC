@@ -526,9 +526,16 @@ public class Overloader extends Visitor {
       if (n.getNode(i).hasName("CallExpression")){
         answer.add(visitCallExpression((GNode)n.getNode(i)));
       }
+      if (n.getNode(i).hasName("FloatingPointLiteral")){
+        answer.add(visitFloatingPointLiteral((GNode)n.getNode(i)));
+      }
     }
     return answer;
   }  
+
+  public String visitFloatingPointLiteral(GNode n){
+    return "double";
+  }
 
   public String visitAdditiveExpression(GNode n){
     String answer = "";

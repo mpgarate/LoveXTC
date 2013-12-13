@@ -183,7 +183,12 @@ public class CCCP extends Visitor {
 
   /** Visit the specified primitive type. */
   public void visitPrimitiveType(GNode n) {
-    printer.p(n.getString(0));
+    if(n.getString(0).equals("int")){
+      printer.p("int32_t");
+    }
+    else{
+      printer.p(n.getString(0));
+    }
   } 
 
   public void visitStringLiteral(GNode n){
@@ -346,6 +351,10 @@ public class CCCP extends Visitor {
         printer.p("\"true\"");
       }
     }
+  }
+
+  public void visitFloatingPointLiteral(GNode n){
+    printer.p(n.getString(0));
   }
 
   private int getDistance(String start, String target){

@@ -42,10 +42,10 @@ public class ASTModifier extends Visitor {
   }
 
   public void visitPrimitiveType(GNode n){
-    if(n.getString(0).equals("int")){
+    /*if(n.getString(0).equals("int")){
       n.set(0,"int32_t");
-    }
-    else if(n.getString(0).equals("byte")){
+    }*/
+    if(n.getString(0).equals("byte")){
       n.set(0,"unsigned char");
     }
   }
