@@ -142,7 +142,7 @@ public class Overloader extends Visitor {
     String nameOfClass = className;
     LOGGER.info("nameOfClass is " + nameOfClass);
     // else it is the class of the primary identifier 
-    if (n.getNode(0) != null){
+    if (n.getNode(0) != null && n.getNode(0).hasName("PrimaryIdentifier")){
       String variableName = n.getNode(0).getString(0);
       LOGGER.info("variableName " + variableName);
       if (table.current().isDefined(variableName)) {
@@ -174,12 +174,35 @@ public class Overloader extends Visitor {
       String actual_method = n.getString(2);
       LOGGER.info("name of class " + nameOfClass);
       LinkedList<String> methods = inheritanceTree.getVTableForNode(nameOfClass);
+      if (methods.isEmpty()){
+        if (n.getNode(0).hasName("PrimaryIdentifier")){
+          nameOfClass = n.getNode(0).getString(0);
+        }
+        methods = inheritanceTree.getVTableForNode(nameOfClass);
+      }
+      if (n.getNode(0).hasName("CallExpression")){
+        actual_method = actual_method + visitCallExpression((GNode) n.getNode(0));
+        if (methods.contains(actual_method)){
+          n.set(2,actual_method);
+          return inheritanceTree.getReturnType(actual_method,nameOfClass);
+        }
+        else if (staticMethods.contains(actual_method)){
+          LOGGER.info("Static method" + actual_method);
+          n.set(2,actual_method);
+          return inheritanceTree.getReturnType(actual_method,nameOfClass);
+        }
+        else{
+          LOGGER.info("ALERT: Method chainning: No method was found" + actual_method);
+        }
+        return null;
+      }
       argumentList = visitArguments((GNode)n.getNode(3));
       for (int i = 0; i < argumentList.size(); i++){
         actual_method = actual_method + "_" + argumentList.get(i);
       }
       LOGGER.info("ideal method is = " + actual_method);
-      //System.out.println(methods.toString());
+      LOGGER.info("method list " + methods.toString());
+      LOGGER.info("argumentList list " + argumentList.toString());
       /* if the method name just found is legal then we change the name
          else we look for a more suitable method */
       if (methods.contains(actual_method)){

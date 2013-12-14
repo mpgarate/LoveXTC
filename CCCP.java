@@ -354,15 +354,39 @@ public class CCCP extends Visitor {
       String parent = inheritanceTree.getParentOfNode(javaClassName);
       printer.pln(parent +" tmp = __"+ parent + "::init(new __"+ parent+"());");
     }
-    printer.p(n.getNode(0));
+    //printer.p(n.getNode(0));
+    String variableName = "";
+    if (n.getNode(0).hasName("PrimaryIdentifier")){
+      variableName = n.getNode(0).getString(0);
+    }
+    boolean static_name = false;
+    boolean using_static_class_name = false;
     if (staticMethods.contains(n.getString(2))){
-      printer.p("->");
+      static_name = true;
+      if (!(table.current().isDefined(variableName))){
+        using_static_class_name = true;
+      }
+    }
+    if (static_name){
+      if(using_static_class_name){
+        printer.p("__"+n.getNode(0).getString(0)+"::");
+      }
+      else{
+        printer.p(n.getNode(0));
+        printer.p("->");
+      }
     }
     else{
+      printer.p(n.getNode(0));
       printer.p("->__vptr->");
     }
     printer.p(n.getString(2) + "(");
-    printer.p(n.getNode(0));
+    if (using_static_class_name){
+      printer.p("__" + variableName + "::init(new __" + variableName + "())");
+    }
+    else{
+      printer.p(n.getNode(0));
+    }
     if(n.getNode(3).size() > 0)
     printer.p(", ");	
     printer.p(n.getNode(3));    
