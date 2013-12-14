@@ -143,13 +143,17 @@ public class CCCP extends Visitor {
     printer.decr();
   }
 
+  boolean inMainMethod = false;
+
   public void visitMethodDeclaration(GNode n){
     v("/* visiting method declaration */");
     table.enter(n);
     String methodName = n.getString(3);
     if (methodName.equals("main")) {
+      inMainMethod = true;
       printer.pln("void " + className + "::main(__rt::Ptr<__rt::Array<String> > args) {");
       printer.p(n.getNode(7));
+      inMainMethod = false;
       printer.pln("}");
       printDefaultMainMethod();
     }
@@ -518,16 +522,32 @@ public class CCCP extends Visitor {
   }
 
   public void visitCoutCallExpression(GNode n){
-    printer.p(n.getNode(0));
-    printer.p("->__vptr->");
     String functionName = n.getString(1);
-    printer.p(functionName);
-    printer.p("(");
-    visit(n);
-    printer.p(")");
-    /*if (functionName.equals("toString")){
-      printer.p("->data");
-    }*/
+    if (inMainMethod && (table.current().isDefined(functionName))){
+      //cout << __Test020::x(new __Test020) <<endl;
+      printer.p(className + "::"  + functionName);
+      printer.p("(");
+      printer.p("new " + className);
+
+      Node arguments = n.getNode(2);
+      if(arguments.size() > 0){
+        printer.p(",");
+      }
+
+      visit(n);
+      printer.p(")");
+    }
+    else{   
+      printer.p(n.getNode(0));
+      printer.p("->__vptr->");
+      printer.p(functionName);
+      printer.p("(");
+      visit(n);
+      printer.p(")");
+      /*if (functionName.equals("toString")){
+        printer.p("->data");
+      }*/ 
+    }
 
   }
   public void visitCoutAdditiveExpression(GNode n){
