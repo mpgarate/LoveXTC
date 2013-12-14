@@ -122,7 +122,13 @@ public class ASTModifier extends Visitor {
         cout.add(n.getNode(0).getNode(3));
         n.set(0, cout);
       }
-    }
+    }else if (n.getNode(0).hasName("Expression")){
+		GNode expressionNode = (GNode) n.getNode(0);
+		if(expressionNode.get(2) instanceof Node && expressionNode.getNode(2) != null && expressionNode.getNode(2).hasName("StringLiteral")){
+			String literal = expressionNode.getNode(2).getString(0);
+			expressionNode.getNode(2).set(0,"__String::init(new __String(" + literal + "))");
+		} 
+	}
     visit(n);
   }
 

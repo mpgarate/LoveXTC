@@ -287,7 +287,9 @@ public class Overloader extends Visitor {
   private int getDistance(String start, String target){
 
     if(start.equals(target)) return 0;
-   
+    if (start.equals("byte") && target.equals("int")){
+      return 0;
+    }
     int distance = 0;
     boolean found = false;
     String parent = start;
@@ -374,9 +376,8 @@ public class Overloader extends Visitor {
          */
         if (isPrim(idealArgs.get(j))){
           if(isPrim(mArgs.get(j))){
-            if (!(mArgs.get(j)).equals(idealArgs.get(j))){
-              newMethods.remove(methods.get(i));
-              break innerloop;
+            if (idealArgs.get(j).equals("byte")){
+            // may need to to something here or later.
             }
           }
           else{
@@ -560,7 +561,7 @@ public class Overloader extends Visitor {
         answer = "double";
       }
       else{
-        answer = "int32_t";
+        answer = "int";
       }
     }
     else {
