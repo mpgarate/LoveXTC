@@ -58,6 +58,7 @@ public class CCCP extends Visitor {
   private boolean visitedConstructorFormalParam;
   private boolean createdInitMethod;
   private boolean insideConstBlock;
+  private boolean inForControl = false;
 
 	public CCCP(Printer p, SymbolTable table, Inheritance inh, LinkedList<String> sNAmes){
     this.printer = p;
@@ -201,10 +202,49 @@ public class CCCP extends Visitor {
   public void visitBlock(GNode n){
     v("/* visiting block */");
     table.enter(n);
+    printer.pln("{");
     visit(n);
     printer.decr();
+    printer.pln("}");
     printer.pln();
     table.exit();
+  }
+
+  public void visitBasicForControl(GNode n){
+    inForControl = true;
+    printer.p("(");
+    visit(n);
+    inForControl = false;
+    printer.p(")");
+    printer.pln();
+  }
+
+  public void visitForStatement(GNode n){
+    table.enter(n); 
+    printer.p("for");
+    visit(n);
+    table.exit();
+  }
+
+  public void visitPostfixExpression(GNode n){
+    visit(n);
+    printer.p(n.getString(1));
+  }
+
+  public void visitRelationalExpression(GNode n){
+    dispatch(n.getNode(0));
+    printer.p(n.getString(1));
+    dispatch(n.getNode(2));
+    if(inForControl){
+      printer.p(";");
+    }
+  }
+
+  public void visitSubscriptExpression(GNode n){
+    dispatch(n.getNode(0));
+    printer.p("[");
+    dispatch(n.getNode(1));
+    printer.p("]");
   }
 
   public void visitConstructorDeclaration(GNode n){
@@ -484,7 +524,9 @@ public class CCCP extends Visitor {
     if (table.current().isDefined(variableName)) {
       Type type = (Type) table.current().lookup(variableName);
       if (JavaEntities.isFieldT(type)){
-        printer.p("__this->" + variableName);
+        if (table.current().isDefined(variableName)){
+          printer.p("__this->" + variableName);
+        }
       }
       else {
         printer.p(variableName);
@@ -535,6 +577,10 @@ public class CCCP extends Visitor {
         }
 
       }
+    }
+
+    if (inForControl){
+      printer.p(";");
     }
   }
 

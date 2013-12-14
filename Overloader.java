@@ -109,7 +109,12 @@ public class Overloader extends Visitor {
 
 
   public void visitBlock(GNode n){
+    table.enter(n);
+    visit(n);
+    table.exit();
+  }
 
+  public void visitForStatement(GNode n){
     table.enter(n);
     visit(n);
     table.exit();
@@ -168,10 +173,11 @@ public class Overloader extends Visitor {
       String actual_method = n.getString(2);
       LinkedList<String> methods = inheritanceTree.getVTableForNode(nameOfClass);
       argumentList = visitArguments((GNode)n.getNode(3));
-      LOGGER.info("ideal method is = " + actual_method);
       for (int i = 0; i < argumentList.size(); i++){
         actual_method = actual_method + "_" + argumentList.get(i);
       }
+      LOGGER.info("ideal method is = " + actual_method);
+      //System.out.println(methods.toString());
       /* if the method name just found is legal then we change the name
          else we look for a more suitable method */
       if (methods.contains(actual_method)){
@@ -180,6 +186,7 @@ public class Overloader extends Visitor {
       /* else if the method found is static inaddition to being overloaded
          then we just use it*/
       else if (staticMethods.contains(actual_method)){
+        LOGGER.info("Static method" + actual_method);
         n.set(2,actual_method);
       }
       /* At this point we have to find the best possible method blindly by 
@@ -282,7 +289,10 @@ public class Overloader extends Visitor {
   private int getDistance(String start, String target){
 
     if(start.equals(target)) return 0;
-    if (start.equals("byte") && target.equals("int")){
+    if (start.equals("byte") && (target.equals("int") || target.equals("double")) ){
+      return 0;
+    }
+    if (start.equals("int") && (target.equals("double") || target.equals("long")) ){
       return 0;
     }
     int distance = 0;
