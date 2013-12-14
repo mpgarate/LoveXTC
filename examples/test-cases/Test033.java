@@ -11,11 +11,11 @@ public class Test033 {
   public static void main(String[] args) {
     A a = new A();
     byte b = 1;
-    A.m(b);
-    A.m(a);
-    A.m(1.0);
-    A.m((Object) a);
-    A.m(new A(), a);
-    A.m(new Object(), a);
+    a.m(b);
+    a.m(a);
+    a.m(1.0);
+    a.m((Object) a);
+    a.m(new A(), a);
+    a.m(new Object(), a);
   }
 }

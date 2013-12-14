@@ -144,6 +144,7 @@ public class Overloader extends Visitor {
     // else it is the class of the primary identifier 
     if (n.getNode(0) != null){
       String variableName = n.getNode(0).getString(0);
+      LOGGER.info("variableName " + variableName);
       if (table.current().isDefined(variableName)) {
       Type type = (Type) table.current().lookup(variableName);
       nameOfClass = type.toAlias().getName();
@@ -171,6 +172,7 @@ public class Overloader extends Visitor {
     if (overloaded){
       LinkedList<String> argumentList = new LinkedList<String>();
       String actual_method = n.getString(2);
+      LOGGER.info("name of class " + nameOfClass);
       LinkedList<String> methods = inheritanceTree.getVTableForNode(nameOfClass);
       argumentList = visitArguments((GNode)n.getNode(3));
       for (int i = 0; i < argumentList.size(); i++){
