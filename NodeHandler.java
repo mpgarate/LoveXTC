@@ -275,7 +275,8 @@ public class NodeHandler {
 		String name = null, returnType = null;
 		if (astNode.getString(3) != null) {
 			name = astNode.getString(3);
-			if (name.equals("main")) return false;
+			/* We do add the main method to the tree and then mangle it in InheritancePrinter */
+			//if (name.equals("main")) return false;
 		}
 		classname = (String) inheritNode.getProperty("parent");
 		for (int i = 0; i < astNode.size(); i++) {
