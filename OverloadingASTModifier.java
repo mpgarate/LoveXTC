@@ -107,9 +107,6 @@ public class OverloadingASTModifier extends Visitor {
         	visit(overload.getNode(4));
         	ready=false;
         	for (int i=0;i<parameterList.size();i++) {
-        		if (parameterList.get(i).equals("int")) {
-        			parameterList.set(i, "int32_t");
-        		}
        			newNodeString = newNodeString+"_"+parameterList.get(i);
        		}
        		parameterList = new LinkedList<String>();
