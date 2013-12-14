@@ -257,11 +257,10 @@ public class Inheritance {
 			vTableList.add("Didn't find a node with that name");
 			return vTableList;
 		}
-		for (int i=0;i<node.getNode(0).getNode(2).size();i++) {
-			GNode entry = node.getNode(0).getNode(2).getNode(i);
-			if (entry.hasProperty("typeOfNode")&&entry.getProperty("typeOfNode").equals("method")&&entry.getString(6).equals("Overloaded")) {
-				vTableList.add(entry.getString(2));
-			}
+		for (int i=0;i<node.getNode(0).getNode(3).size();i++) {
+	      if (node.getNode(0).getNode(3).getNode(i).getString(6).equals("Overloaded")) {
+ 	        vTableList.add(node.getNode(0).getNode(3).getNode(i).getString(2));
+ 	    }
 		}
 		return vTableList;
 	}
