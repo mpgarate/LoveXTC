@@ -1,0 +1,21 @@
+18,19c18,19
+< A __A::self(A __this) {
+< return __this->self;
+---
+> //A __A::self(A __this) {
+> //return __this->self;
+21c21
+< }
+---
+> //}
+27a28,31
+> A __A::self_impl(A __this) {
+>   return __this->self;
+> }
+> 
+31c35,37
+< cout << a->__vptr->self(a)->__vptr->toString(a->__vptr->self(a)) <<endl;
+---
+> A tmp = a->__vptr->self(a);
+> __rt::checkNotNull(tmp);
+> std::cout << tmp->__vptr->toString(tmp) << std::endl;

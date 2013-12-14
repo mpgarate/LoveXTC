@@ -109,7 +109,12 @@ public class Overloader extends Visitor {
 
 
   public void visitBlock(GNode n){
+    table.enter(n);
+    visit(n);
+    table.exit();
+  }
 
+  public void visitForStatement(GNode n){
     table.enter(n);
     visit(n);
     table.exit();
