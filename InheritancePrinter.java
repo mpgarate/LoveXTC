@@ -69,6 +69,9 @@ public class InheritancePrinter extends Visitor {
 
   public void visitConstructorDeclaration(GNode n){
   	printer.pln("__" + n.getString(0) + "();");
+    
+    printer.pln("static void main(__rt::Ptr<__rt::Array<String> > args);");
+
     if (n.getNode(1).size() == 0){
       printer.pln("static " + className + " init(" + className + ");");
     }

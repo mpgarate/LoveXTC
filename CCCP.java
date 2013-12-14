@@ -148,10 +148,10 @@ public class CCCP extends Visitor {
     table.enter(n);
     String methodName = n.getString(3);
     if (methodName.equals("main")) {
-      printer.pln("int main(void){");
+      printer.pln("void " + className + "::main(__rt::Ptr<__rt::Array<String> > args) {");
       printer.p(n.getNode(7));
-      printer.pln("return 0;");
       printer.pln("}");
+      printDefaultMainMethod();
     }
     else {
     printer.p(n.getNode(2));
@@ -242,6 +242,7 @@ public class CCCP extends Visitor {
 
   public void visitSubscriptExpression(GNode n){
     dispatch(n.getNode(0));
+    printer.p("->__data");
     printer.p("[");
     dispatch(n.getNode(1));
     printer.p("]");
@@ -715,6 +716,34 @@ public class CCCP extends Visitor {
   /***************************************************************/
   /***************** Custom Helper Methods  **********************/
   /***************************************************************/
+
+  private void printDefaultMainMethod(){
+    /* Prints a main method like the following: */
+    /*
+      int main(int argc, char* argv[]) {
+        __rt::Ptr<__rt::Array<String> > args = new __rt::Array<String>(argc - 1);
+
+        for (int32_t i = 1; i < argc; i++) {
+          (*args)[i] = __rt::literal(argv[i]);
+        }
+        
+        __Test022::main(args);
+        
+        return 0;
+      }
+    */
+
+    printer.pln("int main(int argc, char* argv[]) {");
+    printer.pln("__rt::Ptr<__rt::Array<String> > args = new __rt::Array<String>(argc - 1);");
+    printer.pln();
+    printer.pln("for (int32_t i = 1; i < argc; i++) {");
+    printer.pln("(*args)[i-1] = __rt::literal(argv[i]);");
+    printer.pln("}");
+    printer.pln();
+    printer.pln(className + "::main(args);");
+    printer.pln("return 0;");
+    printer.pln("}");
+  }
 
   /* Unless the string is null, print it out as a line */
   private void printlnUnlessNull(String s){

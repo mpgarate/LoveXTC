@@ -19,13 +19,17 @@ public class TestTool{
   /***************************************************************/
 
   public void translateAndCompare(String path, String name){
+    translateAndCompare(path, name, "");
+  }
+
+  public void translateAndCompare(String path, String name, String args){
     System.out.println("Translating " + name);
     cleanup();
     File file = new File(path);
     translateFile(file);
     compileOutput();
-    String javaOut = runJavaFile(file,name);
-    String cppOut = runCPPOutput(name);
+    String javaOut = runJavaFile(file,name,args);
+    String cppOut = runCPPOutput(name,args);
     compareOutputs(javaOut,cppOut);
   }
 
@@ -52,7 +56,7 @@ public class TestTool{
     }
   }
 
-  public String runJavaFile(File file, String name){ 
+  public String runJavaFile(File file, String name, String args){ 
     System.out.println("Running " + " java file:");
     System.out.println("-------------------------------------");
 
@@ -63,7 +67,7 @@ public class TestTool{
       printCommandStdOut(process);
       printCommandStdErr(process);
 
-      Process process2 = rt.exec("java -cp " + directory + " " + className);
+      Process process2 = rt.exec("java -cp " + directory + " " + className + " " + args);
       String stdOut = printCommandStdOut(process2);
       String stdErr = printCommandStdErr(process2);
       System.out.println("-------------------------------------");
@@ -77,12 +81,12 @@ public class TestTool{
     }
   }
 
-  public String runCPPOutput(String name){ 
+  public String runCPPOutput(String name, String args){ 
     System.out.println("Running " + name + " CPP output file:");
     System.out.println("-------------------------------------");
 
     try{
-      Process process = rt.exec("output/a.out");
+      Process process = rt.exec("output/a.out" + " " + args);
       String stdOut = printCommandStdOut(process);
       String stdErr = printCommandStdErr(process);
 
