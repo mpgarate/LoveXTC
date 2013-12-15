@@ -21,28 +21,49 @@ import xtc.type.*;
 
 import java.util.logging.Logger;
 
-/** Determine the right method name in a method call. */
+/**
+ * A visitor that goes through all the CallExpressions and tries to find 
+ * the right method to call based on the arguments.
+ */
 public class Overloader extends Visitor {
+  /** A logger that we use for debugging purposes. */
   public final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
+  /** A symbol table that we build in Translator. */
   final private SymbolTable table;
+  /** The inheritance tree of the input file/files. */
   Inheritance inheritanceTree;
   private static final boolean VERBOSE = false;
 
-  /* making a linked list of primitive types for personal purposes
-     and a methos which return if a string is primitive or not
-     may or maynot be useful*/
+
+  /** 
+   *  A linked list of primitive types for personal purposes.
+   */
   LinkedList<String> primTypes = new LinkedList<String>();
+  /** 
+  * A method that returns if a given string is primitive or not.
+  * 
+  * @param s The input string.
+  * @return true if the string is of primitive type. 
+  */
   public boolean isPrim(String s){
     return primTypes.contains(s);
   }
 
 
- 
+ /** useful fields for the purposes of this files only. */
   private String className;
   private String javaClassName;
   private LinkedList<String> overloadedNames;
   private LinkedList<String> staticMethods;
 
+  /** 
+  * Constructor for Overloader
+  * 
+  * @param oNames A linked list of Overloaded method names.
+  * @param table SymbolTable for referencing scopes.
+  * @param inh Inheritance Tree for the current project in translation.
+  * @param sNames A linked list of static method names. 
+  */
 	public Overloader(SymbolTable table, Inheritance inh, LinkedList<String> oNames, LinkedList<String> sNames){
     this.table = table;
     this.inheritanceTree = inh;
@@ -58,6 +79,7 @@ public class Overloader extends Visitor {
     primTypes.add("char");
 	}
 
+  /** visiting compilation unit. */
 	public void visitCompilationUnit(GNode n) {
     if (null == n.get(0))
       visitPackageDeclaration(null);
@@ -74,6 +96,7 @@ public class Overloader extends Visitor {
     table.setScope(table.root());
   }
 
+  /** visiting class declaration. */
 	public void visitClassDeclaration(GNode n) {
     table.enter(n);
     className = n.getString(1);
@@ -81,20 +104,22 @@ public class Overloader extends Visitor {
     table.exit();
   }
 
+  /** visiting package declaration. */
   public void visitPackageDeclaration(GNode n) {
     if (! (n == null)){
       table.enter(n);
     }
 
   }
+  /** visiting import declaration. */
   public void visitImportDeclaration(GNode n) {
     visit(n);
   }
-
+  /** visiting class body. */
 	public void visitClassBody(GNode n) {
     visit(n);
   }
-
+  /** visiting method declaration. */
   public void visitMethodDeclaration(GNode n){
     table.enter(n);
     
@@ -105,26 +130,30 @@ public class Overloader extends Visitor {
     table.exit();
   }
 
-
+  /** visiting block declaration. */
   public void visitBlock(GNode n){
     table.enter(n);
     visit(n);
     table.exit();
   }
-
+  /** visiting For statement. */
   public void visitForStatement(GNode n){
     table.enter(n);
     visit(n);
     table.exit();
   }
-
+  /** visiting Expression Statement. */
   public void visitExpressionStatement(GNode n){
     visit(n);
   }
 
-  /* main work for overloading starts at this point
-     basically first we find if a method is overloaded or not.
-     if yes, then we visit the arguments to determine the correct name of method*/
+  /** 
+   *  main work for overloading starts in this method.
+   *  basically first we find if a method is overloaded or not.
+   *  if yes, then we visit the arguments to determine the correct name of method
+   *  @param n GNode of Call Expression
+   *  @return The return type of the method being called.
+   */
   public String visitCallExpression(GNode n){
     boolean overloaded = false;
     String methodName = n.getString(2);
@@ -236,7 +265,7 @@ public class Overloader extends Visitor {
     return null;
   }
 
-  /* This method gets the parents of the ideal arguments and then calls another helper method to 
+  /** This method gets the parents of the ideal arguments and then calls another helper method to 
      find a suitable method. It keeps doing this over and over until all the parents are Objects
      There is a possibility of infinite loop here. BEAWARE */
   private String find_best(GNode n, LinkedList<String> methods, LinkedList<String> argumentList){
@@ -278,7 +307,7 @@ public class Overloader extends Visitor {
     return suitable_method;
   }
 
-
+  /* gets the number of arguments given the method name*/
   private int getArgumentCount(String s){
     int count = 0;
     for (int i = 0; i<s.length();i++){
@@ -290,6 +319,7 @@ public class Overloader extends Visitor {
     return count;
   }
 
+  /* removes the methods from the linked list based on the # of arguments.*/
   private LinkedList<String> removeByArgumentCount( LinkedList<String> methods,
                                       LinkedList<String> argumentList,
                                       String idealMethod){
@@ -313,7 +343,7 @@ public class Overloader extends Visitor {
     return newMethods;
   }
 
-
+  /* Gets the distance a child is away from the parent.*/
   private int getDistance(String start, String target){
     LOGGER.info("start" + start + "target" + target);
     if(start.equals(target)) return 0;
@@ -353,6 +383,7 @@ public class Overloader extends Visitor {
     }
   }
 
+  /* gets the arguments from a method and return a linked list*/
   private LinkedList<String> getArguments(String s){
     /*
      * Args are split from a string like methodName_A_B_C_Object
@@ -376,7 +407,7 @@ public class Overloader extends Visitor {
     return foundArgs;
   }
 
-
+  /* helper method to duplicate a linked list*/
   private LinkedList<String> duplicateLL(LinkedList<String> old){
     LinkedList<String> newLL = new LinkedList<String>();
     for(String s : old){
@@ -492,7 +523,7 @@ public class Overloader extends Visitor {
     }
     else return null;
   }
-
+  /* removes the method based upon its distance score*/
   private String selectByPrecision( LinkedList<String> methods,
                                                 LinkedList<String> argumentList,
                                                 String idealMethod){
@@ -522,6 +553,7 @@ public class Overloader extends Visitor {
     return bestMatchName;
   }
 
+  /* just a handler function to control all the steps in overloading resolution*/ 
   private String findSuitableMethod(  GNode n,
                                         LinkedList<String> methods,
                                         LinkedList<String> argumentList,
@@ -540,7 +572,11 @@ public class Overloader extends Visitor {
       return suitableMethod;
     }
   }
-
+  /** 
+   *  Visits the arguments of the Call expression and dispatches on them.
+   *  @param n GNode of Argument
+   *  @return the linked list of arguments.
+   */
   public LinkedList<String> visitArguments(GNode n){
     LinkedList<String> answer = new LinkedList<String>();
     if (n.size() == 0){
@@ -572,10 +608,19 @@ public class Overloader extends Visitor {
     return answer;
   }  
 
+  /** 
+   *  just returns a double as a string.
+   *  @param n GNode of Floating Point Literal
+   *  @return the string double.
+   */
   public String visitFloatingPointLiteral(GNode n){
     return "double";
   }
-
+ /** 
+   *  visits the additive arguments to determine what is being added.
+   *  @param n GNode of Additive Expression
+   *  @return the type of the result.
+   */
   public String visitAdditiveExpression(GNode n){
     String answer = "";
     LinkedList<String> type = new LinkedList<String>();
@@ -604,7 +649,11 @@ public class Overloader extends Visitor {
     return answer;
   } 
 
-  
+   /** 
+   *  visits the primary identifier.
+   *  @param n GNode of Primary identifier
+   *  @return the string of the type of the primary identifier.
+   */
   public String visitPrimaryIdentifier(GNode n) {
     String variableName = n.getString(0);
     String nameOfClass = "";
@@ -623,16 +672,30 @@ public class Overloader extends Visitor {
   } 
 
   
-
+   /** 
+   *  visits the class expression.
+   *  @param n GNode of Class Expression
+   *  @return the type of the new class.
+   */
   public String visitNewClassExpression(GNode n){
     return n.getNode(2).getString(0);
   }
+   /** 
+   *  visiting cast expression.
+   *  @param n GNode of Cast expression
+   *  @return the type of cast.
+   */
   public String visitCastExpression(GNode n){
     if (n.getNode(1).hasName("CallExpression")){
       visitCallExpression((GNode)n.getNode(1));
     }
     return n.getNode(0).getNode(0).getString(0);
   }
+   /** 
+   *  visits string literal.
+   *  @param n GNode of String Literal
+   *  @return the string.
+   */
   public String visitStringLiteral(GNode n){
     return "String";
   }
