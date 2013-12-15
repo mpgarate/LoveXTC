@@ -23,11 +23,14 @@ import xtc.tree.Visitor;
 import xtc.util.Tool;
 
 import static org.junit.Assert.*;
+import java.util.LinkedList;
 
 import java.util.*;
 
 public class NodeHandler {
 	String className = "";
+	LinkedList<GNode> methodsToOverload = new LinkedList<GNode>();
+	LinkedList<GNode> methodsToCompare = new LinkedList<GNode>();
 	public NodeHandler() {
 	}
 
@@ -35,7 +38,6 @@ public class NodeHandler {
     // InheritanceTree
 	protected GNode handleClassBody(GNode inheritNode, GNode astNode, boolean isVTable) {
 		boolean foundConstructor = false;
-		GNode nodesToOverload = GNode.create("NodesToOverload");
 		className = inheritNode.getProperty("parent").toString();
 
 		//Resetting of parent methods
@@ -65,11 +67,6 @@ public class NodeHandler {
 						for (int j = 0; j < inheritNode.size() - 1; j++) {
 							if (inheritNode.getNode(j).hasProperty("typeOfNode") && inheritNode.getNode(j).getProperty("typeOfNode").equals("method")) {
 								if (nodeEquals((GNode)inheritNode.getNode(j), (GNode)inheritNode.getNode(inheritNode.size()-1), true)) {
-									//For already overloaded methods that are being overwritten, automatically overloads the new method.
-									if (inheritNode.getNode(j).getString(6).equals("Overloaded")) {
-										nodesToOverload.add(inheritNode.getNode(inheritNode.size()-1));
-										inheritNode.getNode(inheritNode.size()-1).set(6, "Overloaded");
-									}
 									inheritNode.set(j, inheritNode.getNode(inheritNode.size()-1));
 									inheritNode.getNode(j).set(5, "Overwritten");
 									isOverwritten = true;
@@ -82,7 +79,6 @@ public class NodeHandler {
 						}
 						else {
 							inheritNode.getNode(inheritNode.size()-1).set(5, "New");
-							checkForOverloading(inheritNode, (GNode)inheritNode.getNode(inheritNode.size()-1), nodesToOverload);
 						}
 					}
 					else if (child.hasName("ConstructorDeclaration") && !isVTable) {
@@ -97,7 +93,8 @@ public class NodeHandler {
 			String className = inheritNode.getProperty("parent").toString();
 			inheritNode.add(2,createConstructor(className, null));	
 		}
-		executeOverloading(nodesToOverload);
+		executeOverloading(inheritNode);
+		mangleNames();
 		return inheritNode;
 	}
 
@@ -189,16 +186,27 @@ public class NodeHandler {
 	//Runs through each node that is a child of masterNode and compares it to currentNode.  If they have the same name, then switch the names of the two to be the appropriate overloaded names.
 	protected void checkForOverloading(GNode masterNode, GNode currentNode, GNode nodesToOverload) {
 		if (masterNode.size() > 0) {
+			System.out.println(currentNode.getString(3));
+
 			for (int i=0;i<masterNode.size()-1;i++) {
 				if (masterNode.getNode(i).hasProperty("typeOfNode") && masterNode.getNode(i).getProperty("typeOfNode").equals("method")) {
 					String masterString = masterNode.getNode(i).getString(2);
 					String currentString = currentNode.getString(2);
+
+					if (i==0) {
+						//System.out.println(masterNode.getNode(0).getString(3));
+					}
+
+					//System.out.println("matching "+masterString+" with "+currentString);
+					//System.out.println(masterNode.getNode(i).getNode(4).toString());
 					if (masterString.equals(currentString)) {
 						boolean addCurrentNode = true;
 						boolean addMasterNode = true;
+						System.out.println(currentNode.getString(2)+ " "+currentNode.getNode(4));
 						if (nodesToOverload.size() > 0) {
 							for (int j=0;j<nodesToOverload.size();j++) {
 								if (currentNode.equals(nodesToOverload.getNode(j))) {
+									System.out.println(currentNode.getNode(2));
 									addCurrentNode = false;
 								}
 								if (masterNode.getNode(i).equals(nodesToOverload.getNode(j))) {
@@ -216,27 +224,76 @@ public class NodeHandler {
 						}
 						break;
 					}
+					else if (masterNode.getNode(i).getString(3).equals("C")) {
+						//System.out.println(masterNode.getNode(i).getNode(4).toString());
+					}
 				}
 			}
 		}
 	}
 
-	protected void executeOverloading(GNode nodesToOverload) {
-		if (nodesToOverload.size()==0) {
-			return;
-		}
+	protected void executeOverloading(GNode inheritNode) {
 
-		for (int i=0;i<nodesToOverload.size();i++) {
-			String newNodeString = nodesToOverload.getNode(i).getString(2);
-			if (nodesToOverload.getNode(i).getNode(4).size() > 0) {
-				for (int j=1;j<nodesToOverload.getNode(i).getNode(4).size();j++) {
-					String typeToAppend = nodesToOverload.getNode(i).getNode(4).getString(j);
-					typeToAppend = typeToAppend.replace(" ", "_");
-					newNodeString = newNodeString+"_"+typeToAppend;
+		new Visitor() {
+			public void visitVTable(GNode n) {
+				visit(n);
+			}
+
+			public void visitDataLayout(GNode n) {
+				visit(n);
+			}
+
+			public void visitVTableMethodDeclaration(GNode n) {
+				for (GNode o : methodsToCompare) {
+					if (n.getString(6).equals(o.getString(6))) {
+						if (o.getString(6).equals(o.getString(2))) {
+							methodsToOverload.add(o);
+						}
+						if (n.getString(6).equals(n.getString(2))) {
+							methodsToOverload.add(n);
+						}
+						return;
+					}
 				}
-				nodesToOverload.getNode(i).set(2, newNodeString);
+				methodsToCompare.add(n);
+			}
+			public void visitDataLayoutMethodDeclaration(GNode n) {
+				for (GNode o : methodsToCompare) {
+					if (n.getString(6).equals(o.getString(6))) {
+						if (o.getString(6).equals(o.getString(2))) {
+							methodsToOverload.add(o);
+						}
+						if (n.getString(6).equals(n.getString(2))) {
+							methodsToOverload.add(n);
+						}
+						return;
+					}
+				}
+				methodsToCompare.add(n);
+			}
+
+  			public void visit(Node n) {
+    			for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+  			}
+		}.dispatch(inheritNode);
+	}
+
+	protected void mangleNames() {
+		for (GNode o : methodsToOverload) {
+			String newNodeString = o.getString(2);
+			if (newNodeString.equals(o.getString(6))) {
+				if (o.getNode(4).size() > 0) {
+					for (int j=1;j<o.getNode(4).size();j++) {
+						String typeToAppend = o.getNode(4).getString(j);
+						typeToAppend = typeToAppend.replace(" ", "_");
+						newNodeString = newNodeString+"_"+typeToAppend;
+					}
+					o.set(2, newNodeString);
+				}
 			}
 		}
+		methodsToCompare = new LinkedList<GNode>();
+		methodsToOverload = new LinkedList<GNode>();
 	}
 
     // Parses a FieldDeclaration from JavaAST to a similar one in the
@@ -275,7 +332,7 @@ public class NodeHandler {
 		String name = null, returnType = null;
 		if (astNode.getString(3) != null) {
 			name = astNode.getString(3);
-			/* We do add the main method to the tree and then mangle it in InheritancePrinter */
+			/* We do add the main method to the tree and then mangle it with inheritancePrinter */
 			//if (name.equals("main")) return false;
 		}
 		classname = (String) inheritNode.getProperty("parent");
@@ -421,7 +478,7 @@ public class NodeHandler {
 		
 		//For overwritten and overloaded specification
 		methodDeclaration.add("null");
-		methodDeclaration.add("null");
+		methodDeclaration.add(name);
 
 		return methodDeclaration;
 	}

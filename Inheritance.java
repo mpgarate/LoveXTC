@@ -260,7 +260,7 @@ public class Inheritance {
 		for (int i=0;i<node.getNode(0).getNode(2).size();i++) {
 		  	GNode entry = (GNode)node.getNode(0).getNode(2).getNode(i);
 		  	if (entry.hasProperty("typeOfNode") && entry.getProperty("typeOfNode").equals("method")) {
-	      		if (entry.getString(6).equals("Overloaded")) {
+	      		if (!entry.getString(6).equals(entry.getString(2))) {
  	        		vTableList.add(entry.getString(2));
  	        	}
  	      	}
