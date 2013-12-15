@@ -181,7 +181,9 @@ public class Overloader extends Visitor {
         methods = inheritanceTree.getVTableForNode(nameOfClass);
       }
       if (n.getNode(0).hasName("CallExpression")){
+        LOGGER.info("Call Expression within a Class Expression");
         actual_method = actual_method + visitCallExpression((GNode) n.getNode(0));
+        LOGGER.info("actual method from visiting classexpression = " + actual_method);
         if (methods.contains(actual_method)){
           n.set(2,actual_method);
           return inheritanceTree.getReturnType(actual_method,nameOfClass);
@@ -207,12 +209,15 @@ public class Overloader extends Visitor {
          else we look for a more suitable method */
       if (methods.contains(actual_method)){
         n.set(2,actual_method);
+        LOGGER.info("setting the method in the ast = " + actual_method);
+        return inheritanceTree.getReturnType(actual_method,nameOfClass);
       }
       /* else if the method found is static inaddition to being overloaded
          then we just use it*/
       else if (staticMethods.contains(actual_method)){
         LOGGER.info("Static method" + actual_method);
         n.set(2,actual_method);
+        return inheritanceTree.getReturnType(actual_method,nameOfClass);
       }
       /* At this point we have to find the best possible method blindly by 
          trying out all the possibilities. */
@@ -312,7 +317,7 @@ public class Overloader extends Visitor {
 
 
   private int getDistance(String start, String target){
-
+    LOGGER.info("start" + start + "target" + target);
     if(start.equals(target)) return 0;
     if (start.equals("byte") && (target.equals("int") || target.equals("double")) ){
       return 0;
