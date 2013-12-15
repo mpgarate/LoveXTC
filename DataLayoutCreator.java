@@ -1,4 +1,4 @@
-package xtc.oop.LoveInheritance;
+package xtc.oop;
 
 import xtc.tree.GNode;
 

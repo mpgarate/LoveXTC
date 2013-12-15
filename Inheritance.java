@@ -20,8 +20,6 @@ import xtc.tree.Visitor;
 import xtc.util.Tool;
 import java.util.LinkedList;
 
-import xtc.oop.LoveInheritance.*;
-
 /* End Translator.java imports */
 
 import static org.junit.Assert.*;
