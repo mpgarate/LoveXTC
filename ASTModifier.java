@@ -180,6 +180,13 @@ public class ASTModifier extends Visitor {
   }
 
   public void visitDeclarator(GNode n){
+    for (int i = 0; i < n.size(); i++){
+      if ((n.get(i) instanceof Node) && n.getNode(i).hasName("StringLiteral")){
+        String literal = n.getNode(i).getString(0);
+        String customLiteral = "__rt::literal(" + literal + ")";
+        n.getNode(i).set(0,customLiteral);
+      }
+    }
 
 	  visit(n);
   }

@@ -316,9 +316,9 @@ public class CCCP extends Visitor {
         if (declaration.getNode(2).hasName("StringLiteral")){
           printer.p("__this->" + declaration.getString(0));
           printer.p(" = ");
-          printer.p("__String::init(new __String(");
+          //printer.p("__String::init(new __String(");
           printer.p(declaration.getNode(2));
-          printer.p("));");
+          printer.p(";");
           printer.pln();  
         }
         else{

@@ -5,7 +5,7 @@ public class Arrays{
     // __rt::Array<int32_t>* a = new __rt::Array<int32_t>(5);
     
     System.out.println(a[2]); //0
-/*
+
     a[2] = 5;
 
     System.out.println(a[2]); //5
@@ -17,6 +17,5 @@ public class Arrays{
     ss[2] = "Hello";
 
     System.out.println(ss[2]); //Hello
-  */
   }
 }
