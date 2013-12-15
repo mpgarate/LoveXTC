@@ -82,7 +82,7 @@ test:
 	make && java org.junit.runner.JUnitCore xtc.oop.LoveTest.TestDriver
 
 loveDocs:
-	javadoc *.java LoveTest/*.java LoveInheritance/*.java -d docs/
+	javadoc *.java LoveTest/*.java -d docs/
 
 FILE = examples/Derived.java
 love:

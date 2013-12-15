@@ -15,11 +15,17 @@ import xtc.tree.Token;
 import xtc.tree.Visitor;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
+/**
+ * A visitor that goes through our custom Inheritance tree.
+ * It prints out the information in the tree.
+ */
 public class InheritancePrinter extends Visitor {
   private static final boolean VERBOSE = true;
   /** The printer for this C printer. */
   protected Printer printer;
+  /** the root of the tree. */
   public GNode root;
+  /** The datalayout nodes. */
   public GNode dataLayout;
 
   private String packageName;
@@ -27,6 +33,11 @@ public class InheritancePrinter extends Visitor {
   private String javaClassName;
   private boolean isFirstVTMethod = true;
 
+  /** 
+  * Constructor for Inheritance Printer
+  * 
+  * @param p The printer to which we are prinitng.
+  */
   public InheritancePrinter(Printer p){
     this.printer = p;
     printer.register(this);
@@ -37,6 +48,7 @@ public class InheritancePrinter extends Visitor {
   /********************  Visitor Methods  ************************/
   /***************************************************************/
 
+  /** Visiting Header Declaration and printing it. */
   public void visitHeaderDeclaration(GNode n){
     packageName = n.getString(0); //null if no package
     if (packageName != null){
@@ -51,6 +63,7 @@ public class InheritancePrinter extends Visitor {
     }
   }
 
+  /** Visiting DataLayout Node and printing it. */
   public void visitDataLayout(GNode n){
     dataLayout = n;
     printer.pln("struct __" + className + ";");
@@ -61,12 +74,14 @@ public class InheritancePrinter extends Visitor {
     printer.pln("};").pln();
   }
 
+  /** Visiting Field Declaration and printing it. */
   public void visitFieldDeclaration(GNode n){
     visit(n);
     printer.p(n.getString(1)).p(" ").p(n.getString(2));
     printer.pln(";");
   }
 
+  /** Visiting Constructor Declaration and printing it. */
   public void visitConstructorDeclaration(GNode n){
     printer.pln("__" + n.getString(0) + "();");
 
@@ -81,6 +96,7 @@ public class InheritancePrinter extends Visitor {
 
   }
 
+  /** Visiting DataLayout Method Declaration and printing it. */
   public void visitDataLayoutMethodDeclaration(GNode n){
     if (!(n.get(0) == null)) {
       printer.p(n.getNode(0));
@@ -111,6 +127,7 @@ public class InheritancePrinter extends Visitor {
           printer.pln(");");
   }
 
+  /** Visiting Vtable and printing it. */
   public void visitVTable(GNode n){
     printer.pln("struct __" + className + "_VT {");
     printer.pln("Class __isa;");
@@ -149,8 +166,7 @@ public class InheritancePrinter extends Visitor {
     printer.pln();
   }
 
-
-
+  /** Visiting Vtable(The function pointers) and printing it. */
   public void visitVTableMethodDeclaration(GNode n){
     if (isFirstVTMethod) {
       printer.p("__isa(__" + className + "::__class())");
@@ -182,9 +198,12 @@ public class InheritancePrinter extends Visitor {
     }
   }
 
+  /** Visiting Modifiers and printing it. */
   public void visitModifiers(GNode n){
     if (n.size() == 1) printer.p(n.getString(0)).p(" ");
   }
+
+  /** Visiting Parameters and printing it. */
   public void visitParameters(GNode n){
     for (int x = 0; x < n.size() ; x++){
       if (n.getString(x).equals("int")){
@@ -208,7 +227,7 @@ public class InheritancePrinter extends Visitor {
     for (Object o : n) if (o instanceof Node) dispatch((Node) o);
   }
 
-  /* Print verbose debug messages into output file */
+  /** Print verbose debug messages into output file */
   private void v(String s){
     if(VERBOSE) printer.pln(s);
   }
