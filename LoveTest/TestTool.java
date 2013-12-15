@@ -8,6 +8,7 @@ import java.io.*;
 import java.io.File;
 import java.io.Reader;
 
+/** Handles the processing of test files through translation, compilation, and comparing outputs. */
 public class TestTool{
 
   public TestTool(){
@@ -20,10 +21,12 @@ public class TestTool{
   /**********************  Public Tools  ************************/
   /***************************************************************/
 
+  /** Translate and compare a given java file */
   public void translateAndCompare(String path, String name){
     translateAndCompare(path, name, "");
   }
 
+  /** Translate and compare a given java file with runtime arguments */
   public void translateAndCompare(String path, String name, String args){
     System.out.println("Translating " + name);
     cleanup();
@@ -35,7 +38,7 @@ public class TestTool{
     compareOutputs(javaOut,cppOut);
   }
 
-  /* Translate a file */
+  /** Translate a file with LoveXTC */
   public void translateFile(File file){
     try{
       Process process = rt.exec("java xtc.oop.Translator -translate " + file.getPath());
@@ -47,6 +50,7 @@ public class TestTool{
     }
   }
 
+  /** Compile translated C++ output */
   public void compileOutput(){
     try{
       Process process = rt.exec("make -s compile");
@@ -58,6 +62,7 @@ public class TestTool{
     }
   }
 
+  /** Run test java file and store its output for later comparison */
   public String runJavaFile(File file, String name, String args){ 
     System.out.println("Running " + " java file:");
     System.out.println("-------------------------------------");
@@ -83,6 +88,7 @@ public class TestTool{
     }
   }
 
+  /** Run translated C++ file and store its output for later comparison */
   public String runCPPOutput(String name, String args){ 
     System.out.println("Running " + name + " CPP output file:");
     System.out.println("-------------------------------------");
@@ -94,7 +100,6 @@ public class TestTool{
 
       System.out.println("-------------------------------------");
 
-      //if (stdErr.length() > 0) return stdErr;
       return stdOut;
     }
     catch(IOException e){
@@ -103,6 +108,7 @@ public class TestTool{
     }
   }
 
+  /** Mask memory addresses before comparison since they will vary between runs */
   public String maskMemoryAddress(String a){
     int openA = 0;
     int closeA = 0;
@@ -118,6 +124,7 @@ public class TestTool{
     return a;
   }
 
+  /** Mask exceptions before comparison since our exception output differs from Java */
   public String maskException(String a){
     if (a.contains("NullPointerException")){
       return "NullPointerException";
@@ -125,6 +132,7 @@ public class TestTool{
     return a;
   }
 
+  /** Compare the masked Java and C++ outputs to ensure equality */
   public void compareOutputs(String a, String b){
 
     a = maskMemoryAddress(a);
@@ -136,6 +144,7 @@ public class TestTool{
     assertEquals("Outputs did not match.",a,b);
   }
 
+  /** Remove previously compiled files */
   public void cleanup(){
     System.out.println("Cleaning up.");
 

@@ -9,6 +9,7 @@ import java.io.File;
 import java.io.Reader;
 import java.util.Arrays;
 
+/** Runs test case java files through the test suite */
 public class TestDriver{
 
   TestTool t = new TestTool();
