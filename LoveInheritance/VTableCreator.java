@@ -1,3 +1,4 @@
+package xtc.oop.LoveInheritance;
 /*VTableCreator creates a VTable for any class node.  It extends NodeHandler so that it can use all of it's methods.
 
 Methods provided in this class:
@@ -12,7 +13,7 @@ getObjectVTable
 getStringVTable
 getClassVTable
 */
-package xtc.oop;
+
 import xtc.tree.GNode;
 import xtc.tree.Node;
 import xtc.tree.Visitor;

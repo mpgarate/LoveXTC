@@ -1,3 +1,5 @@
+package xtc.oop.LoveInheritance;
+
 /*DataLayoutCreator makes the dataLayout for a classNode in the Inheritance Tree.  It extends NodeHandler.
 
 Methods in this class (listed in-order)
@@ -13,7 +15,6 @@ getStringDataLayout
 getClassDataLayout
 
 */
-package xtc.oop;
 import xtc.tree.GNode;
 
 /* All the imports from Translator.java */

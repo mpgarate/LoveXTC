@@ -1,3 +1,4 @@
+package xtc.oop.LoveInheritance;
 /*NodeHandler handles the creation of the vTable and dataLayout nodes from javaASTs.
 
 NOTE: NodeHandler is meant to be accessed only from VTableCreator or DataLayoutCreator.
@@ -15,7 +16,7 @@ createMethod
 createDataFieldEntry
 convertMethodNameType
 */
-package xtc.oop;
+
 import xtc.tree.GNode;
 import xtc.tree.Node;
 import xtc.tree.Visitor;

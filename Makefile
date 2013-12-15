@@ -49,16 +49,16 @@ SOURCE = \
 	   OverloadingASTModifier.java \
 	   SymTab.java \
 	   Dependency.java \
-	   NodeHandler.java \
-	   VTableCreator.java \
-	   DataLayoutCreator.java \
+	   LoveInheritance/NodeHandler.java \
+	   LoveInheritance/VTableCreator.java \
+	   LoveInheritance/DataLayoutCreator.java \
 	   Inheritance.java \
 	   CCCP.java \
      LoveTest/TestTool.java \
      LoveTest/TestDriver.java \
      ASTModifier.java \
      LoveXTCLogger.java \
-     InheritancePrinter.java \
+     LoveInheritance/InheritancePrinter.java \
      Overloader.java \
      Translator.java
 
@@ -79,7 +79,7 @@ endif
 
 .PHONY: junitTests test love run clean
 test:
-	make && java org.junit.runner.JUnitCore TestDriver
+	make && java org.junit.runner.JUnitCore xtc.oop.LoveTest.TestDriver
 
 FILE = examples/Derived.java
 love:

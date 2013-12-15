@@ -32,6 +32,8 @@ import java.util.logging.Level;
 import java.util.logging.SimpleFormatter;
 import java.util.logging.ConsoleHandler;
 
+import xtc.oop.LoveInheritance.*;
+
 /**
  * A translator from (a subset of) Java to (a subset of) C++.
  */
