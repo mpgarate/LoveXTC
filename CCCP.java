@@ -1,6 +1,3 @@
-/* CCCP is a C++ printer named for the centralized nature of 
-the Soviet Union. */
-
 package xtc.oop;
 
 import java.lang.*;
@@ -25,6 +22,9 @@ import xtc.type.*;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
 import java.util.logging.Logger;
+/**
+ * CCCP is a C++ printer using the visitor pattern. 
+ */
 
 public class CCCP extends Visitor {
   final private SymbolTable table;
@@ -57,11 +57,15 @@ public class CCCP extends Visitor {
      and if not, one will be added manually. 
   */
   private boolean visitedConstructor = false;
-  private boolean visitedNewClassExp;
-  private boolean visitedConstructorFormalParam;
-  private boolean createdInitMethod;
-  private boolean insideConstBlock;
+  private boolean visitedNewClassExp = false;
+  private boolean visitedConstructorFormalParam = false;
+  private boolean createdInitMethod = false;
+  private boolean insideConstBlock = false;
   private boolean inForControl = false;
+  private boolean inMainMethod = false;
+  private boolean inInitMethod = false;
+  private boolean visitedSelectionExpression = false;
+  private boolean inLoveField = false;
 
 	public CCCP(Printer p, SymbolTable table, Inheritance inh, LinkedList<String> sNAmes){
     this.printer = p;
@@ -148,7 +152,6 @@ public class CCCP extends Visitor {
     printer.decr();
   }
 
-  boolean inMainMethod = false;
 
   public void visitMethodDeclaration(GNode n){
     v("/* visiting method declaration */");
@@ -291,7 +294,6 @@ public class CCCP extends Visitor {
     printer.p("]");
   }
 
-  boolean inInitMethod = false;
   public void visitConstructorDeclaration(GNode n){
     visitedConstructor = true;
     printFallbackConstructor();
@@ -327,14 +329,13 @@ public class CCCP extends Visitor {
     printer.pln();
     printer.pln();
   }
-  boolean visitedSelectionExpression = false;
+
   public void visitSelectionExpression(GNode n){
     visit(n);
     printer.p("->" + n.getString(1));
     visitedSelectionExpression = true;
   }
 
-  boolean inLoveField = false;
   private void printLoveField(GNode n){
     if (n.getNode(2).hasName("Declarators")){
       GNode declaration = (GNode)n.getNode(2).getNode(0);
