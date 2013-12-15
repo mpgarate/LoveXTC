@@ -2,7 +2,6 @@ public class Arrays{
   public static void main(String[] args){
 
     int[] a = new int[5];
-    // __rt::Array<int32_t>* a = new __rt::Array<int32_t>(5);
     
     System.out.println(a[2]); //0
 

@@ -189,13 +189,22 @@ public class CCCP extends Visitor {
   /** Visit the specified type. */
   public void visitType(GNode n) {
     String dimensions = null;
+
     if(null != n.getNode(1)){
       dimensions = n.getNode(1).getString(0);
     }
     if(dimensions != null && dimensions.equals("[")){ //create an array
-      printer.p("__rt::Array<");
-      printer.p(n.getNode(0));
-      printer.p(">*");
+      if(n.getNode(0).hasName("QualifiedIdentifier")){
+        //__rt::Ptr<__rt::Array<String> > 
+        printer.p("__rt::Ptr<__rt::Array<");
+        printer.p(n.getNode(0).getString(0));
+        printer.p("> >");
+      }
+      else{
+        printer.p("__rt::Array<");
+        printer.p(n.getNode(0));
+        printer.p(">*");
+      }
     }
     else{
       printer.p(n.getNode(0));
