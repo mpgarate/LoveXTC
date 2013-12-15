@@ -23,7 +23,8 @@ import xtc.type.*;
 
 import java.util.logging.Logger;
 /**
- * CCCP is a C++ printer using the visitor pattern. 
+ * CCCP is a C++ printer using the visitor pattern. This file contains Visitor methods to go to each node
+ * and helper methods to handle various contextual conditions for printing nodes.
  */
 
 public class CCCP extends Visitor {
@@ -32,19 +33,11 @@ public class CCCP extends Visitor {
   private static final boolean VERBOSE = false;
   LinkedList<GNode> classFields;
   LinkedList<String> constructorargs = new LinkedList<String>();
-  public final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
-	/* We should base this file on src/xtc/lang/CPrinter.java */
+  private final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
 
-	/* This file will have a ton of methods of two types:
-		
-			1 - Visitor methods to go to each node
-			2 - Helper methods to test for various contextual conditions for printing nodes  
-
-	*/
-
-	/** The printer for this C printer. */
+	/** The XTC Printer instance for this CPP printer. */
   protected Printer printer;
-  protected Printer header;
+  /** Node on which the current CCCP instance is dispatched. */
   public GNode root;
   private LinkedList<String> staticMethods;
 
@@ -53,9 +46,7 @@ public class CCCP extends Visitor {
   private String className;     // has prefix underscores, ie __HelloWorld
   private String javaClassName; // has no underscoresm, ie HelloWorld
 
-  /* Remember when we visit a constructor. We will check if this gets set,
-     and if not, one will be added manually. 
-  */
+  /** Remember certain states within the tree for logic across visitor methods. */
   private boolean visitedConstructor = false;
   private boolean visitedNewClassExp = false;
   private boolean visitedConstructorFormalParam = false;
@@ -67,13 +58,21 @@ public class CCCP extends Visitor {
   private boolean visitedSelectionExpression = false;
   private boolean inLoveField = false;
 
-	public CCCP(Printer p, SymbolTable table, Inheritance inh, LinkedList<String> sNAmes){
+ /** 
+  * Constructor for CCCP
+  * 
+  * @param p XTC Printer instance for this C++ printer.
+  * @param table SymbolTable for referencing scopes.
+  * @param inh Inheritance Tree for the current project in translation.
+  * @param staticMethodNames A linked list of static method names. 
+  */
+
+	public CCCP(Printer p, SymbolTable table, Inheritance inh, LinkedList<String> staticMethodNames){
     this.printer = p;
     this.table = table;
     printer.register(this);
     this.inheritanceTree = inh;
-    this.staticMethods = sNAmes;
-
+    this.staticMethods = staticMethodNames;
 	}
 
 
@@ -810,32 +809,30 @@ public class CCCP extends Visitor {
       visitedConstructorFormalParam = false;
     }
     else{
-	Iterator<Object> iter = n.iterator();
-	if(!createdInitMethod){		
-      		printer.p('(');
-      		printer.p(javaClassName + " __this");			
-	}else{
-		createdInitMethod = false;
-	}
-      if (iter.hasNext()){      
-	printer.p(", ");
-      for (iter = n.iterator(); iter.hasNext(); ) {
-        printer.p((Node)iter.next());
-        if (iter.hasNext()) printer.p(", ");
+  	Iterator<Object> iter = n.iterator();
+  	if(!createdInitMethod){		
+        		printer.p('(');
+        		printer.p(javaClassName + " __this");			
+  	}else{
+  		createdInitMethod = false;
+  	}
+        if (iter.hasNext()){      
+  	printer.p(", ");
+        for (iter = n.iterator(); iter.hasNext(); ) {
+          printer.p((Node)iter.next());
+          if (iter.hasNext()) printer.p(", ");
+        }
+        printer.p(')'); 
       }
-      printer.p(')'); 
     }
-  }
   }
 
   /** Visit the specified qualified identifier. */
   public void visitQualifiedIdentifier(GNode n) {
     if (1 == n.size()) {
-      //String folded = fold(n,1);
-      //if (!(folded.equals(packageName)) && !(folded.equals(javaClassName))){
         printer.p(n.getString(0));
-      //}
-    } else {
+    } 
+    else {
       for (Iterator<Object> iter = n.iterator(); iter.hasNext(); ) {
         printer.p(Token.cast(iter.next()));
         if (iter.hasNext()) printer.p('.');
