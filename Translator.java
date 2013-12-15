@@ -44,7 +44,7 @@ public class Translator extends Tool {
   }
 
   public String getName() {
-    return "Java to C++ Translator";
+    return "LoveXTC: A Java to C++ Translator";
   }
 
   public String getCopy() {
@@ -52,7 +52,7 @@ public class Translator extends Tool {
   }
 
   public String getVersion() {
-    return "0.8";
+    return "1.0";
   }
 
   public void init() {
