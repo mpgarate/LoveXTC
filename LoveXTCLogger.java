@@ -9,6 +9,9 @@ import java.util.logging.SimpleFormatter;
 import java.util.logging.LogManager;
 import java.util.logging.ConsoleHandler;
 
+/** Write out a log file to LoveXTC.log during translation process. 
+ * Note: 'warning' level messages are printed to console. 
+ */
 public class LoveXTCLogger {
   static private FileHandler fileTxt;
   static private SimpleFormatter formatterTxt;
@@ -26,9 +29,5 @@ public class LoveXTCLogger {
     SimpleFormatter simpleFormat = new SimpleFormatter();
     fh.setFormatter(simpleFormat);
     logger.addHandler(fh);
-
-    //ch = new ConsoleHandler();
-    //ch.setLevel(Level.WARNING);
-    //logger.addHandler(ch);
   }
 }

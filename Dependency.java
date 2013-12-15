@@ -27,13 +27,12 @@ import java.util.LinkedList;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+/** Process java packages and import statements to produce list of files to be translated. */
 public class Dependency extends Tool {
 
   private final static Logger LOGGER = Logger.getLogger(Dependency.class .getName()); 
 
   LinkedList<GNode> depList = new LinkedList<GNode>();
-
-	/** The printer for this C printer. */
 
 	public Dependency(LinkedList<GNode> ll){
     depList = ll;

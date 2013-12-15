@@ -1,22 +1,3 @@
-/* How Inheritance Creates the tree?
-1. Create nodes for each class and place them as children of Object
-2. Any class with "extends" gets a copy added to a stack.
-3. For everything in the stack, we look in the tree for it's parent and add the node as a child.
-4. We create the headers (dataLayouts and vTables) for each class node.
-
-Methods provided in this class:
-buildTree: places a GNode in the inheritance tree
-findParentNode: finds a node with a given name in a tree with the given root.
-buildTreeHeaders: Runs through the entire tree and builds a header for each node.
-buildHeader: Builds a header for a given node.
-getRoot: Returns the root of the entire tree.
-searchForNode: finds a node with the given name in the tree.  Ideally this will be combined with findParentNode into one method in the near future.
-parseNodeToInheritance: Returns the header information for a given node.
-
-getParentDataLayout: returns a copy of the parent's dataLayout for a given node.
-getParentVTable: returns a copy of the parent's vTable for a given node.
-copyNode: returns a copy of a node and all it's children and children's children, etc.  Note this won't copy any properties you've placed on the nodes.
-*/
 package xtc.oop;
 import xtc.tree.GNode;
 
@@ -45,6 +26,14 @@ import xtc.oop.LoveInheritance.*;
 
 import static org.junit.Assert.*;
 
+/**
+ * Build the inheritance tree. 
+ * We do this by:  
+ * 1. Creating nodes for each class and place them as children of Object. 
+ * 2. Any class with "extends" gets a copy added to a stack. 
+ * 3. For everything in the stack, we look in the tree for it's parent and add the node as a child. 
+ * 4. We create the headers (dataLayouts and vTables) for each class node. 
+*/
 public class Inheritance {
 	public GNode root;
 
@@ -58,9 +47,8 @@ public class Inheritance {
 
    	LinkedList<String> staticMethods = new LinkedList<String>();
 
+  /** Create Object and String class nodes */
 	public Inheritance(LinkedList<GNode> nodeList) {
-		// Program starts here, we begin by creating Object and String class
-		// nodes.
 
 		root = GNode.create("Object");
 		GNode headerNode = GNode.create("HeaderDeclaration");
@@ -122,14 +110,15 @@ public class Inheritance {
 		}
 	}
 
+	/** Places a GNode in the inheritance tree */
 	public void buildTree(GNode node) {
-		    new Visitor() {
-		    	
-		    public void visitPackageDeclaration(GNode n){
-		    	packageName = n.getNode(1).getString(0);
-		    }
-		    
-		    public void visitClassDeclaration(GNode n) {
+    new Visitor() {
+    	
+	    public void visitPackageDeclaration(GNode n){
+	    	packageName = n.getNode(1).getString(0);
+	    }
+	    
+	    public void visitClassDeclaration(GNode n) {
 				String classname = n.getString(1);
 				GNode classNode = GNode.create(classname);
 				classNode.setProperty("type", "CompilationUnit"); //all class nodes should have type compilationunit so we can easily identify them.
@@ -140,29 +129,29 @@ public class Inheritance {
 				visit(n);
 				return;
 			}
-			
+	
 			public void visitExtension(GNode n) {
-			    //Places the node in the tree and also a copy of the node in a stack on top of stackNode to be looked at later.
-			    GNode thisNode = (GNode)root.getNode(childCount-1);
-			    String parentString = n.getNode(0).getNode(0).getString(0);
-			    GNode copiedNode = copyNode(thisNode);
-			    copiedNode.setProperty("numberInRoot", childCount-1);
-			    copiedNode.setProperty("parentString", parentString);
-			    copiedNode.add(stackNode);
-			    stackNode = copiedNode;
-			    return;
+		    //Places the node in the tree and also a copy of the node in a stack on top of stackNode to be looked at later.
+		    GNode thisNode = (GNode)root.getNode(childCount-1);
+		    String parentString = n.getNode(0).getNode(0).getString(0);
+		    GNode copiedNode = copyNode(thisNode);
+		    copiedNode.setProperty("numberInRoot", childCount-1);
+		    copiedNode.setProperty("parentString", parentString);
+		    copiedNode.add(stackNode);
+		    stackNode = copiedNode;
+		    return;
 			}
 
 			public void visitClassBody(GNode n) {
-			    if (childCount > root.size()) {
-					return;
-			    }
+		    if (childCount > root.size()) {
+				return;
+		    }
 
-			    childCount--;
-			    GNode node = (GNode)root.getNode(childCount);
-			    node.setProperty("parent", null);
-			    childCount++;
-			    return;
+		    childCount--;
+		    GNode node = (GNode)root.getNode(childCount);
+		    node.setProperty("parent", null);
+		    childCount++;
+		    return;
 			}
 
 
@@ -197,7 +186,7 @@ public class Inheritance {
 			getNodeList(nodeList, (GNode)nodeToAdd.getNode(i));
 		}
 	}
-
+	/** Finds a node with a given name in a tree with the given root. */
 	private GNode findParentNode(GNode startNode, String name) {
 		// Finds a node of a given name in the tree whose root is startNode.
 		if (startNode.getName().equals(name)) {
@@ -218,6 +207,7 @@ public class Inheritance {
 		}
 	}
 
+	/** buildTreeHeaders: Runs through the entire tree and builds a header for each node. */
 	private void buildTreeHeaders(GNode startNode) {
 	    //Builds the header for each node in the inheritance tree.
 	    if (startNode.size()<=0 || !startNode.getNode(0).getName().equals("HeaderDeclaration")) {
@@ -236,7 +226,7 @@ public class Inheritance {
 	}
 
 
-	// Builds the header in the Inheritance tree
+		/** Builds the header in the Inheritance tree for a given node */ 
     public GNode buildHeader(GNode astNode, GNode parentNode) {
 		GNode header = GNode.create("HeaderDeclaration");
 		header.add(packageName);
@@ -246,6 +236,7 @@ public class Inheritance {
 		return header;
 	}
 
+	/** Returns the root of the entire tree. */
 	public GNode getRoot() {
 		return root;
 	}
@@ -322,7 +313,9 @@ public class Inheritance {
 		return null;
 	}
 
-	
+		/** finds a node with the given name in the tree.
+		 * 
+		 */
     private GNode searchForNode(GNode node, String name) {
 		// DOES A DEPTH-FIRST SEARCH THROUGH THE TREE FOR A NODE OF SPECIFIC NAME
 
@@ -385,6 +378,7 @@ public class Inheritance {
 		return staticMethods;
 	}
 
+	/** Returns the header information for a given node. */
 	public LinkedList<GNode> parseNodeToInheritance(GNode n){
 		final LinkedList<GNode> returnList = new LinkedList<GNode>();
 		new Visitor(){
@@ -412,8 +406,7 @@ public class Inheritance {
 		return returnList;
 	}
 
-	// Returns the parent node Data Layout for inheritance. If parent == null,
-	// assumes it's java.lang.Object. Added code to get parent node dataLayout.
+	/** Returns a copy of the parent's dataLayout for a given node. */
 	private GNode getParentDataLayout(GNode parent) {
 		GNode dataLayoutNode = null;
 		if (parent == null) {
@@ -426,8 +419,9 @@ public class Inheritance {
 		return dataLayoutNode;
 	}
 
-	// Returns the parent node VTable for inheritance. If parent == null,
-	// assumes it's java.lang.Object. Added code to get parent node VTable.
+	/** Returns the parent node VTable for inheritance. 
+	 * If parent == null, assumes it's java.lang.Object. 
+	 */
 	private GNode getParentVTable(GNode parent) {
 	        GNode vTableNode = null;
 		if (parent == null) { 
@@ -440,6 +434,10 @@ public class Inheritance {
 		return vTableNode;
 	}
 
+
+	/** Returns a copy of a node and all it's children and children's children, etc.
+	 * Note: this won't copy any properties you've placed on the nodes.
+	 */
     private GNode copyNode(GNode oldNode) {
 
 		GNode newNode = GNode.create(oldNode.getName());

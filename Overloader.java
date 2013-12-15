@@ -1,6 +1,3 @@
-
-/* Overloader - determines the right method name in method call */
-
 package xtc.oop;
 
 import java.lang.*;
@@ -24,6 +21,7 @@ import xtc.type.*;
 
 import java.util.logging.Logger;
 
+/** Determine the right method name in a method call. */
 public class Overloader extends Visitor {
   public final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
   final private SymbolTable table;

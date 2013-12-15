@@ -1,7 +1,4 @@
-/* Purpose: builds the symbol table which allows us to keep track of which symbols 
-(variables, methods, etc.) are currently in scope while traversing the AST, 
-and associate useful information with each symbol (e.g. types of variables).
-*/
+
 package xtc.oop;
 
 import java.util.ArrayList;
@@ -19,7 +16,9 @@ import xtc.tree.Printer;
 import xtc.util.SymbolTable;
 import xtc.util.Runtime;
 import xtc.type.*;
-
+/** Build the symbol table to keep track of which symbols (variables, methods, etc.) are in scope.
+ * Also, we associate useful information with each symbol (e.g. types of variables).
+*/
 public class SymTab extends Visitor {
   final private SymbolTable table;
   final private Runtime runtime;

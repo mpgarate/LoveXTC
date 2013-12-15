@@ -20,6 +20,7 @@ import java.util.logging.Level;
 
 import java.util.LinkedList;
 
+/** Prepare the AST for overloading */
 public class OverloadingASTModifier extends Visitor {
 
 	public String className;
