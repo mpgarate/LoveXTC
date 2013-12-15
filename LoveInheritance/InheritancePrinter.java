@@ -1,4 +1,4 @@
-package xtc.oop.LoveInheritance;
+package xtc.oop;
 import java.lang.*;
 
 /* Imports based on src/xtc/lang/CPrinter.java */
@@ -15,12 +15,17 @@ import xtc.tree.Token;
 import xtc.tree.Visitor;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
-/** Print the inheritance tree to output header file */
+/**
+ * A visitor that goes through our custom Inheritance tree.
+ * It prints out the information in the tree.
+ */
 public class InheritancePrinter extends Visitor {
   private static final boolean VERBOSE = true;
-	/** The printer for this C printer. */
+  /** The printer for this C printer. */
   protected Printer printer;
+  /** the root of the tree. */
   public GNode root;
+  /** The datalayout nodes. */
   public GNode dataLayout;
 
   private String packageName;
@@ -28,16 +33,21 @@ public class InheritancePrinter extends Visitor {
   private String javaClassName;
   private boolean isFirstVTMethod = true;
 
-	public InheritancePrinter(Printer p){
+  /** 
+  * Constructor for Inheritance Printer
+  * 
+  * @param p The printer to which we are prinitng.
+  */
+  public InheritancePrinter(Printer p){
     this.printer = p;
     printer.register(this);
-	}
+  }
 
 
   /***************************************************************/
   /********************  Visitor Methods  ************************/
   /***************************************************************/
-
+  /** Visiting Header Declaration and printing it. */
   public void visitHeaderDeclaration(GNode n){
     packageName = n.getString(0); //null if no package
     if (packageName != null){
@@ -51,26 +61,25 @@ public class InheritancePrinter extends Visitor {
       visit(n);
     }
   }
-
+    /** Visiting DataLayout Node and printing it. */
   public void visitDataLayout(GNode n){
-  	dataLayout = n;
-  	printer.pln("struct __" + className + ";");
-  	printer.p("struct __" + className + "_VT;").pln(); //
-  	printer.p("typedef __rt::Ptr<__" + className + "> " + className + ";").pln();
-  	printer.p("struct __" + className + " {").pln();
-  	visit(n);
-  	printer.pln("};").pln();
+    dataLayout = n;
+    printer.pln("struct __" + className + ";");
+    printer.p("struct __" + className + "_VT;").pln(); //
+    printer.p("typedef __rt::Ptr<__" + className + "> " + className + ";").pln();
+    printer.p("struct __" + className + " {").pln();
+    visit(n);
+    printer.pln("};").pln();
   }
-
+    /** Visiting Field Declaration and printing it. */
   public void visitFieldDeclaration(GNode n){
-  	visit(n);
-  	printer.p(n.getString(1)).p(" ").p(n.getString(2));
-  	printer.pln(";");
+    visit(n);
+    printer.p(n.getString(1)).p(" ").p(n.getString(2));
+    printer.pln(";");
   }
-
+    /** Visiting Constructor Declaration and printing it. */
   public void visitConstructorDeclaration(GNode n){
-  	printer.pln("__" + n.getString(0) + "();");
-
+    printer.pln("__" + n.getString(0) + "();");
     if (n.getNode(1).size() == 0){
       printer.pln("static " + className + " init(" + className + ");");
     }
@@ -81,7 +90,7 @@ public class InheritancePrinter extends Visitor {
     }
 
   }
-
+    /** Visiting DataLayout Method Declaration and printing it. */
   public void visitDataLayoutMethodDeclaration(GNode n){
     if (!(n.get(0) == null)) {
       printer.p(n.getNode(0));
@@ -95,12 +104,6 @@ public class InheritancePrinter extends Visitor {
       }
     }
     String methodName = n.getString(2);
-
-    if (methodName.equals("main")){
-      printer.pln("main(__rt::Ptr<__rt::Array<String> > args);");
-      return;
-    }
-
     printer.p(methodName);
     printer.p("(");
     
@@ -111,47 +114,47 @@ public class InheritancePrinter extends Visitor {
     
           printer.pln(");");
   }
-
+    /** Visiting Vtable and printing it. */
   public void visitVTable(GNode n){
-  	printer.pln("struct __" + className + "_VT {");
-  	printer.pln("Class __isa;");
+    printer.pln("struct __" + className + "_VT {");
+    printer.pln("Class __isa;");
     printer.pln("void (*__delete)(__" + className + "*);");
 
-  	new Visitor(){
-  		public void visitVTableMethodDeclaration(GNode n){
-  			if(!(n.getString(2).equals("__isa"))){
+    new Visitor(){
+      public void visitVTableMethodDeclaration(GNode n){
+        if(!(n.getString(2).equals("__isa"))){
           if (n.getString(1) != null) {
-  				  printer.p(n.getString(1) + " (*");
+            printer.p(n.getString(1) + " (*");
           }
           else {
             printer.p("void" + " (*");
           }
-  				printer.p(n.getString(2));
-  				printer.p(")(");
-  				//printer.p(className);
+          printer.p(n.getString(2));
+          printer.p(")(");
+          //printer.p(className);
           printer.p(n.getNode(4));
           if ((n.getNode(4).size()==0) && !(n.getString(2).equals("__class"))){
             printer.p(className);
           }
-  				printer.p(");");
-  				printer.pln();
-  			}
-  		}
+          printer.p(");");
+          printer.pln();
+        }
+      }
 
-		  public void visit(Node n) {
-	    for (Object o : n) if (o instanceof Node) dispatch((Node) o);
-	  }
-  	}.dispatch(n);
+      public void visit(Node n) {
+      for (Object o : n) if (o instanceof Node) dispatch((Node) o);
+    }
+    }.dispatch(n);
     printer.pln("__" + className + "_VT()");
     printer.p(": ");
     visit(n);
     printer.pln("{}");
-  	printer.pln("};");
-  	printer.pln();
+    printer.pln("};");
+    printer.pln();
   }
 
 
-
+    /** Visiting Vtable(The function pointers) and printing it. */
   public void visitVTableMethodDeclaration(GNode n){
     if (isFirstVTMethod) {
       printer.p("__isa(__" + className + "::__class())");
@@ -182,10 +185,11 @@ public class InheritancePrinter extends Visitor {
       printer.p(")");
     }
   }
-
+    /** Visiting Modifiers and printing it. */
   public void visitModifiers(GNode n){
-  	if (n.size() == 1) printer.p(n.getString(0)).p(" ");
+    if (n.size() == 1) printer.p(n.getString(0)).p(" ");
   }
+    /** Visiting Parameters and printing it. */
   public void visitParameters(GNode n){
     for (int x = 0; x < n.size() ; x++){
       if (n.getString(x).equals("int")){

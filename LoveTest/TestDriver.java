@@ -48,20 +48,6 @@ public class TestDriver{
     String name = "Derived.java";
     t.translateAndCompare(path, name);
   }
-/*
-  @Test public void translateWiesMidtermExamples(){
-    for (int i = 1; i < 3; i++){ //This should go to 22
-      String path = "examples/test-cases/Test0" + i + ".java";
-      String name = "Wies Test" + i + ".java";
-      t.translateAndCompare(path, name);
-    } 
-    for (int i = 100; i < 106; i++){
-      String path = "examples/test-cases/Test0" + i + ".java";
-      String name = "Wies Test" + i + ".java";
-      t.translateAndCompare(path, name);
-    }
-  }
-*/
   @Test public void translateWies1(){
     String path = "examples/test-cases/Test00" + 1 + ".java";
     String name = "Wies Test" + 1 + ".java";
