@@ -23,6 +23,8 @@ Compile the output code with ```make compile``` and run it with ```make run```
 
 Run our test suite with ```make test```
 
+Create javadocs with ```make loveDocs``` and open ```docs/index.html```
+
 If you want to run our example java programs on their own, run the following in the examples folder:
 ```sh
 javac -cp . TranslateMe.java
