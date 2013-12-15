@@ -18,6 +18,7 @@ import xtc.tree.Visitor;
 import java.util.logging.Logger;
 import java.util.logging.Level;
 
+/** Manipulate the AST to prepare for printing as C++ */
 public class ASTModifier extends Visitor {
   private final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
 
