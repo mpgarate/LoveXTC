@@ -30,7 +30,7 @@ public class CCCP extends Visitor {
   final private SymbolTable table;
   Inheritance inheritanceTree;
   private static final boolean VERBOSE = false;
-  LinkedList<GNode> classFields = new LinkedList<GNode>();
+  LinkedList<GNode> classFields;
   LinkedList<String> constructorargs = new LinkedList<String>();
   public final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
 	/* We should base this file on src/xtc/lang/CPrinter.java */
@@ -136,9 +136,10 @@ public class CCCP extends Visitor {
     /* Begin the namespace. */
     printer.incr();
     printlnUnlessNull("namespace " + packageName + " {", packageName);
+    classFields = new LinkedList<GNode>();
+    visitedConstructor = false;
     visit(n);
     if (visitedConstructor == false) {
-      LOGGER.warning("did not visit constructor for " + className);
       printFallbackinit();
     }
     printClassMethod(); 
@@ -258,7 +259,6 @@ public class CCCP extends Visitor {
 
   public void visitConstructorDeclaration(GNode n){
     visitedConstructor = true;
-    LOGGER.warning("visiting constructor for " + className);
     printFallbackConstructor();
     String constructorName = n.getString(2);
     if (n.getNode(3).size() == 0){
@@ -301,13 +301,18 @@ public class CCCP extends Visitor {
     if (n.getNode(2).hasName("Declarators")){
       GNode declaration = (GNode)n.getNode(2).getNode(0);
       if (declaration.getNode(2) != null){
-        printer.p("__this->" + declaration.getString(0));
-        printer.p(" = ");
         if (declaration.getNode(2).hasName("StringLiteral")){
+          printer.p("__this->" + declaration.getString(0));
+          printer.p(" = ");
           printer.p("__String::init(new __String(");
           printer.p(declaration.getNode(2));
           printer.p("));");
           printer.pln();  
+        }
+        else{
+          visit(n);
+          printer.p(";");
+          printer.pln();
         }
       }
     }
@@ -320,6 +325,9 @@ public class CCCP extends Visitor {
     String parent = inheritanceTree.getParentOfNode(javaClassName);
     if (parent != null){
       printer.pln("__"+ parent + "::init(__this);");
+    }
+    for (int i = 0; i < classFields.size(); i++){
+      printLoveField(classFields.get(i));
     }
     printer.pln("return __this;");
     printer.p("}");
