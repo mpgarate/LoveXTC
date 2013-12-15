@@ -24,12 +24,15 @@ import xtc.util.SymbolTable.Scope;
 import xtc.type.*;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
+import java.util.logging.Logger;
+
 public class CCCP extends Visitor {
-    final private SymbolTable table;
-    Inheritance inheritanceTree;
+  final private SymbolTable table;
+  Inheritance inheritanceTree;
   private static final boolean VERBOSE = false;
   LinkedList<GNode> classFields = new LinkedList<GNode>();
   LinkedList<String> constructorargs = new LinkedList<String>();
+  public final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
 	/* We should base this file on src/xtc/lang/CPrinter.java */
 
 	/* This file will have a ton of methods of two types:
@@ -53,7 +56,7 @@ public class CCCP extends Visitor {
   /* Remember when we visit a constructor. We will check if this gets set,
      and if not, one will be added manually. 
   */
-  private boolean visitedConstructor;
+  private boolean visitedConstructor = false;
   private boolean visitedNewClassExp;
   private boolean visitedConstructorFormalParam;
   private boolean createdInitMethod;
@@ -135,6 +138,7 @@ public class CCCP extends Visitor {
     printlnUnlessNull("namespace " + packageName + " {", packageName);
     visit(n);
     if (visitedConstructor == false) {
+      LOGGER.warning("did not visit constructor for " + className);
       printFallbackinit();
     }
     printClassMethod(); 
@@ -254,6 +258,7 @@ public class CCCP extends Visitor {
 
   public void visitConstructorDeclaration(GNode n){
     visitedConstructor = true;
+    LOGGER.warning("visiting constructor for " + className);
     printFallbackConstructor();
     String constructorName = n.getString(2);
     if (n.getNode(3).size() == 0){
