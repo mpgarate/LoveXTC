@@ -1,18 +1,4 @@
 package xtc.oop.LoveInheritance;
-/*VTableCreator creates a VTable for any class node.  It extends NodeHandler so that it can use all of it's methods.
-
-Methods provided in this class:
-
-getNodeVTable
-
-setObjectVTable
-setStringVTable
-setClassVTable
-
-getObjectVTable
-getStringVTable
-getClassVTable
-*/
 
 import xtc.tree.GNode;
 import xtc.tree.Node;
@@ -22,6 +8,9 @@ import xtc.util.Tool;
 
 import static org.junit.Assert.*;
 
+/** VTableCreator creates a VTable for any class node.
+ * It extends NodeHandler so that it can use all of it's methods.
+ */
 public class VTableCreator extends NodeHandler {
 
     private GNode objectVTable;

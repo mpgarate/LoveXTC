@@ -1,21 +1,4 @@
 package xtc.oop.LoveInheritance;
-/*NodeHandler handles the creation of the vTable and dataLayout nodes from javaASTs.
-
-NOTE: NodeHandler is meant to be accessed only from VTableCreator or DataLayoutCreator.
-
-Methods provided in this class:
-handleClassBody
-checkForOverloading: checks to see if method is overloaded and if so adds it to a list of nodes
-executeOverloading: runs through the list of nodes provided by checkForOverloading and changes method names.
-handleFieldDeclaration
-handleMethodDeclaration
-handleConstructorDeclaration
-
-createConstructor
-createMethod
-createDataFieldEntry
-convertMethodNameType
-*/
 
 import xtc.tree.GNode;
 import xtc.tree.Node;
@@ -28,6 +11,9 @@ import java.util.LinkedList;
 
 import java.util.*;
 
+/** NodeHandler handles the creation of the vTable and dataLayout nodes from javaASTs.
+ * NOTE: NodeHandler is meant to be accessed only from VTableCreator or DataLayoutCreator.
+ */
 public class NodeHandler {
 	String className = "";
 	LinkedList<GNode> methodsToOverload = new LinkedList<GNode>();

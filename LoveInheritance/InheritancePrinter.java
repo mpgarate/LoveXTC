@@ -15,6 +15,7 @@ import xtc.tree.Token;
 import xtc.tree.Visitor;
 /* End imports based on src/xtc/lang/CPrinter.java */
 
+/** Print the inheritance tree to output header file */
 public class InheritancePrinter extends Visitor {
   private static final boolean VERBOSE = true;
 	/** The printer for this C printer. */

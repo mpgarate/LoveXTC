@@ -1,20 +1,5 @@
 package xtc.oop.LoveInheritance;
 
-/*DataLayoutCreator makes the dataLayout for a classNode in the Inheritance Tree.  It extends NodeHandler.
-
-Methods in this class (listed in-order)
-
-getNodeDataLayout
-
-setObjectDataLayout
-setStringDataLayout
-setClassDataLayout
-
-getObjectDataLayout
-getStringDataLayout
-getClassDataLayout
-
-*/
 import xtc.tree.GNode;
 
 /* All the imports from Translator.java */
@@ -38,8 +23,9 @@ import java.util.LinkedList;
 
 /* End Translator.java imports */
 
-import static org.junit.Assert.*;
-
+/** 
+ * Makes the dataLayout for a classNode in the Inheritance Tree. Extends NodeHandler.
+ */
 public class DataLayoutCreator extends NodeHandler {
 
   private GNode objectDataLayout;
