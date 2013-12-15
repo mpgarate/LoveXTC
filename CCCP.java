@@ -157,6 +157,7 @@ public class CCCP extends Visitor {
     if (methodName.equals("main")) {
       inMainMethod = true;
       printer.pln("void " + className + "::main(__rt::Ptr<__rt::Array<String> > args) {");
+      printer.p("__rt::Ptr<" + className + "> __this = new " + className + "();");
       printer.p(n.getNode(7));
       inMainMethod = false;
       printer.pln("}");
@@ -254,6 +255,13 @@ public class CCCP extends Visitor {
     printer.p("for");
     visit(n);
     table.exit();
+  }
+
+  public void visitWhileStatement(GNode n){
+    printer.p("while(");
+    dispatch(n.getNode(0));
+    printer.p(")"); 
+    dispatch(n.getNode(1));
   }
 
   public void visitPostfixExpression(GNode n){
