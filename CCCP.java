@@ -157,7 +157,7 @@ public class CCCP extends Visitor {
     if (methodName.equals("main")) {
       inMainMethod = true;
       printer.pln("void " + className + "::main(__rt::Ptr<__rt::Array<String> > args) {");
-      printer.p("__rt::Ptr<" + className + "> __this = new " + className + "();");
+      printer.pln(javaClassName + " __this = " + className + "::init(new " + className + "());");
       printer.p(n.getNode(7));
       inMainMethod = false;
       printer.pln("}");
@@ -190,6 +190,11 @@ public class CCCP extends Visitor {
   /** Visit the specified type. */
   public void visitType(GNode n) {
     String dimensions = null;
+
+    if(inLoveField){
+      /* Already printed "__this" in printLoveField */
+      return;
+    }
 
     if(null != n.getNode(1)){
       dimensions = n.getNode(1).getString(0);
@@ -286,6 +291,7 @@ public class CCCP extends Visitor {
     printer.p("]");
   }
 
+  boolean inInitMethod = false;
   public void visitConstructorDeclaration(GNode n){
     visitedConstructor = true;
     printFallbackConstructor();
@@ -303,6 +309,7 @@ public class CCCP extends Visitor {
       constructorargs.add(n.getNode(3).getNode(i).getString(3));
     }
     printer.pln("){");
+    inInitMethod = true;
     String parent = inheritanceTree.getParentOfNode(javaClassName);
     /* What if the parent constructor also has arguments? May need to fix this later*/
     if (parent != null){
@@ -315,6 +322,7 @@ public class CCCP extends Visitor {
       printLoveField(classFields.get(i));
     }
     printer.pln("return __this;");
+    inInitMethod = false;
     printer.p("}");
     printer.pln();
     printer.pln();
@@ -326,6 +334,7 @@ public class CCCP extends Visitor {
     visitedSelectionExpression = true;
   }
 
+  boolean inLoveField = false;
   private void printLoveField(GNode n){
     if (n.getNode(2).hasName("Declarators")){
       GNode declaration = (GNode)n.getNode(2).getNode(0);
@@ -339,7 +348,10 @@ public class CCCP extends Visitor {
           printer.pln();  
         }
         else{
+          printer.p("__this->");
+          inLoveField = true;
           visit(n);
+          inLoveField = false;
           printer.p(";");
           printer.pln();
         }
@@ -633,6 +645,9 @@ public class CCCP extends Visitor {
 
   public void visitPrimaryIdentifier(GNode n) {
     String variableName = n.getString(0);
+    if (variableName.equals(javaClassName)){
+      variableName = "__this";
+    }
     if (insideConstBlock){
       printHandleConst(n);
       return;
