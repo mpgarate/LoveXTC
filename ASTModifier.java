@@ -22,14 +22,6 @@ import java.util.logging.Level;
 public class ASTModifier extends Visitor {
   private final static Logger LOGGER = Logger.getLogger(Dependency.class .getName());
 
-	/* We should base this file on src/xtc/lang/CPrinter.java */
-
-	/* This file will have a ton of methods of two types:
-		
-			1 - Visitor methods to go to each node
-			2 - Helper methods to test for various contextual conditions for printing nodes  
-
-	*/
   public String className;
 	public ASTModifier(){
 
@@ -43,9 +35,6 @@ public class ASTModifier extends Visitor {
   }
 
   public void visitPrimitiveType(GNode n){
-    /*if(n.getString(0).equals("int")){
-      n.set(0,"int32_t");
-    }*/
     if(n.getString(0).equals("byte")){
       n.set(0,"unsigned char");
     }
@@ -83,18 +72,6 @@ public class ASTModifier extends Visitor {
   public void visitConstructorDeclaration(GNode n){
     String constructorName = n.getString(2);
     n.set(2, "__" + constructorName);
-    /*GNode constructorBlock = GNode.create("ConstructorBlock");
-    GNode constExpressionStatement = GNode.create("ConstructorExpression");
-    for (int i = 0; i< n.getNode(5).size(); i++) {
-      if(n.getNode(5).getNode(i).hasName("ExpressionStatement")) {
-        String ls = n.getNode(5).getNode(i).getNode(0).getNode(0).getString(0);
-        String rs = n.getNode(5).getNode(i).getNode(0).getNode(2).getString(0);
-        constExpressionStatement.add(ls);
-        constExpressionStatement.add(rs);
-        constructorBlock.add(constExpressionStatement);
-      }
-    }
-    n.set(5,constructorBlock);*/
     visit(n);
   }
 
@@ -107,12 +84,6 @@ public class ASTModifier extends Visitor {
   }
 
   public void visitCallExpression(GNode n){
-    /*if(n.getString(2).equals("println")){
-      n.set(2, null);
-      GNode cout = GNode.create("COUT");
-      cout.add("cout");
-      n.set(0, cout);
-    }*/
     visit(n);
   }
   public void visitExpressionStatement(GNode n){
