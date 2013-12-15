@@ -14,7 +14,7 @@ class C extends A {
   void m(C c1, C c2) { System.out.println("C.m(C, C)"); }
 }
 
-public class Test042 {
+public class Test041 {
   public static void main(String[] args) {
     C c = new C();
     c.m(new A(), (Object) c);

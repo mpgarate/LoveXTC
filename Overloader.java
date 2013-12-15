@@ -630,6 +630,9 @@ public class Overloader extends Visitor {
     return n.getNode(2).getString(0);
   }
   public String visitCastExpression(GNode n){
+    if (n.getNode(1).hasName("CallExpression")){
+      visitCallExpression((GNode)n.getNode(1));
+    }
     return n.getNode(0).getNode(0).getString(0);
   }
   public String visitStringLiteral(GNode n){
