@@ -12,7 +12,7 @@ Place our code in a directory like ```~/xtc/oop/```.
 
 Compile all code with ```make```
 
-Run our test suite with ```make test```
+Run our test suite with ```make test```. This will run through our own Java examples and the tests provided by Professor Wies. Each file is translated and run to compare its output to that of the original Java file.
 
 Create javadocs with ```make loveDocs``` and open ```docs/index.html``` in your browser. 
 
