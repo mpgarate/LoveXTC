@@ -44,9 +44,15 @@ public class Inheritance {
    	VTableCreator vTable = new VTableCreator();
 
    	LinkedList<String> staticMethods = new LinkedList<String>();
+   	LinkedList<String> nodeOrder = new LinkedList<String>();
+   	LinkedList<String> finalNodeOrder = new LinkedList<String>();
 
   /** Create Object and String class nodes */
 	public Inheritance(LinkedList<GNode> nodeList) {
+
+		for (GNode node : nodeList) {
+			setNodeOrderToJava(node);
+		}
 
 		root = GNode.create("Object");
 		GNode headerNode = GNode.create("HeaderDeclaration");
@@ -106,6 +112,12 @@ public class Inheritance {
 		for (int i=1;i<root.size();i++) {
 		    buildTreeHeaders((GNode)root.getNode(i));
 		}
+
+		while (nodeOrder.size()>0) {
+			GNode inherit = searchForNode(root, nodeOrder.peek());
+			GNode ast = (GNode)inherit.getProperty("javaAST");
+			modifyNodeOrder(ast);
+		}
 	}
 
 	/** Places a GNode in the inheritance tree */
@@ -162,28 +174,64 @@ public class Inheritance {
 		}.dispatch(node);
 	}
 
+	public void setNodeOrderToJava(GNode ast) {
+		//Sets an initial ordering of nodes to be the order in the java file
+		new Visitor () {
+			public void visitCompilationUnit(GNode n) {
+				visit(n);
+			}
+			public void visitClassDeclaration(GNode n) {
+				nodeOrder.add(n.getString(1));
+			}
+			public void visit (Node n) {
+				for (Object o : n) {
+					if (o instanceof Node)
+						dispatch((Node) o);
+				}
+			}
+		}.dispatch(ast);
+	}
+
+	public void modifyNodeOrder(GNode ast) {
+		//Modifies the order of java nodes depending on what is in the AST
+		new Visitor() {
+			public void visitClassDeclaration(GNode n) {
+				nodeOrder.remove(n.getString(1));
+				visit(n);
+				finalNodeOrder.add(n.getString(1));
+			}
+			public void visitQualifiedIdentifier(GNode n) {
+				if (n.get(0) instanceof String) {
+					if (nodeOrder.contains(n.getString(0))) {
+						if (!(n.getString(0).equals("Object") || n.getString(0).equals("String") || n.getString(0).equals("Class"))) {
+							GNode innerClass = searchForNode(root, n.getString(0));
+							GNode innerAST = (GNode)innerClass.getProperty("javaAST");
+							modifyNodeOrder(innerAST);
+						}
+					}
+				}
+			}
+			public void visit (Node n) {
+				for (Object o : n) {
+					if (o instanceof Node)
+						dispatch((Node) o);
+				}
+			}
+		}.dispatch(ast);
+	}
+
 	public LinkedList<GNode> getNodeList() {
 		LinkedList<GNode> nodeList = new LinkedList<GNode>();
-		if (root.size() < 2) {
-			return nodeList;
-		}
 
-		for (int i=3;i<root.size();i++) {
-			getNodeList(nodeList, (GNode)root.getNode(i));
+		for (String s : finalNodeOrder) {
+			GNode g = searchForNode(root, s);
+			GNode gAST = (GNode)g.getProperty("javaAST");
+			nodeList.add(gAST);
 		}
 
 		return nodeList;
 	}
 
-	private void getNodeList(LinkedList<GNode> nodeList, GNode nodeToAdd) {
-		nodeList.add((GNode)nodeToAdd.getProperty("javaAST"));
-		if (nodeToAdd.size() < 2) {
-			return;
-		}
-		for (int i=1;i<nodeToAdd.size();i++) {
-			getNodeList(nodeList, (GNode)nodeToAdd.getNode(i));
-		}
-	}
 	/** Finds a node with a given name in a tree with the given root. */
 	private GNode findParentNode(GNode startNode, String name) {
 		// Finds a node of a given name in the tree whose root is startNode.
